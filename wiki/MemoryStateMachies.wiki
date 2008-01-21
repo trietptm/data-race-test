@@ -1,0 +1,9 @@
+= Alternative memory state machines for helgrind =
+
+On this page I would like to collect links to various known state machines for Eraser-like algorithms and discuss some new approaches. 
+
+
+
+= Links =
+   - [http://www.cs.ucsd.edu/~savage/papers/Tocs97.pdf The Eraser paper] 
+   - What else? 
