@@ -1,0 +1,14 @@
+
+
+= Patches to the 'official' helgrind =
+
+Here we list the patches to the official helgrind that are (or will be) made to helgrind as a part of this project. 
+
+*TODO*: the actual patches are not here yet. 
+
+== Client requests == 
+  * `_VG_USERREQ__HG_GET_THREAD_ID` -- to make helgrind debugging more verbose. 
+  * `_VG_USERREQ__HG_EXPECT_RACE` -- to support _positive_ unit tests. 
+
+== Dynamic annotations ==
+See `dynamic_annotations.h` in `trunk/unittest` for details. 
