@@ -5,5 +5,5 @@ On this page I would like to collect links to various known state machines for E
 
 
 = Links =
-  - [http://www.cs.ucsd.edu/~savage/papers/Tocs97.pdf The Eraser paper] 
-  - What else? 
+  * [http://www.cs.ucsd.edu/~savage/papers/Tocs97.pdf The Eraser paper] 
+  * What else? 
