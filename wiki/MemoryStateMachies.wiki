@@ -7,4 +7,5 @@ On this page I would like to collect links to various known state machines for E
 = Links =
   * [http://www.cs.ucsd.edu/~savage/papers/Tocs97.pdf The Eraser paper] 
   * [http://citeseer.ist.psu.edu/701779.html Object Race Detection (2001)]
+  * [http://citeseer.ist.psu.edu/153236.html Improving the Accuracy of Data Race Detection (1991)]
   * What else? 
