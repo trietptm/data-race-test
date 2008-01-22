@@ -1,21 +1,22 @@
 #summary Memory state machine implemented in helgrind 3.3.0
 
-Edges that lead to states !NoAccess and to New are not shown. 
+
 
     http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
 Edges (state transitions): 
 
-||Edge|| access type  || condition || new state || race if ... ||
-||E1  || memory allocation || - || - || - ||
-||E2  || read/write || First access after allocation ||newS=currentS || - ||
-||E3  || read/write || happens-before(oldS, currentS)||newS=currentS || - ||
-||E4  || read || - || newTS={oldS,newS} || - ||
-||E5  || read ||                   || newTS=union(oldTS,currentS) ||- ||
-||E6  || write|| - || newTS={oldS,newS} || newLS=={} ||
-||E7  || write|| - || newTS=union(oldTS,currentS) || newLS=={} ||
-||E8  || write|| - || newTS=union(oldTS,currentS) || newLS=={} ||
-||E9,E10,E11,E12  || none || thread join || current thread is excluded from TS ||- ||
+||Edge|| access type  || condition || thread/segment set || lock set|| race if ... ||
+||E1  || memory allocation || - || - || {} || - ||
+||E2  || read/write || First access after allocation ||newS=currentS || {} || - ||
+||E3  || read/write || happens-before(oldS, currentS)||newS=currentS || {} || - ||
+||E4  || read || - || newTS={oldS,newS} || {currentLS} || - ||
+||E5  || read ||                   || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || - ||
+||E6  || write|| - || newTS={oldS,newS} || intersect(oldLS,currentLS) || newLS=={} ||
+||E7  || write|| - || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || newLS=={} ||
+||E8  || write|| - || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || newLS=={} ||
+||E9,E10,E11,E12  || none || thread join || current thread is excluded from TS || oldLS || - ||
 
+Edges that lead to states !NoAccess and to New are not shown. 
 
 
 Back to MemoryStateMachines. 
