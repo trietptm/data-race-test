@@ -16,6 +16,7 @@ DISCLAIMER: this state machine has not (yet) been tested.
 
 Edges that lead to states !NoAccess and  New are not shown. 
 
+*SS_update*:
 {{{
   def SS_update:
     newSS = {currS}
@@ -25,6 +26,7 @@ Edges that lead to states !NoAccess and  New are not shown.
     SS = newSS
 }}}
 
+*LS_update*:
 {{{
   def LS_update: 
     if(HB(oldSS, currS)): 
