@@ -5,7 +5,9 @@ DISCLAIMER: this state machien has not (yet) been tested.
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop2.png
 Edges (state transitions): 
-|| *Edge* || *Transition*   || *access type*  || *condition*    ||    SSW  || SSR || LSW || LSR    || *race if ...* ||
+|| *Edge* || *Transition*     || *access type*     || *condition*    ||    SSW  || LSW || SSR || LSR    || *race if ...* ||
+|| E1     || !NoAccess => New || memory allocation || -              || -       || -   || -   || -      || - 
+|| E2     || New ==> Read     || read              || -              || -       ||     || {currS} || {currL} || -
 
 
 
