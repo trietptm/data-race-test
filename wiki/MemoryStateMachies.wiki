@@ -10,16 +10,22 @@ On this page I would like to collect links to various known state machines for E
   * *L* -- a lock. 
 
   * *TS* -- a thread set (set of threads). 
-  * *SS* -- a segment set (set of thread segments).
+  * *SS* -- a segment set (set of thread segments). All segments in a segment set belong to different threads. 
   * *LS* -- a lock set (set of locks). 
 
   * *TS={T1,T2,...,Tn}* -- a thread set consisting of threads T1,T2,...Tn.
   * *SS={S1,S2,...,Sn}*  -- a segment set consisting of segments S1,S2,...,Sn
   * *LS={L1,L2,...,Lm}* -- a lock set consisting of locks L1,L2,...,Lm. 
 
-  * State named 'State R' consisting of segment set SS, locks set LS, all accesses are read-only. 
+  * *T(S)* -- thread to which the segment S belongs. 
+  * *TS(SS)* -- set of threads to which segments of SS belong. 
+
+
+  * State named 'State R'. The memory location was accessed read-only in thread segments SS with common locks LS.  
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png
-  * State named 'State W' consisting of segment set SS, locks set LS, at least one access was modification. 
+  * State named 'State W'. The memory location was accessed in thread segments SS with common locks LS. At least one access to this memory location was modification. 
+    http://data-race-test.googlecode.com/svn/trunk/msm/legend_w.png
+  * State named 'State WR'.  
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_w.png
 
 
