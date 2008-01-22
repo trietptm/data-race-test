@@ -5,18 +5,18 @@ DISCLAIMER: this state machine has not (yet) been tested.
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop2.png
 Edges (state transitions): 
-|| *Edge* || *Transition*       || *access type*     || *condition*    ||   *SSW*  || *LSW*   || *SSR*   || *LSR*    || *race if ...* ||
-|| E1     || !NoAccess => New   || memory allocation || -              || -        || -       || -       || -        || -  || 
-|| E2     || New => Read        || read              || -              || -        ||         || {currS} || {currL}  || -  || 
-|| E3     || New => Write       || write             || -              || {currS}  || {currL} || -       || -        || -  || 
-|| E4     || Read => Read       || read              || -              || -        || -       || TODO    || TODO     || -  ||
-|| E5     || Read => Write      || write             || -              || TODO     || TODO    || -       || -        || -  ||
-|| E6     || Write => Read      || read              || HB(SSW,currS)  || -        || -       || {currS} || TODO     || -  ||
-|| E7     || Write => !WriteRead|| read              || TODO           ||          ||         ||         ||          || -  || 
-|| E8     || Write => Write     || read/write        || -              ||          ||         ||         ||          || -  || 
-|| E9     || !WriteRead => Read || read              || TODO           ||          ||         ||         ||          || -  || 
-|| E10    || !WriteRead => Write|| write             || TODO           ||          ||         ||         ||          || -  || 
-|| E11    || !WriteRead => !WriteRead|| read/write   || -              ||          ||         ||         ||          || -  || 
+|| *Edge* || *Transition*       || *access type*     || *condition*      ||   *SSW*  || *LSW*    || *SSR*    || *LSR*    || *race if ...* ||
+|| E1     || !NoAccess => New   || memory allocation || -                || -        || -        || -        || -        || -  || 
+|| E2     || New => Read        || read              || -                || -        ||          || {currS}  || {currL}  || -  || 
+|| E3     || New => Write       || write             || -                || {currS}  || {currL}  || -        || -        || -  || 
+|| E4     || Read => Read       || read              || -                || -        || -        || TODO     || TODO     || -  ||
+|| E5     || Read => Write      || write             || -                || TODO     || TODO     || -        || -        || -  ||
+|| E6     || Write => Read      || read              || HB(SSW,currS)    || -        || -        || {currS}  || TODO     || -  ||
+|| E7     || Write => !WriteRead|| read              || TODO             ||          ||          ||          ||          || -  || 
+|| E8     || Write => Write     || read/write        || -                ||          ||          ||          ||          || -  || 
+|| E9     || !WriteRead => Read || read              || HB(SSW,SSR+currS)|| -        || -        || SSR+currS|| TODO     || -  || 
+|| E10    || !WriteRead => Write|| write             || HB(SSR,SSW+currS)|| SSW+currS|| TODO     || -        || -        || -  || 
+|| E11    || !WriteRead => !WriteRead|| read/write   || -                ||!UpdateSSW||!UpdateLSW||!UpdateSSR||!UpdateLSR|| -  || 
 
 
 
