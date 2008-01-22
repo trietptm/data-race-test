@@ -8,11 +8,10 @@ Edges (state transitions):
 ||Edge|| access type             || condition                     || new state ||
 ||E1  || new memory is allocated || 
 ||E2  || read or write           || First access after allocation ||
-||E3  || read or write           || T(oldS)==T(currentS) or happens-before(oldS, currentS). newS=currentS. 
-  * E4: read access. T(S)!=T(currentS). newTS={oldS,newS}.
-  * E5: read access. newTS=union(oldTS,currentS). 
-  
-  * E6: write access. T(S)!=T(currentS). newTS={oldS,newS}.
+||E3  || read or write           || T(oldS)==T(currentS) or happens-before(oldS, currentS).   ||newS=currentS. ||
+||E4  || read || T(S)!=T(currentS) || newTS={oldS,newS} ||
+||E5  || read ||                   || newTS=union(oldTS,currentS) ||
+||E6  || write|| T(S)!=T(currentS) || newTS={oldS,newS} ||
 
 
 
