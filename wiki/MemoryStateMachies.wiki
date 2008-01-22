@@ -21,12 +21,12 @@ On this page I would like to collect links to various known state machines for E
   * *TS(SS)* -- set of threads to which segments of SS belong. 
 
 
-  * State named 'State R'. The memory location was accessed read-only in thread segments SS with common locks LS.  
+  * State named 'State R'. The memory location was read in thread segments SS with common locks LS.  
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png
   * State named 'State W'. The memory location was accessed in thread segments SS with common locks LS. At least one access to this memory location was modification. 
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_w.png
-  * State named 'State WR'.  
-    http://data-race-test.googlecode.com/svn/trunk/msm/legend_w.png
+  * State named 'State WR'. The memory location was modified in thread segments SSW with common locks LSW. Also the memory location was accessed read-only in thread segments SSR with common locks LSR. 
+    http://data-race-test.googlecode.com/svn/trunk/msm/legend_wr.png
 
 
 
