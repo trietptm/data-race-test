@@ -4,7 +4,6 @@
 DISCLAIMER: this state machine has not (yet) been tested. 
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop2.png
-Edges (state transitions): 
 || *Edge* || *Transition*       || *access type*     || *condition*      ||   *SSW*  || *LSW*    || *SSR*    || *LSR*    || *race if ...* ||
 || E1     || !NoAccess => New   || memory allocation || -                || -        || -        || -        || -        || -  || 
 || E2     || New => Read        || read              || -                || -        ||          || {currS}  || {currL}  || -  || 
@@ -26,7 +25,12 @@ Edges (state transitions):
 Edges that lead to states !NoAccess and  New are not shown. 
 
 Note, that *!WriteRead({},{},SSR,LSR)==Read(SSR,LSR)* and *!WriteRead(SSW,LSW,{},{})==Write(SSW,LSW)*. 
-States *Read* and *Write* are inroduced to simplify understanding. 
+States *Read* and *Write* are inroduced as an attempt to spedup the scheme. 
+
+
+Simplified scheme: 
+    http://data-race-test.googlecode.com/svn/trunk/msm/prop2_simp.png
+
 
 
 See legend in  MemoryStateMachines. 
