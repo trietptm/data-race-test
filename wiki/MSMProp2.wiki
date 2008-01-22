@@ -5,12 +5,16 @@ DISCLAIMER: this state machine has not (yet) been tested.
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop2.png
 Edges (state transitions): 
-|| *Edge* || *Transition*     || *access type*     || *condition*    ||   *SSW*  || *LSW*   || *SSR*   || *LSR*    || *race if ...* ||
-|| E1     || !NoAccess => New || memory allocation || -              || -        || -       || -       || -        || -  || 
-|| E2     || New => Read      || read              || -              || -        ||         || {currS} || {currL}  || -  || 
-|| E2     || New => Write     || write             || -              || {currS}  || {currL} || -       || -        || -  || 
-|| E3     || Read => Read     || read              || -              || -        || -       || *TODO*  || *TODO*   || -  ||
-|| E4     || Read => Write    || write             || -              || *TODO*   || *TODO*  || -       || -        || -  ||
+|| *Edge* || *Transition*       || *access type*     || *condition*    ||   *SSW*  || *LSW*   || *SSR*   || *LSR*    || *race if ...* ||
+|| E1     || !NoAccess => New   || memory allocation || -              || -        || -       || -       || -        || -  || 
+|| E2     || New => Read        || read              || -              || -        ||         || {currS} || {currL}  || -  || 
+|| E3     || New => Write       || write             || -              || {currS}  || {currL} || -       || -        || -  || 
+|| E4     || Read => Read       || read              || -              || -        || -       || TODO    || TODO     || -  ||
+|| E5     || Read => Write      || write             || -              || TODO     || TODO    || -       || -        || -  ||
+|| E6     || Write => Read      || read              || HB(SSW,currS)  || -        || -       || {currS} || TODO     || -  ||
+|| E7     || Write => !WriteRead|| read              || TODO           ||          ||         ||         ||          || -  || 
+|| E8     || Write => Write     || read/write        || -              ||          ||         ||         ||          || -  || 
+
 
 
 
