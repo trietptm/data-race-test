@@ -14,6 +14,10 @@ Edges (state transitions):
 || E6     || Write => Read      || read              || HB(SSW,currS)  || -        || -       || {currS} || TODO     || -  ||
 || E7     || Write => !WriteRead|| read              || TODO           ||          ||         ||         ||          || -  || 
 || E8     || Write => Write     || read/write        || -              ||          ||         ||         ||          || -  || 
+|| E9     || !WriteRead => Read || read              || TODO           ||          ||         ||         ||          || -  || 
+|| E10    || !WriteRead => Write|| write             || TODO           ||          ||         ||         ||          || -  || 
+|| E11    || !WriteRead => !WriteRead|| read/write   || -              ||          ||         ||         ||          || -  || 
+
 
 
 
@@ -22,7 +26,7 @@ Edges (state transitions):
 Edges that lead to states !NoAccess and  New are not shown. 
 
 Note, that *!WriteRead({},{},SSR,LSR)==Read(SSR,LSR)* and *!WriteRead(SSW,LSW,{},{})==Write(SSW,LSW)*. 
-States *Read* and *Write* are inroduced to simplify understanding (did it simplify it? :)). 
+States *Read* and *Write* are inroduced to simplify understanding. 
 
 
 See legend in  MemoryStateMachines. 
