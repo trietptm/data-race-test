@@ -28,6 +28,14 @@ On this page I would like to collect links to various known state machines for E
   * State named 'State WR'. The memory location was modified in thread segments SSW with common locks LSW. Also the memory location was accessed read-only in thread segments SSR with common locks LSR. 
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_wr.png
 
+== Helgrind 3.3.0 == 
+Here we describe the state machine in helgrind 3.3.0. 
+Edges that lead to states NoAccess and to New are not show. 
+
+    http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
+Edges (state transitions): 
+  * E1
+  * E2
 
 
 = Links =
