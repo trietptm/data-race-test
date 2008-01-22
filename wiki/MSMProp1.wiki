@@ -7,8 +7,8 @@ DISCLAIMER: this state machine has not (yet) been tested.
 Edges (state transitions): 
 || *Edge* || *Transition*      || *access type*     || *condition*    || *segment set*               || *lock set*                 || *race if ...* ||
 || E1     || !NoAccess => New  || memory allocation || -              || -                           || {}                         || - ||
-|| E2     || New => Read       || read              || First read     || {currS}                     || {currLS}                   || - ||
-|| E3     || New => Write      || write             || First write    || {currS}                     || {currLS}                   || - ||
+|| E2     || New => Read       || read              || -              || {currS}                     || {currLS}                   || - ||
+|| E3     || New => Write      || write             || -              || {currS}                     || {currLS}                   || - ||
 || E4     || Read => Read      || read              || -              || *SS_update(SS,currS)*       || intersect{LS,currLS}       || - ||
 || E5     || Read => Write     || write             || -              || *SS_update(SS,currS)*       || intersect{LS,currLS}       || LS=={} ||
 || E6     || Write => Read     || read              || HB(SS, currS)  || {currS}                     || {currLS}                   || - ||
