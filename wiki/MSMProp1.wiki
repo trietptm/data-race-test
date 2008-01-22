@@ -10,7 +10,7 @@ Edges (state transitions):
 || E3     || New => Write      || write             || First write    || {currS}                     || {currLS}                   || - ||
 || E4     || Read => Read      || read              || -              || union{SS,currS}             || intersect{LS,currLS}       || - ||
 || E5     || Read => Write     || write             || -              || union(SS,currS)             || intersect{LS,currLS}       || - ||
-|| E6     || Write => Write    || write             || -              || SS_update(SS,currS)         || intersect{LS,currLS}       || - ||
+|| E6     || Write => Write    || write             || -              || *SS_update(SS,currS)*       || intersect{LS,currLS}       || - ||
 || E7     || Write => Read     || read              || HB(SS, currS)  || {currS}                     || {currLS}                   || - ||
   
 
