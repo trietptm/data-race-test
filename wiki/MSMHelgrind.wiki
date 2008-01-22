@@ -21,5 +21,10 @@ Edges that lead to states !NoAccess and to New are not shown.
 
 If S1 and S2 are from the same thread, happens-before(S1, S2) is assumed true. 
 
+This state machine leads to (at least) one false negative (test10) and multiple false positives (test05, test11, test12, test13, test14, test16, test17, test28, test29, test32, test36, test38).
+See tests in http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unittest.cc. 
+
+
+
 
 Back to MemoryStateMachines. 
