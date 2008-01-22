@@ -1,4 +1,4 @@
-#Discussion of possible memory state machines for helgrind.
+#summary Discussion of possible memory state machines for helgrind.
 
 On this page I would like to collect links to various known state machines for Eraser-like algorithms and discuss some new approaches. 
 
