@@ -17,8 +17,10 @@ On this page I would like to collect links to various known state machines for E
   * *SS={S1,S2,...,Sn}*  -- a segment set consisting of segments S1,S2,...,Sn
   * *LS={L1,L2,...,Lm}* -- a lock set consisting of locks L1,L2,...,Lm. 
 
-  * State consisting of segment set SS, locks set LS, all accesses are read-only. http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png
-
+  * State named 'State R' consisting of segment set SS, locks set LS, all accesses are read-only. 
+    http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png
+  * State named 'State W' consisting of segment set SS, locks set LS, at least one access was modification. 
+    http://data-race-test.googlecode.com/svn/trunk/msm/legend_w.png
 
 
 
