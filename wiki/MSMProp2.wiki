@@ -1,0 +1,3 @@
+#summary Proposed memory state machine, MSMProp2
+
+Back to MemoryStateMachines
