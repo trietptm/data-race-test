@@ -17,7 +17,7 @@ Edges (state transitions):
 ||E9,E10,E11,E12 ||     || none              || thread join                   || current thread is excluded from TS || LS               || - ||
 
 
-Edges that lead to states !NoAccess and to New are not shown. 
+Edges that lead to states !NoAccess and New are not shown. 
 
 
 This state machine leads to (at least) one false negative (*test10*) 

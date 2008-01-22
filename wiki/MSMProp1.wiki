@@ -14,7 +14,7 @@ Edges (state transitions):
 || E7     || Write => Read     || read              || HB(SS, currS)  || {currS}                     || {currLS}                   || - ||
   
 
-Edges that lead to states !NoAccess and to New are not shown. 
+Edges that lead to states !NoAccess and  New are not shown. 
 
 This state machine leads to several false positives (*test28, test29, test36, test38*).
 See tests in http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unittest.cc. 
