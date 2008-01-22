@@ -30,6 +30,10 @@ States *Read* and *Write* are inroduced as an attempt to spedup the scheme.
 
 Simplified scheme: 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop2_simp.png
+|| *Edge* || *Transition*       || *access type*     || *condition*      ||   *SSW*  || *LSW*    || *SSR*    || *LSR*    || *race if ...* ||
+|| E1     || !NoAccess => New   || memory allocation || -                || -        || -        || -        || -        || -  || 
+|| E2     || New => Read        || read              || -                || -        ||          || {currS}  || {currL}  || -  || 
+|| E3     || !WriteRead => !WriteRead|| read/write   || -                || UpdateSSW|| UpdateLSW|| UpdateSSR|| UpdateLSR|| -  || 
 
 
 
