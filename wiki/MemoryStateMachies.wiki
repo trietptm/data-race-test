@@ -6,8 +6,14 @@ On this page I would like to collect links to various known state machines for E
   * *W* -- write (modification) access. 
   * *R* -- read-only access.
   * *T* -- a thread. 
-  * *TS* -- a thread set. 
-  * *TS={T1,T2,...,Tn}* -- a theradset (set of therads) consisting of threads T1,T2,...Tn.
+  * *TS* -- a threadset (set of therads). 
+  * *TS={T1,T2,...,Tn}* -- a theradset consisting of threads T1,T2,...Tn.
+  * *S* -- a threadsegment. 
+  * *SS* -- a segment set (set of thread segments).
+  * *SS={S1,S2,...,Sn}*  -- a segmentset consisting of segments S1,S2,...,Sn
+  * *L* -- a lock. 
+  * *LS* -- a lockset (set of locks). 
+  * *LS={L1,L2,...,Lm}* -- a lockset consisting of locks L1,L2,...,Lm. 
 
 http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png
 
