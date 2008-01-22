@@ -5,12 +5,12 @@
 Edges (state transitions): 
 ||*Edge*|| *access type*     || *condition*                   || *thread/segment set*        || *lock set*                 || *race if ...* ||
 || E1   || memory allocation || -                             || -                           || {}                         || - ||
-|| E2   || read/write        || First read after allocation   || SS={currentS}               || {currentLS}                || - ||
+|| E2   || read              || First read after allocation   || SS={currentS}               || {currentLS}                || - ||
 || E3   || write             || First write after allocation  || SS={currentS}               || {currentLS}                || - ||
 || E4   || read              || -                             ||                             ||                            || - ||
 || E5   || write             || -                             ||                             ||                            || - ||
 || E6   || write             || -                             ||                             ||                            || - ||
-|| E7   || read              || -                             ||                             ||                            || - ||
+|| E7   || read              || #SS==1 && HB(SS[1], currentSS)||                             ||                            || - ||
  
 
 
