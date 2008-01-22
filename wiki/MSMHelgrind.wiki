@@ -11,7 +11,7 @@ Edges (state transitions):
 ||E3  || read/write || happens-before(oldS, currentS)||newS=currentS || {} || - ||
 ||E4  || read || - || newTS={oldS,newS} || {currentLS} || - ||
 ||E5  || read ||                   || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || - ||
-||E6  || write|| - || newTS={oldS,newS} || {odLS,currentLS} || newLS=={} ||
+||E6  || write|| - || newTS={oldS,newS} || {currentLS} || newLS=={} ||
 ||E7  || write|| - || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || newLS=={} ||
 ||E8  || write|| - || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || newLS=={} ||
 ||E9,E10,E11,E12  || none || thread join || current thread is excluded from TS || oldLS || - ||
