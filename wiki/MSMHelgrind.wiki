@@ -5,16 +5,16 @@
     http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
 Edges (state transitions): 
 
-||*Edge*|| *access type*   || *condition*                   || *thread/segment set*        || *lock set*           || *race if ...* ||
-||E1  || memory allocation || -                             || -                           || {}                   || - ||
-||E2  || read/write        || First access after allocation || S=currS                  || {}                      || - ||
-||E3  || read/write        || HB(oldS, currS)               || S=currS                  || {}                      || - ||
-||E4  || read              || -                             || TS={oldS,currS}          || {currLS}                || - ||
-||E5  || read              ||                               || TS=union(oldTS,currS)    || intersect(oldLS,currLS) || - ||
-||E6  || write             || -                             || TS={oldS,currS}          || {currLS}                || LS=={} ||
-||E7  || write             || -                             || TS=union(oldTS,currS)    || intersect(oldLS,currLS) || LS=={} ||
-||E8  || write             || -                             || TS=union(oldTS,currS)    || intersect(oldLS,currLS) || LS=={} ||
-||E9,E10,E11,E12  || none  || thread join                   || current thread is excluded from TS || oldLS               || - ||
+||*Edge*|| *access type*   || *condition*                   || *thread/segment set*  || *lock set*           || *race if ...* ||
+||E1  || memory allocation || -                             || -                     || {}                   || - ||
+||E2  || read/write        || First access after allocation || S=currS               || {}                   || - ||
+||E3  || read/write        || HB(S, currS)                  || S=currS               || {}                   || - ||
+||E4  || read              || -                             || TS={S,currS}          || {currLS}             || - ||
+||E5  || read              ||                               || TS=union(TS,currS)    || intersect(LS,currLS) || - ||
+||E6  || write             || -                             || TS={S,currS}          || {currLS}             || LS=={} ||
+||E7  || write             || -                             || TS=union(TS,currS)    || intersect(LS,currLS) || LS=={} ||
+||E8  || write             || -                             || TS=union(TS,currS)    || intersect(LS,currLS) || LS=={} ||
+||E9,E10,E11,E12  || none  || thread join                   || current thread is excluded from TS || LS               || - ||
 
 
 Edges that lead to states !NoAccess and to New are not shown. 
