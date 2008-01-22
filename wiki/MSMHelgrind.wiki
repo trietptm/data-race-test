@@ -6,7 +6,7 @@
 Edges (state transitions): 
 
 || *Edge* || *Transition* ||  *access type* || *condition*                   || *thread/segment set*  || *lock set*           || *race if ...* ||
-||E1  || NoAccess =>New || memory allocation || -                             || -                     || {}                   || - ||
+||E1  || !NoAccess =>New|| memory allocation || -                             || -                     || {}                   || - ||
 ||E2  || New => Excl    || read/write        || First access after allocation || S=currS               || {}                   || - ||
 ||E3  || Excl => Excl   || read/write        || HB(S, currS)                  || S=currS               || {}                   || - ||
 ||E4  || Excl => ShR    || read              || -                             || TS={S,currS}          || {currLS}             || - ||
