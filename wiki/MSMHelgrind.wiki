@@ -1,16 +1,16 @@
 #summary Memory state machine implemented in helgrind 3.3.0
 
-Edges that lead to states NoAccess and to New are not shown. 
+Edges that lead to states !NoAccess and to New are not shown. 
 
     http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
 Edges (state transitions): 
-  * E1: new memory is allocated. 
-  * E2: First read or write access to this memory after allocation. Current thread segment S is stored. 
-  * E3: read or write access. 
-    * T(oldS)==T(currentS), i.e. access in the same thread. newS=currentS. 
-    * or happens-before(oldS, currentS), i.e. old segment and new segment are in different threads but old segment must happen before new segment (due to conditional variable, semaphore or thread join). newS=currentS. 
+||E1 || new memory is allocated. ||
+  * E2: read or write. First read after allocation. 
+  * E3: read or write. T(oldS)==T(currentS) or happens-before(oldS, currentS). newS=currentS. 
   * E4: read access. T(S)!=T(currentS). newTS={oldS,newS}.
   * E5: read access. newTS=union(oldTS,currentS). 
+  
+  * E6: write access. T(S)!=T(currentS). newTS={oldS,newS}.
 
 
 
