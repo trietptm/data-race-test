@@ -4,14 +4,14 @@
 DISCLAIMER: this state machine has not (yet) been tested. 
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
-|| *Edge* || *Transition*      || *access type*     || *condition*    || *segment set*               || *lock set*                 || *race if ...* ||
-|| E1     || !NoAccess => New  || memory allocation || -              || -                           || {}                         || - ||
-|| E2     || New => Read       || read              || -              || {currS}                     || {currLS}                   || - ||
-|| E3     || New => Write      || write             || -              || {currS}                     || {currLS}                   || - ||
-|| E4     || Read => Read      || read              || -              || *SS_update(SS,currS)*       || intersect{LS,currLS}       || - ||
-|| E5     || Read => Write     || write             || -              || *SS_update(SS,currS)*       || intersect{LS,currLS}       || LS=={} ||
-|| E6     || Write => Read     || read              || HB(SS, currS)  || {currS}                     || {currLS}                   || - ||
-|| E7     || Write => Write    || read/write        || -              || *SS_update(SS,currS)*       || intersect{LS,currLS}       || LS=={} ||
+|| *Edge* || *Transition*      || *access type*     || *condition*    || *segment set*     || *lock set*      || *race if ...* ||
+|| E1     || !NoAccess => New  || memory allocation || -              || -                 || {}              || - ||
+|| E2     || New => Read       || read              || -              || {currS}           || {currLS}        || - ||
+|| E3     || New => Write      || write             || -              || {currS}           || {currLS}        || - ||
+|| E4     || Read => Read      || read              || -              || *SS_update*       || *LS_update*     || - ||
+|| E5     || Read => Write     || write             || -              || *SS_update*       || *LS_update*     || LS=={} ||
+|| E6     || Write => Read     || read              || HB(SS, currS)  || {currS}           || {currLS}        || -      ||
+|| E7     || Write => Write    || read/write        || -              || *SS_update*       || *LS_update*     || LS=={} ||
   
 
 Edges that lead to states !NoAccess and  New are not shown. 
