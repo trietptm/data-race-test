@@ -1,17 +1,22 @@
 ﻿#summary Proposed memory state machine, MSMProp1
 
+DISCLAIMER: this state machien has not (yet) been tested. 
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
 Edges (state transitions): 
-||*Edge*|| *access type*     || *condition*                   || *thread/segment set*        || *lock set*                 || *race if ...* ||
-|| E1   || memory allocation || -                             || -                           || {}                         || - ||
-|| E2   || read              || First read after allocation   || SS={currentS}               || {currentLS}                || - ||
-|| E3   || write             || First write after allocation  || SS={currentS}               || {currentLS}                || - ||
-|| E4   || read              || -                             ||                             ||                            || - ||
-|| E5   || write             || -                             ||                             ||                            || - ||
-|| E6   || write             || -                             ||                             ||                            || - ||
-|| E7   || read              || #SS==1 && HB(SS[1], currentSS)||                             ||                            || - ||
- 
+||*Edge*|| *access type*     || *condition*    || *segment set*               || *lock set*                 || *race if ...* ||
+|| E1   || memory allocation || -              || -                           || {}                         || - ||
+|| E2   || read              || First read     || {currS}                     || {currLS}                   || - ||
+|| E3   || write             || First write    || {currS}                     || {currLS}                   || - ||
+|| E4   || read              || -              || union{SS,currS}             || intersect{LS,currLS}       || - ||
+|| E5   || write             || -              || union(SS,currS)             || intersect{LS,currLS}       || - ||
+|| E6   || write             || -              || SS_update(SS,currS)         || intersect{LS,currLS}       || - ||
+|| E7   || read              || HB(SS, currS)  || {currS}                     || {currLS}                   || - ||
+  
 
+Edges that lead to states !NoAccess and to New are not shown. 
 
-Back to MemoryStateMachines   
+This state machine leads to several false positives (*test28, test29, test36, test38*).
+See tests in http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unittest.cc. 
+
+See legend in  MemoryStateMachines. 

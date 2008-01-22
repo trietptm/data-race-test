@@ -5,26 +5,26 @@
     http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
 Edges (state transitions): 
 
-||*Edge*|| *access type*   || *condition*                   || *thread/segment set*        || *lock set*                 || *race if ...* ||
-||E1  || memory allocation || -                             || -                           || {}                         || - ||
-||E2  || read/write        || First access after allocation || S=currentS                  || {}                         || - ||
-||E3  || read/write        || happens-before(oldS, currentS)|| S=currentS                  || {}                         || - ||
-||E4  || read              || -                             || TS={oldS,currentS}          || {currentLS}                || - ||
-||E5  || read              ||                               || TS=union(oldTS,currentS)    || intersect(oldLS,currentLS) || - ||
-||E6  || write             || -                             || TS={oldS,currentS}          || {currentLS}                || LS=={} ||
-||E7  || write             || -                             || TS=union(oldTS,currentS)    || intersect(oldLS,currentLS) || LS=={} ||
-||E8  || write             || -                             || TS=union(oldTS,currentS)    || intersect(oldLS,currentLS) || LS=={} ||
+||*Edge*|| *access type*   || *condition*                   || *thread/segment set*        || *lock set*           || *race if ...* ||
+||E1  || memory allocation || -                             || -                           || {}                   || - ||
+||E2  || read/write        || First access after allocation || S=currS                  || {}                      || - ||
+||E3  || read/write        || HB(oldS, currS)               || S=currS                  || {}                      || - ||
+||E4  || read              || -                             || TS={oldS,currS}          || {currLS}                || - ||
+||E5  || read              ||                               || TS=union(oldTS,currS)    || intersect(oldLS,currLS) || - ||
+||E6  || write             || -                             || TS={oldS,currS}          || {currLS}                || LS=={} ||
+||E7  || write             || -                             || TS=union(oldTS,currS)    || intersect(oldLS,currLS) || LS=={} ||
+||E8  || write             || -                             || TS=union(oldTS,currS)    || intersect(oldLS,currLS) || LS=={} ||
 ||E9,E10,E11,E12  || none  || thread join                   || current thread is excluded from TS || oldLS               || - ||
 
 
 Edges that lead to states !NoAccess and to New are not shown. 
 
-If S1 and S2 are from the same thread, happens-before(S1, S2) is assumed true. 
 
-This state machine leads to (at least) one false negative (test10) and multiple false positives (test05, test11, test12, test13, test14, test16, test17, test28, test29, test32, test36, test38).
+This state machine leads to (at least) one false negative (*test10*) 
+and multiple false positives (*test05, test11, test12, test13, test14, test16, test17, test28, test29, test32, test36, test38*).
 See tests in http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unittest.cc. 
 
 
 
 
-Back to MemoryStateMachines. 
+See legend in  MemoryStateMachines. 
