@@ -7,7 +7,6 @@ On this page I would like to collect links to various known state machines for E
 See: 
   * [MSMHelgrind]
   * [MSMProp1]
-  * [MSMProp2]
 
 
 == Legend == 
