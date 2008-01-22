@@ -5,7 +5,7 @@
     http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
 Edges (state transitions): 
 
-||Edge|| access type       || condition                     || thread/segment set || lock set|| race if ... ||
+||*Edge*|| *access type*   || *condition*                   || *thread/segment set*        || *lock set*                 || *race if ...* ||
 ||E1  || memory allocation || -                             || -                           || {}                         || - ||
 ||E2  || read/write        || First access after allocation || S=currentS                  || {}                         || - ||
 ||E3  || read/write        || happens-before(oldS, currentS)|| S=currentS                  || {}                         || - ||
