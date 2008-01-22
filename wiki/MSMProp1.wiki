@@ -1,10 +1,9 @@
 ﻿#summary Proposed memory state machine, MSMProp1
-
+*TODO*
 
 DISCLAIMER: this state machine has not (yet) been tested. 
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
-Edges (state transitions): 
 || *Edge* || *Transition*      || *access type*     || *condition*    || *segment set*               || *lock set*                 || *race if ...* ||
 || E1     || !NoAccess => New  || memory allocation || -              || -                           || {}                         || - ||
 || E2     || New => Read       || read              || -              || {currS}                     || {currLS}                   || - ||
