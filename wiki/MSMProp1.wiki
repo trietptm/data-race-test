@@ -12,7 +12,16 @@ DISCLAIMER: this state machine has not (yet) been tested.
 || E5     || Read => Write     || write             || -              || *SS_update*       || *LS_update*     || LS=={} ||
 || E6     || Write => Read     || read              || HB(SS, currS)  || {currS}           || {currLS}        || -      ||
 || E7     || Write => Write    || read/write        || -              || *SS_update*       || *LS_update*     || LS=={} ||
-  
+ 
+{{{
+  def SS_update:
+    newSS = {}
+    for S in SS: 
+      if(!HB(S,currS)): 
+        newSS += S
+    return newSS   
+}}}
+
 
 Edges that lead to states !NoAccess and  New are not shown. 
 
