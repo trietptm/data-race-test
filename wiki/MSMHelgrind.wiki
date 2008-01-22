@@ -7,16 +7,19 @@ Edges (state transitions):
 
 ||Edge|| access type       || condition                     || thread/segment set || lock set|| race if ... ||
 ||E1  || memory allocation || -                             || -                           || {}                         || - ||
-||E2  || read/write        || First access after allocation || newS=currentS               || {}                         || - ||
-||E3  || read/write        || happens-before(oldS, currentS)|| newS=currentS               || {}                         || - ||
-||E4  || read              || -                             || newTS={oldS,newS}           || {currentLS}                || - ||
-||E5  || read              ||                               || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || - ||
-||E6  || write             || -                             || newTS={oldS,newS}           || {currentLS}                || newLS=={} ||
-||E7  || write             || -                             || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || newLS=={} ||
-||E8  || write             || -                             || newTS=union(oldTS,currentS) || intersect(oldLS,currentLS) || newLS=={} ||
+||E2  || read/write        || First access after allocation || S=currentS                  || {}                         || - ||
+||E3  || read/write        || happens-before(oldS, currentS)|| S=currentS                  || {}                         || - ||
+||E4  || read              || -                             || TS={oldS,currentS}          || {currentLS}                || - ||
+||E5  || read              ||                               || TS=union(oldTS,currentS)    || intersect(oldLS,currentLS) || - ||
+||E6  || write             || -                             || TS={oldS,currentS}          || {currentLS}                || LS=={} ||
+||E7  || write             || -                             || TS=union(oldTS,currentS)    || intersect(oldLS,currentLS) || LS=={} ||
+||E8  || write             || -                             || TS=union(oldTS,currentS)    || intersect(oldLS,currentLS) || LS=={} ||
 ||E9,E10,E11,E12  || none  || thread join                   || current thread is excluded from TS || oldLS               || - ||
 
+
 Edges that lead to states !NoAccess and to New are not shown. 
+
+If S1 and S2 are from the same thread, happens-before(S1, S2) is assumed true. 
 
 
 Back to MemoryStateMachines. 
