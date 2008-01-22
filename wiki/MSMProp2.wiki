@@ -16,7 +16,7 @@ Edges (state transitions):
 || E8     || Write => Write     || read/write        || -                ||          ||          ||          ||          || -  || 
 || E9     || !WriteRead => Read || read              || HB(SSW,SSR+currS)|| -        || -        || SSR+currS|| TODO     || -  || 
 || E10    || !WriteRead => Write|| write             || HB(SSR,SSW+currS)|| SSW+currS|| TODO     || -        || -        || -  || 
-|| E11    || !WriteRead => !WriteRead|| read/write   || -                ||!UpdateSSW||!UpdateLSW||!UpdateSSR||!UpdateLSR|| -  || 
+|| E11    || !WriteRead => !WriteRead|| read/write   || -                || UpdateSSW|| UpdateLSW|| UpdateSSR|| UpdateLSR|| -  || 
 
 
 
