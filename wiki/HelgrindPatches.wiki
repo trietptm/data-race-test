@@ -1,4 +1,4 @@
-﻿= Patches to the 'official' helgrind =
+﻿#summary Patches to the 'official' helgrind 
 
 Here we list the patches to the official helgrind that are made as a part of this project. 
 
