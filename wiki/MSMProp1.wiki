@@ -3,6 +3,8 @@
 
 DISCLAIMER: this state machine has not (yet) been tested. 
 
+For legend see  MemoryStateMachines. 
+
     http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
 || *Edge* || *Transition*      || *access type*     || *condition*    || *segment set*     || *lock set*      || *race if ...* ||
 || E1     || !NoAccess => New  || memory allocation || -              || -                 || {}              || - ||
@@ -40,7 +42,6 @@ Edges that lead to states !NoAccess and  New are not shown.
 This state machine leads to several false positives (*test28, test29, test36, test38*).
 See tests in RacecheckUnittest. 
 
-See legend in  MemoryStateMachines. 
 
 == Performance considerations == 
 This scheme is most likely slower than the MSMHelgrind, but various optimizations should be possible. 
