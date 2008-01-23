@@ -31,10 +31,8 @@ See:
   * *HB(SS, S)* -- all segments from SS happen before the segment S. 
 
 
-  * State named 'State R'. The memory location was read in thread segments SS with common locks LS.  
+  * State named 'State X'. The memory location was read in thread segments SS with common locks LS.  
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png
-  * State named 'State W'. The memory location was accessed in thread segments SS with common locks LS. At least one access to this memory location was modification. 
-    http://data-race-test.googlecode.com/svn/trunk/msm/legend_w.png
 
 
 = Links =
