@@ -41,3 +41,10 @@ This state machine leads to several false positives (*test28, test29, test36, te
 See tests in http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unittest.cc. 
 
 See legend in  MemoryStateMachines. 
+
+== Performance considerations == 
+This scheme is most likely slower than the MSMHelgrind, but various optimizations should be possible. 
+  * HB (happens before) should be computed only once per state transition. 
+  * HB results could be cached for {segment-set,segment} pairs (for {segment,segment} pairs it is already cached). 
+  * For large segment sets we may want to be more conservative and assume HB==False for all segments (performance vs accuracy trade-off). 
+  * A segment set consisting of just one segment should not require any function call to extract the single segment. 
