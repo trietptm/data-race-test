@@ -10,6 +10,5 @@ Here we list the patches to the official helgrind that are made to helgrind as a
   See [http://data-race-test.googlecode.com/svn/trunk/helgrind/helgrind.h helgrind.h] for more comments 
   and [http://data-race-test.googlecode.com/svn/trunk/helgrind/hg_main.c hg_main.c] for implementation. 
 
-test [svn/trunk/helgrind/hg_main.c]. 
 == Dynamic annotations ==
 See [http://data-race-test.googlecode.com/svn/trunk/unittest/dynamic_annotations.h dynamic_annotations.h] for details. 
