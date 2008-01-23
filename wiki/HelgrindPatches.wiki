@@ -1,7 +1,9 @@
 ﻿= Patches to the 'official' helgrind =
 
-Here we list the patches to the official helgrind that are made to helgrind as a part of this project. 
+Here we list the patches to the official helgrind that are made as a part of this project. 
 
+== Test suite == 
+See RacecheckUnittest. 
 
 == Client requests == 
   * `_VG_USERREQ__HG_GET_THREAD_ID` -- to make helgrind debugging more verbose. 
@@ -12,3 +14,4 @@ Here we list the patches to the official helgrind that are made to helgrind as a
 
 == Dynamic annotations ==
 See [http://data-race-test.googlecode.com/svn/trunk/unittest/dynamic_annotations.h dynamic_annotations.h] for details. 
+Helgrind's part is in [http://data-race-test.googlecode.com/svn/trunk/helgrind/hg_annotations.c hg_annotations.c]. 
