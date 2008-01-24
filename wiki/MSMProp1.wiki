@@ -1,7 +1,6 @@
 ﻿#summary Proposed memory state machine, MSMProp1
-*TODO*
 
-DISCLAIMER: this state machine has not (yet) been tested. 
+DISCLAIMER: this state machine has been tested only on RacecheckUnittest.  
 
 For legend see  MemoryStateMachines. 
 
