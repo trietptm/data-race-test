@@ -1,3 +1,7 @@
-#summary Support for barrier in helgrind
+﻿#summary Support for barrier in helgrind
 
 To support a barrier in helgrind we need to have multiple predecessors in happens-before graph. 
+    http://data-race-test.googlecode.com/svn/trunk/msm/barrier1.png
+
+Alternative approach (suggested by Arndt Mühlenfeld in his PhD, TODO: add link) is to create fake segments: 
+    http://data-race-test.googlecode.com/svn/trunk/msm/barrier1.png
