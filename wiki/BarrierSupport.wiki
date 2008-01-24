@@ -1,0 +1,3 @@
+#summary Support for barrier in helgrind
+
+To support a barrier in helgrind we need to have multiple predecessors in happens-before graph. 
