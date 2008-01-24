@@ -47,6 +47,9 @@ See tests in RacecheckUnittest.
 
 Tests *test16, test17, test39* pass with this machine only with BarrierSupport.  
 
+== Implementation == 
+First quick-and-dirty implementation is done. 
+See [http://data-race-test.googlecode.com/svn/trunk/helgrind/hg_main.c hg_main.c], search for *prop1*. 
 
 == Performance considerations == 
 This scheme is most likely slower than the [MSMHelgrind], but various optimizations should be possible. 
