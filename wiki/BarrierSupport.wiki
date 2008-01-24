@@ -4,4 +4,4 @@ To support a barrier in helgrind we need to have multiple predecessors in happen
     http://data-race-test.googlecode.com/svn/trunk/msm/barrier1.png
 
 Alternative approach (suggested by Arndt Mühlenfeld in his PhD, TODO: add link) is to create fake segments: 
-    http://data-race-test.googlecode.com/svn/trunk/msm/barrier1.png
+    http://data-race-test.googlecode.com/svn/trunk/msm/barrier2.png
