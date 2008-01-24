@@ -30,6 +30,8 @@ See:
   * *HB(S1, S2)* -- S1 happens before S2 (including cases when S1==S2 and when S1 and S2 are segments of the same thread).
   * *HB(SS, S)* -- all segments from SS happen before the segment S. 
 
+  * *#X* -- number of elements in set *X*. 
+
 
   * State named 'State X'. The memory location was read in thread segments SS with common locks LS.  
     http://data-race-test.googlecode.com/svn/trunk/msm/legend_r.png

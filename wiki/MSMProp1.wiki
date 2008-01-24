@@ -11,10 +11,10 @@ For legend see  MemoryStateMachines.
 || E2     || New         || read              || -              || Read        || {currS}           || {currLS}        || - ||
 || E3     || New         || write             || -              || Write       || {currS}           || {currLS}        || - ||
 || E4     || Read        || read              || -              || Read        || *SS_update*       || *LS_update*     || - ||
-|| E5     || Read        || write             || -              || Write       || *SS_update*       || *LS_update*     || LS=={} ||
+|| E5     || Read        || write             || -              || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
 || E6     || Write       || read              || HB(SS, currS)  || Read        || {currS}           || {currLS}        || -      ||
-|| E7     || Write       || read              || !HB(SS, currS) || Write       || *SS_update*       || *LS_update*     || LS=={} ||
-|| E7     || Write       || write             || -              || Write       || *SS_update*       || *LS_update*     || LS=={} ||
+|| E7     || Write       || read              || !HB(SS, currS) || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
+|| E7     || Write       || write             || -              || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
  
 
 Edges that lead to states !NoAccess and  New are not shown. 
