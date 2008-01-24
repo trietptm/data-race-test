@@ -9,4 +9,4 @@ Alternative, better approach (suggested by Arndt Mühlenfeld in his PhD, TODO: a
 
 So, to support barriers we did: 
    * Hacked `evh__HG_PTHREAD_COND_SIGNAL_PRE` to create a fake segment. (*TODO* Implementation is not clean). 
-   * Added interceptor for `pthread_barrier_t` to [http://data-race-test.googlecode.com/svn/trunk/helgrind/hg_interceptors.c hg_interceptors.c]. 
+   * Added interceptor for `pthread_barrier_t` to [http://data-race-test.googlecode.com/svn/trunk/helgrind/hg_intercepts.c hg_intercepts.c]. 
