@@ -40,8 +40,13 @@ Edges that lead to states !NoAccess and  New are not shown.
 }}}
 
 
-This state machine leads to several false positives (*test28, test29, test36, test38*).
+Compared to MSMHelgrind this state machine fixes at least these tests: 
+  * False negative *test10*. 
+  * False positives *test11*, *test12*, *test13*, *test14*, *test16*, *test17*, *test32*, *test40*.
+This state machine still has several false positives (*test28, test29, test36, test38*).
 See tests in RacecheckUnittest. 
+
+Test *test16* and *test17* pass with this machine only with BarrierSupport.  
 
 
 == Performance considerations == 
