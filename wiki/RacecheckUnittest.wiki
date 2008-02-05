@@ -8,52 +8,52 @@ The table below summarises the results of the state machines on this test suite.
 A machine fails a test if it finds a non-existing race or if it does not find a real race. 
 
      
-|| *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *exp-drd*      || *Comment* ||          
-|| test01      || Has race    ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test02      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test03      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test04      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test05      || No race     ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           || Unavoidable (needs annotation)||
-|| test06      || No race     ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
-|| test07      || No race     ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
-|| test08      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test09      || Has race    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
-|| test10      || Has race    ||  *FAIL*         ||  pass        ||  *FAIL*      || *FAIL*         || Eraser limitation||
-|| test11      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test12      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test13      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test14      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test15      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test16      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test17      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test18      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test19      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test20      || Has race    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
-|| test21      || Has race    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
-|| test22      || Has race    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
-|| test23      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test24      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test25      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test26      || Has race    ||  pass           ||  pass        ||  pass        || *FAIL*         ||           ||
-|| test27      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test28      || No race     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
-|| test29      || No race     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
-|| test30      || No race     ||  pass           ||  pass        ||  pass        ||  *FAIL*        || 'safe' races (needs annotation)||
-|| test31      || No race     ||  pass           ||  pass        ||  pass        ||  *FAIL*        || 'safe' races (needs annotation)          ||
-|| test32      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| *Test name* || *Race Present* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *exp-drd*      || *Comment* ||          
+|| test01      || YES    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test02      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test03      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test04      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test05      || NO     ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           || Unavoidable (needs annotation)||
+|| test06      || NO     ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test07      || NO     ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test08      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test09      || YES    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test10      || YES    ||  *FAIL*         ||  pass        ||  *FAIL*      || *FAIL*         || Eraser limitation||
+|| test11      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test12      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test13      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test14      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test15      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test16      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test17      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test18      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test19      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test20      || YES    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test21      || YES    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test22      || YES    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test23      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test24      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test25      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test26      || YES    ||  pass           ||  pass        ||  pass        || *FAIL*         ||           ||
+|| test27      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test28      || NO     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test29      || NO     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test30      || NO     ||  pass           ||  pass        ||  pass        ||  *FAIL*        || 'safe' races (needs annotation)||
+|| test31      || NO     ||  pass           ||  pass        ||  pass        ||  *FAIL*        || 'safe' races (needs annotation)          ||
+|| test32      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
 || test33      || Stability   ||  -              ||  -           ||  -           || -              ||           ||
 || test34      || Stability   ||  -              ||  -           ||  -           || -              ||           ||
 || test35      || Performance ||  -              ||  -           ||  -           || -              ||           ||
-|| test36      || No race     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
-|| test37      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test38      || No race     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
-|| test39      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           || Barrier   ||
-|| test40      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test41      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test42      || No race     ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
-|| test43      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test44      || No race     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
-|| test45      || No race     ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test46      || Has race    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           ||           ||
-|| test47      || Has race    ||  pass           ||  pass        ||  *FAIL*      || *FAIL*         ||           ||
+|| test36      || NO     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test37      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test38      || NO     ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test39      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           || Barrier   ||
+|| test40      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test41      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test42      || NO     ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test43      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test44      || NO     ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test45      || NO     ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test46      || YES    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           ||           ||
+|| test47      || YES    ||  pass           ||  pass        ||  *FAIL*      || *FAIL*         ||           ||
          
