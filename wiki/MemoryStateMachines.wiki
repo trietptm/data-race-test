@@ -2,13 +2,12 @@
 
 On this page I would like to collect links to various known state machines for Eraser-like algorithms and discuss some new approaches. 
 
-
-
 See: 
   * [MSMHelgrind]
   * [MSMProp1]
   * [MSMUnika]
 
+Comparison of the state machines is at RacecheckUnittest. 
 
 == Legend == 
   * *W* -- write (modification) access. 
