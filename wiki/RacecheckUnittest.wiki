@@ -5,6 +5,10 @@ contains various unit tests for a data race detector. The tests are named test01
 
 The table below summarises the results of the state machines on this test suite.  
 
+  * A test is *Positive* if an ideal race detector will detect a race (i.e. there is an actual race).
+  * A test is *Negative* if it is not Positive.
+  * A machine fails a test if it behaves differently compared to an ideal race detector.
+
      
 || *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *exp-drd*      || *Comment* ||          
 || test01      || Positive    ||  pass           ||  pass        ||  pass        || pass           ||           ||
