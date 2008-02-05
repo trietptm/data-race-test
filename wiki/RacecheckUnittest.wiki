@@ -6,52 +6,52 @@ contains various unit tests for a data race detector. The tests are named test01
 The table below summarises the results of the state machines on this test suite.  
 
      
-|| *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *Comment* ||          
-|| test01      || Positive    ||  pass           ||  pass        ||  passed      ||           ||
-|| test02      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test03      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test04      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test05      || Negative    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || Unavoidable (needs annotation)||
-|| test06      || Negative    ||  pass           ||  pass        ||  *FAIL*      ||           ||
-|| test07      || Negative    ||  pass           ||  pass        ||  *FAIL*      ||           ||
-|| test08      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test09      || Positive    ||  pass           ||  pass        ||  pass        ||           ||
-|| test10      || Positive    ||  *FAIL*         ||  pass        ||  *FAIL*      || Eraser limitation||
-|| test11      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test12      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test13      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test14      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test15      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test16      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test17      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test18      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test19      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test20      || Positive    ||  pass           ||  pass        ||  pass        ||           ||
-|| test21      || Positive    ||  pass           ||  pass        ||  pass        ||           ||
-|| test22      || Positive    ||  pass           ||  pass        ||  pass        ||           ||
-|| test23      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test24      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test25      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test26      || Positive    ||  pass           ||  pass        ||  pass        ||           ||
-|| test27      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test28      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
-|| test29      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
-|| test30      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test31      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test32      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test33      || Stability   ||  -              ||  -           ||  -           ||           ||
-|| test34      || Stability   ||  -              ||  -           ||  -           ||           ||
-|| test35      || Performance ||  -              ||  -           ||  -           ||           ||
-|| test36      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
-|| test37      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test38      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
-|| test39      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test40      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test41      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test42      || Negative    ||  pass           ||  pass        ||  *FAIL*      ||           ||
-|| test43      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test44      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
-|| test45      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test46      || Positive    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      ||           ||
-|| test47      || Positive    ||  pass           ||  pass        ||  *FAIL*      ||           ||
+|| *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *exp-drd*      || *Comment* ||          
+|| test01      || Positive    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test02      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test03      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test04      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test05      || Negative    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           || Unavoidable (needs annotation)||
+|| test06      || Negative    ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test07      || Negative    ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test08      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test09      || Positive    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test10      || Positive    ||  *FAIL*         ||  pass        ||  *FAIL*      || *FAIL*         || Eraser limitation||
+|| test11      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test12      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test13      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test14      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test15      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test16      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test17      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test18      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test19      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test20      || Positive    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test21      || Positive    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test22      || Positive    ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
+|| test23      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test24      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test25      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test26      || Positive    ||  pass           ||  pass        ||  pass        || *FAIL*         ||           ||
+|| test27      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test28      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test29      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test30      || Negative    ||  pass           ||  pass        ||  pass        ||  *FAIL*        || 'safe' races (needs annotation)||
+|| test31      || Negative    ||  pass           ||  pass        ||  pass        ||  *FAIL*        || 'safe' races (needs annotation)          ||
+|| test32      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test33      || Stability   ||  -              ||  -           ||  -           || -              ||           ||
+|| test34      || Stability   ||  -              ||  -           ||  -           || -              ||           ||
+|| test35      || Performance ||  -              ||  -           ||  -           || -              ||           ||
+|| test36      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test37      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test38      || Negative    ||  *FAIL*         ||  *FAIL*      ||  pass        || pass           ||           ||
+|| test39      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           || Barrier   ||
+|| test40      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test41      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test42      || Negative    ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test43      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test44      || Negative    ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
+|| test45      || Negative    ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test46      || Positive    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           ||           ||
+|| test47      || Positive    ||  pass           ||  pass        ||  *FAIL*      || *FAIL*         ||           ||
          
