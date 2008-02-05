@@ -3,7 +3,7 @@
 The file [http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unittest.cc racecheck_unittest.cc] 
 contains various unit tests for a data race detector. The tests are named test01, test02, and so on. For details see the source. 
 
-The table below summarises the results of the state machine on this test suite.  
+The table below summarises the results of the state machines on this test suite.  
 
      
 || *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *Comment* ||          
