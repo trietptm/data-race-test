@@ -7,50 +7,51 @@ The table below summarises the results of the state machine on this test suite.
 
      
 || *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *Comment* ||          
-|| test01      ||  P          ||  pass           ||  pass        ||  
-|| test02      ||  N          ||  pass           ||  pass        ||  
-|| test03      ||  N          ||  pass           ||  pass        ||  
-|| test04      ||  N          ||  pass           ||  pass        ||  
-|| test05      ||  P          ||  *FAIL*         ||  *FAIL*      ||    
-|| test06      ||  N          ||  pass           ||  pass        ||  
-|| test07      ||  N          ||  pass           ||  pass        ||  
-|| test08      ||  N          ||  pass           ||  pass        ||  
-|| test09      ||  P          ||  pass           ||  pass        ||  
-|| test10      ||  N          ||  *FAIL*         ||  pass        ||    
-|| test11      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test12      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test13      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test14      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test15      ||  N          ||  pass           ||  pass        ||  
-|| test16      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test17      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test18      ||  N          ||  pass           ||  pass        ||  
-|| test19      ||  N          ||  pass           ||  pass        ||  
-|| test20      ||  P          ||  pass           ||  pass        ||  
-|| test21      ||  P          ||  pass           ||  pass        ||  
-|| test22      ||  P          ||  pass           ||  pass        ||  
-|| test23      ||  N          ||  pass           ||  pass        ||  
-|| test24      ||  N          ||  pass           ||  pass        ||  
-|| test25      ||  N          ||  pass           ||  pass        ||  
-|| test26      ||  P          ||  pass           ||  pass        ||  
-|| test27      ||  N          ||  pass           ||  pass        ||  
-|| test28      ||  P          ||  *FAIL*         ||  *FAIL*      ||    
-|| test29      ||  P          ||  *FAIL*         ||  *FAIL*      ||    
-|| test30      ||  N          ||  pass           ||  pass        ||  
-|| test31      ||  N          ||  pass           ||  pass        ||  
-|| test32      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test33      ||  STAB       ||  -              ||  -           || 
-|| test34      ||  STAB       ||  -              ||  -           || 
-|| test35      ||  PERF       ||  -              ||  -           || 
-|| test36      ||  P          ||  *FAIL*         ||  *FAIL*      ||    
-|| test37      ||  N          ||  pass           ||  pass        ||  
-|| test38      ||  P          ||  *FAIL*         ||  *FAIL*      ||    
-|| test39      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test40      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test41      ||  N          ||  pass           ||  pass        ||  
-|| test42      ||  N          ||  pass           ||  pass        ||  
-|| test43      ||  N          ||  pass           ||  pass        ||  
-|| test44      ||  P          ||  *FAIL*         ||  pass        ||    
-|| test45      ||  N          ||  pass           ||  pass        ||  
-|| test46      ||  N          ||  *FAIL*         ||  *FAIL*      ||    
-|| test47      ||  P          ||  pass           ||  pass        ||  
+|| test01      ||  Positive   ||  pass           ||  pass        ||  passed      ||           ||
+|| test02      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test03      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test04      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test05      ||  Positive   ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      ||           ||
+|| test06      ||  Negative   ||  pass           ||  pass        ||  *FAIL*      ||           ||
+|| test07      ||  Negative   ||  pass           ||  pass        ||  *FAIL*      ||           ||
+|| test08      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test09      ||  Positive   ||  pass           ||  pass        ||  pass        ||           ||
+|| test10      ||  Negative   ||  *FAIL*         ||  pass        ||  *FAIL*      ||           ||
+|| test11      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test12      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test13      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test14      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test15      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test16      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test17      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test18      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test19      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test20      ||  Positive   ||  pass           ||  pass        ||  pass        ||           ||
+|| test21      ||  Positive   ||  pass           ||  pass        ||  pass        ||           ||
+|| test22      ||  Positive   ||  pass           ||  pass        ||  pass        ||           ||
+|| test23      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test24      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test25      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test26      ||  Positive   ||  pass           ||  pass        ||  pass        ||           ||
+|| test27      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test28      ||  Positive   ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
+|| test29      ||  Positive   ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
+|| test30      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test31      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test32      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test33      ||  Stability  ||  -              ||  -           ||  -           ||           ||
+|| test34      ||  Stability  ||  -              ||  -           ||  -           ||           ||
+|| test35      ||  Performance||  -              ||  -           ||  -           ||           ||
+|| test36      ||  Positive   ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
+|| test37      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test38      ||  Positive   ||  *FAIL*         ||  *FAIL*      ||  pass        ||           ||
+|| test39      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test40      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test41      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test42      ||  Negative   ||  pass           ||  pass        ||  *FAIL*      ||           ||
+|| test43      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test44      ||  Positive   ||  *FAIL*         ||  pass        ||  pass        ||           ||
+|| test45      ||  Negative   ||  pass           ||  pass        ||  pass        ||           ||
+|| test46      ||  Negative   ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      ||           ||
+|| test47      ||  Positive   ||  pass           ||  pass        ||  *FAIL*      ||           ||
+         
