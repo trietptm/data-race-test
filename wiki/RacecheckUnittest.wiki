@@ -14,8 +14,8 @@ A machine fails a test if it finds a non-existing race or if it does not find a 
 || test03      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test04      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test05      || No             ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           || Unavoidable (needs annotation)||
-|| test06      || No             ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
-|| test07      || No             ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test06      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
+|| test07      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test08      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test09      || Yes            ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
 || test10      || Yes            ||  *FAIL*         ||  pass        ||  *FAIL*      || *FAIL*         || Eraser limitation||
@@ -50,7 +50,7 @@ A machine fails a test if it finds a non-existing race or if it does not find a 
 || test39      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           || Barrier   ||
 || test40      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
 || test41      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
-|| test42      || No             ||  pass           ||  pass        ||  *FAIL*      || pass           ||           ||
+|| test42      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test43      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test44      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
 || test45      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
