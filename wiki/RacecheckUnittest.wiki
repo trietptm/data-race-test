@@ -4,6 +4,53 @@ The file [http://data-race-test.googlecode.com/svn/trunk/unittest/racecheck_unit
 
 The table below summarises the results of the state machine on this test suite.  
 
-
-|| *N* || *Type* || [MSMHelgrind] || [MSMProp1] || [MSMUnika] ||
-
+     
+|| *Test name* || *Test type* || *[MSMHelgrind]* || *[MSMProp1]* || *[MSMUnika]* || *Comment* ||          
+|| test01      ||  P          ||  pass           ||    
+|| test02      ||  N          ||  pass           ||    
+|| test03      ||  N          ||  pass           ||    
+|| test04      ||  N          ||  pass           ||    
+|| test05      ||  P          ||  *FAIL*         ||      
+|| test06      ||  N          ||  pass           ||    
+|| test07      ||  N          ||  pass           ||    
+|| test08      ||  N          ||  pass           ||    
+|| test09      ||  P          ||  pass           ||    
+|| test10      ||  N          ||  *FAIL*         ||      
+|| test11      ||  P          ||  *FAIL*         ||      
+|| test12      ||  P          ||  *FAIL*         ||      
+|| test13      ||  P          ||  *FAIL*         ||      
+|| test14      ||  P          ||  *FAIL*         ||      
+|| test15      ||  N          ||  pass           ||    
+|| test16      ||  P          ||  *FAIL*         ||      
+|| test17      ||  P          ||  *FAIL*         ||      
+|| test18      ||  N          ||  pass           ||    
+|| test19      ||  N          ||  pass           ||    
+|| test20      ||  P          ||  pass           ||    
+|| test21      ||  P          ||  pass           ||    
+|| test22      ||  P          ||  pass           ||    
+|| test23      ||  N          ||  pass           ||    
+|| test24      ||  N          ||  pass           ||    
+|| test25      ||  N          ||  pass           ||    
+|| test26      ||  P          ||  pass           ||    
+|| test27      ||  N          ||  pass           ||    
+|| test28      ||  P          ||  *FAIL*         ||      
+|| test29      ||  P          ||  *FAIL*         ||      
+|| test30      ||  N          ||  pass           ||    
+|| test31      ||  N          ||  pass           ||    
+|| test32      ||  P          ||  *FAIL*         ||      
+|| test33      ||  STAB       ||  n/a            ||   
+|| test34      ||  STAB       ||  n/a            ||   
+|| test35      ||  PERF       ||  n/a            ||   
+|| test36      ||  P          ||  *FAIL*         ||      
+|| test37      ||  N          ||  pass           ||    
+|| test38      ||  P          ||  *FAIL*         ||      
+|| test39      ||  P          ||  *FAIL*         ||      
+|| test40      ||  P          ||  *FAIL*         ||      
+|| test41      ||  N          ||  pass           ||    
+|| test42      ||  N          ||  pass           ||    
+|| test43      ||  N          ||  pass           ||    
+|| test44      ||  P          ||  *FAIL*         ||      
+|| test45      ||  N          ||  pass           ||    
+|| test46      ||  N          ||  *FAIL*         ||      
+|| test47      ||  P          ||  pass           ||    
+                                                 ||
