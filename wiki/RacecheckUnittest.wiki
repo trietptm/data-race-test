@@ -11,12 +11,12 @@ The table below summarises the results of the state machine on this test suite.
 || test02      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
 || test03      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
 || test04      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
-|| test05      || Negative    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      ||           ||
+|| test05      || Negative    ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || Unavoidable (needs annotation)||
 || test06      || Negative    ||  pass           ||  pass        ||  *FAIL*      ||           ||
 || test07      || Negative    ||  pass           ||  pass        ||  *FAIL*      ||           ||
 || test08      || Negative    ||  pass           ||  pass        ||  pass        ||           ||
 || test09      || Positive    ||  pass           ||  pass        ||  pass        ||           ||
-|| test10      || Positive    ||  *FAIL*         ||  pass        ||  *FAIL*      ||           ||
+|| test10      || Positive    ||  *FAIL*         ||  pass        ||  *FAIL*      || Eraser limitation||
 || test11      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
 || test12      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
 || test13      || Negative    ||  *FAIL*         ||  pass        ||  pass        ||           ||
