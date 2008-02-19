@@ -1,2 +1,2 @@
-#summary Memory state machine proposed by Ali Jannesari
+#summary Memory state machine proposed by Ali Jannesari (University of Karlsruhe - IPD)
 http://data-race-test.googlecode.com/svn/trunk/msm/msmunika/msmunika.png
