@@ -1,2 +1,2 @@
 #summary Memory state machine proposed by Ali Jannesari
-http://data-race-test.googlecode.com/svn/trunk/msm/helgrind330.png
+http://data-race-test.googlecode.com/svn/trunk/msm/msmunika/msmunika.png
