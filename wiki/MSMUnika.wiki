@@ -10,7 +10,7 @@ http://data-race-test.googlecode.com/svn/trunk/msm/msmunika/msmunika.png
  *  *_C,,d,,_ :* Current set of locks protecting variable d.
 
 Compared to [MSMHelgrind] this state machine has overal 8 states: 
-  * *ExclusiveRead, ExclusiveWrite, ExclusiveReadWrite :* only Happens-before will be checked identical to exclusive state in [MSMHelgrind]. 
+  * *ExclusiveRead,  ExclusiveWrite,  ExclusiveReadWrite  :* only Happens-before will be checked identical to exclusive state in [MSMHelgrind]. 
   * *Shared-Read, Shared-Midified1 :* only Lockset refinement same as in [MSMHelgrind] is done.
   * *Shared-Modified2 :* Happens-before and Lockset refinement.
   * *Race :* once a race is reported. 
