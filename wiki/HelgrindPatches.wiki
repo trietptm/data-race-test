@@ -8,3 +8,6 @@ See RacecheckUnittest.
 == Client requests / dynamic annotations == 
 See [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/dynamic_annotations.h dynamic_annotations.h] for details. 
 Helgrind's part is in [http://code.google.com/p/data-race-test/source/browse/trunk/helgrind/hg_annotations.c hg_annotations.c]. 
+
+== Fast SegmentID->Segment mapping == 
+See `SEG_add()` in [http://code.google.com/p/data-race-test/source/browse/trunk/helgrind/hg_main.c hg_main.c]
