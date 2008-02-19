@@ -11,3 +11,11 @@ Helgrind's part is in [http://code.google.com/p/data-race-test/source/browse/tru
 
 == Fast SegmentID->Segment mapping == 
 See `SEG_add()` in [http://code.google.com/p/data-race-test/source/browse/trunk/helgrind/hg_main.c hg_main.c]
+
+== Speedup hack == 
+Ignore memory addresses such that `(addr % X) != Y`. 
+
+See `address_may_be_ignored` in [http://code.google.com/p/data-race-test/source/browse/trunk/helgrind/hg_main.c hg_main.c]
+
+
+
