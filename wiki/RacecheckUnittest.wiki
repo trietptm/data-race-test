@@ -18,7 +18,7 @@ A machine fails a test if it finds a non-existing race or if it does not find a 
 || test07      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test08      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test09      || Yes            ||  pass           ||  pass        ||  pass        ||  pass          ||           ||
-|| test10      || Yes            ||  *FAIL*         ||  pass        ||  *FAIL*      || *FAIL*         || Eraser limitation||
+|| test10      || Yes            ||  *FAIL*         ||  pass        ||  pass        || *FAIL*         || Eraser limitation||
 || test11      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
 || test12      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
 || test13      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
@@ -55,5 +55,5 @@ A machine fails a test if it finds a non-existing race or if it does not find a 
 || test44      || No             ||  *FAIL*         ||  pass        ||  pass        || pass           ||           ||
 || test45      || No             ||  pass           ||  pass        ||  pass        || pass           ||           ||
 || test46      || Yes            ||  *FAIL*         ||  *FAIL*      ||  *FAIL*      || pass           ||           ||
-|| test47      || Yes            ||  pass           ||  pass        ||  *FAIL*      || *FAIL*         ||           ||
+|| test47      || Yes            ||  pass           ||  pass        ||  pass        || *FAIL*         ||           ||
          
