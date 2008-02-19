@@ -3,8 +3,12 @@ http://data-race-test.googlecode.com/svn/trunk/msm/msmunika/msmunika.png
 
 *Legend :*
 
-* _d_: memory location.
-* _TS,,i,, || TS,,j,,_ : Thread segment i and j are concurrent accesses to d. 
-* _TS,,i,, →  TS,,j,,_ : Thread segment i happens before Thread segment j. 
-* _L,,t,,_ : Current set of locks held by thread t.
-* _C,,d,,_ : Current set of locks protecting variable d.
+ *  _d_: Memory location.
+ *  _TS,,i,, || TS,,j,,_ : Thread segment i and j are concurrent accesses to d. 
+ *  _TS,,i,, →  TS,,j,,_ : Thread segment i happens before Thread segment j. 
+ *  _L,,t,,_ : Current set of locks held by thread t.
+ *  _C,,d,,_ : Current set of locks protecting variable d.
+
+Compared to [MSMHelgrind] this state machine has overal 8 states: 
+  * ExclusiveRead,ExclusiveWrite, ExclusiveReadWrite: only Happens-before will be checked (same as in exclusive statein [MSMHelgrind]. 
+  * False positives *test11*, *test12*, *test13*, *test14*, *test16*, *test17*, *test32*, 
