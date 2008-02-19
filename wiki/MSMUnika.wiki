@@ -14,3 +14,7 @@ Compared to [MSMHelgrind] this state machine has overal 8 states:
   * *Shared-Read, Shared-Midified1 :* only Lockset refinement same as in [MSMHelgrind] is done.
   * *Shared-Modified2 :* Happens-before and Lockset refinement.
   * *Race :* once a race is reported. 
+
+
+
+More details about *MSMUnika* is going to be published soon.
