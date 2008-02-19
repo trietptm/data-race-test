@@ -6,5 +6,5 @@ Here we list the patches to the official helgrind that are made as a part of thi
 See RacecheckUnittest. 
 
 == Client requests / dynamic annotations == 
-See [http://data-race-test.googlecode.com/source/browse/trunk/unittest/dynamic_annotations.h dynamic_annotations.h] for details. 
-Helgrind's part is in [http://data-race-test.googlecode.com/source/browse/trunk/helgrind/hg_annotations.c hg_annotations.c]. 
+See [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/dynamic_annotations.h dynamic_annotations.h] for details. 
+Helgrind's part is in [http://code.google.com/p/data-race-test/source/browse/trunk/helgrind/hg_annotations.c hg_annotations.c]. 
