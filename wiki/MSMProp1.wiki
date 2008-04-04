@@ -6,17 +6,15 @@ See also [MSMHelgrind340]
 
     http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
 || *Edge* || *Old state* || *Access type*     ||  *Condition*     || *New state* || *Segment set*     || *Lock set*      || *Race if ...* ||
-|| E1     || !NoAccess   || memory allocation ||  -               || New         || -                 || {}              || - ||
-|| E2     || New         || read              ||  -               || Read        || {currS}           || {currLS}        || - ||
-|| E3     || New         || write             ||  -               || Write       || {currS}           || {currLS}        || - ||
-|| E4     || Read        || read              ||  -               || Read        || *SS_update*       || *LS_update*     || - ||
-|| E5     || Read        || write             ||  -               || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
-|| E6     || Write       || read              || *HB(SS, currS)*  || Read        || {currS}           || {currLS}        || -      ||
-|| E7     || Write       || read              || *!HB(SS, currS)* || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
-|| E7     || Write       || write             ||  -               || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
+|| E1     || New         || read              ||  -               || Read        || {currS}           || {currLS}        || - ||
+|| E2     || New         || write             ||  -               || Write       || {currS}           || {currLS}        || - ||
+|| E3     || Read        || read              ||  -               || Read        || *SS_update*       || *LS_update*     || - ||
+|| E4     || Read        || write             ||  -               || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
+|| E5     || Write       || read              || *HB(SS, currS)*  || Read        || {currS}           || {currLS}        || -      ||
+|| E6 (r) || Write       || read              || *!HB(SS, currS)* || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
+|| E6 (w) || Write       || write             ||  -               || Write       || *SS_update*       || *LS_update*     || #LS==0 && #SS > 1 ||
  
 
-Edges that lead to states !NoAccess and  New are not shown. 
 
 *SS_update*:
 {{{
