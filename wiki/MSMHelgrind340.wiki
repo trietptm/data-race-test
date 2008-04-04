@@ -1,4 +1,4 @@
-﻿#The memory state machine which will likely appear in Helgrind 3.4.0
+﻿#summary The memory state machine which will likely appear in Helgrind 3.4.0
 
 For legend see  MemoryStateMachines. 
 
