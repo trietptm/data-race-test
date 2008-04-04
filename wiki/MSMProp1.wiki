@@ -2,6 +2,8 @@
 
 For legend see  MemoryStateMachines. 
 
+See also [MSMHelgrind340]
+
     http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
 || *Edge* || *Old state* || *Access type*     ||  *Condition*     || *New state* || *Segment set*     || *Lock set*      || *Race if ...* ||
 || E1     || !NoAccess   || memory allocation ||  -               || New         || -                 || {}              || - ||
