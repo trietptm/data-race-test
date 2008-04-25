@@ -410,11 +410,12 @@ Let's look at the accesses 3 and 4:
 ==29853== }}}
 }}}
 
-We see that during these two accesses we hold two different locks (`MU1` and `MU2`) : 
-At this point we are done! 
+We see that during these two accesses we hold two different locks (`MU1` and `MU2`).
+We are done! 
 
 
-Note, that even though the lock was lost during the access 4, we can not report a race untill access 6 since reading shared data w/o a lock is not a crime. 
+Note, that even though the lock was lost during the access 4, 
+we can not report a race untill access 6 since reading shared data w/o a lock is not a crime. 
 
 
 =Using annotations (when the data race happens once)=
