@@ -615,11 +615,42 @@ Does this information help us? Not really.
 We know more or less everything about the last access (the context and the locks held)
 but the last access seems to be correctly synchronized.
 There were three other accesses in threads T2, T4, T5, and one of them is buggy. 
+If we knew the context of these 3 accesses, it would be possible to analyze the source code manually and check the synchronization. 
+But the object might be used in hundreds of different places throghout the program! 
+
 
 TODO
 
 
 ==Rerunning with more segments==
+Right now we have a very subtle machinery that helps (sometimes) find the accesses involved in the data race. 
+We either need to improve this technique significantly, or create something else. 
+
+Suppose we can find all accesses to the racey object. Then we chould annotate each such access with `ANNOTATE_CONDVAR_SIGNAL(some_constant)`. Like this: 
+{{{
+3716 void Worker1() {
+3717   sleep(0);
+3718   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+3719   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+3720 }
+3721 void Worker2() {
+3722   sleep(1);
+3723   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+3724   CHECK(STR->length() >= 4); // Unprotected!
+3725 }
+3726 void Worker3() {
+3727   sleep(2);
+3728   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+3729   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+3730 }
+3731 void Worker4() {
+3732   sleep(3);
+3733   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+3734   MU.Lock(); *STR += " + a very very long string"; MU.Unlock();
+3735 }
+}}}
+
+
 TODO
 
 
