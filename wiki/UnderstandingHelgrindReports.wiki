@@ -443,6 +443,7 @@ Note that our example is already annotated:
 }}}
 The annotation is an executable code and should be inserted before the first use of this memory location (when possible).
 
+So, let's rerun Helgrind:
 {{{
 % valgrind --tool=helgrind --trace-level=2 ./a.out 303
 ==13317== ENABLED TRACE {{{: 0x619BDC; S1/T1
