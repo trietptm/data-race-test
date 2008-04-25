@@ -93,6 +93,10 @@ For each thread a stack trace (context) of it's creation is printed. For each th
 }}}
 
 
+The report about the data race itself starts with 
+{{{
+==15966== T3: Possible data race during write of size 4 at 0x6196F4
+}}}
 
 
 
