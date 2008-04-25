@@ -90,7 +90,7 @@ The simplest example of a data race is *test301* of RacecheckUnittest.
 }}}
 
 ==Understanding the report==
-So, what information do we get from Helgrind? <br>
+So, what information do we get from Helgrind? 
 
 === Threads ===
 First of all, we get the information about the threads involved in the data race. 
@@ -115,7 +115,7 @@ The report about the data race itself starts with
 {{{
 ==21787== T4: Possible data race during write of size 4 at 0x6197D4
 }}}
-Here we have the thread id `T3`, access type (`read` or `write`), size in bytes, and the address of the memory location. 
+Here we have the thread id `T4`, access type (`read` or `write`), size in bytes, and the address of the memory location. 
 
 Next, the stack trace (context) of the access follows: 
 {{{
@@ -131,7 +131,7 @@ After the access context we get the old and the new states of this memory locati
 ==21787==   new state = {Write; #SS=2; #LS=0; S2/T2, S7/T4}
 }}}
 In this particular report we see that before the last access the state contains only one thread segment and now it has two thread segments. 
-Since the state is `Write` and the lockset is empty, we have a race. 
+Since the new state is `Write` and the lockset is empty, we have a race. 
 
 Next line shows whether this memory location has been procted by any lock. 
 In this case, this is the lock `MU1`, the report give the context of the `MU1` creation.
@@ -149,10 +149,11 @@ The last line shows us the debug information for the memory location. If we are 
 }}}
 
 === Trace === 
-Once a data race has been reported, Helgrind turns on *tracing* for this particular memory location. 
-The trace contains 
-* Access information: `Access = {0x6196F4 S4/T3 write}` (address, segment/thread, access type)
-* State of the memory location (right after the access): `State = {Write; #SS=1; #LS=0; S4/T3}` (See MSMProp1).
+Once a data race has been reported, Helgrind turns on *tracing* for this particular memory location. And the trace of the last (racey) access is printed immideately. 
+
+The trace contains:
+* Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
+* State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
 * Access stack trace (context).
 * List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
 
