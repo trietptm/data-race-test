@@ -583,8 +583,8 @@ TODO
 ==17248==    by 0x40FBC7: (within a.out)
 ==17248==    by 0x40FC10: __libc_csu_init (in a.out)
 ==17248==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
-==17248==   Location 0x534D778 is 0 bytes inside a block of size 8 alloc'd
-==17248==    at 0x4A06FF9: operator new(unsigned long) /home/kcc/valgrind/hgdev/coregrind/m_replacemalloc/vg_replace_malloc.c:230
+=17248==   Location 0x534D778 is 0 bytes inside a block of size 8 alloc'd
+==17248==    at 0x4A06FF9: operator new(unsigned long) vg_replace_malloc.c:230
 ==17248==    by 0x402C73: test304::Run() racecheck_unittest.cc:3734
 ==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
 }}}
