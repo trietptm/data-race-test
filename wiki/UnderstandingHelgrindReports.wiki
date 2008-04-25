@@ -491,7 +491,106 @@ while not holding any lock. We are done!
 
 
 =Using segments (when the data race happens once and annotations do not help)=
+
+Unfortunately, annotating the racey memory location is 
+not always possible (e.g. if a memory location is some field 
+inside an STL object). 
+
 TODO
+
+== Source code == 
+{{{
+3714 string *STR;
+3715
+3716 void Worker1() {
+3717   sleep(0);
+3718   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+3719 }
+3720 void Worker2() {
+3721   sleep(1);
+3722   CHECK(STR->length() >= 4); // Unprotected!
+3723 }
+3724 void Worker3() {
+3725   sleep(2);
+3726   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+3727 }
+3728 void Worker4() {
+3729   sleep(3);
+3730   MU.Lock(); *STR += " + a very very long string"; MU.Unlock();
+3731 }
+3732
+3733 void Run() {
+3734   STR = new string ("The String");
+3735   printf("test304: a race where memory tracing does not work.\n");
+3736   MyThreadArray t(Worker1, Worker2, Worker3, Worker4);
+3737   t.Start();
+3738   t.Join();
+3739
+3740   printf("%s\n", STR->c_str());
+3741   delete STR;
+3742 }
+}}}
+
+==Running Helgrind==
+{{{
+% valgrind --tool=helgrind  ./a.out 304
+==17248== Thread #2 was created
+==17248==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+==17248==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
+==17248==    by 0x40DFB5: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==17248==    by 0x40E013: MyThreadArray::Start() racecheck_unittest.cc:179
+==17248==    by 0x402CDF: test304::Run() racecheck_unittest.cc:3737
+==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
+==17248==
+==17248== Thread #4 was created
+==17248==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+==17248==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
+==17248==    by 0x40DFB5: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==17248==    by 0x40E013: MyThreadArray::Start() racecheck_unittest.cc:179
+==17248==    by 0x402CDF: test304::Run() racecheck_unittest.cc:3737
+==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
+==17248==
+==17248== Thread #5 was created
+==17248==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+==17248==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
+==17248==    by 0x40DFB5: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==17248==    by 0x40E013: MyThreadArray::Start() racecheck_unittest.cc:179
+==17248==    by 0x402CDF: test304::Run() racecheck_unittest.cc:3737
+==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
+==17248==
+==17248== T6: Possible data race during write of size 8 at 0x534D778
+==17248==    at 0x4ED69D3: std::string::reserve(unsigned long) 
+==17248==    by 0x4ED6BE5: std::string::append(char const*, unsigned long) 
+==17248==    by 0x404562: test304::Worker4() racecheck_unittest.cc:3730
+==17248==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
+==17248==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==17248==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==17248==   old state = {Read; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
+==17248==   new state = {Write; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
+==17248==   Last consistently used lock for 0x534D778 was first observed
+==17248==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
+==17248==    by 0x40D2F1: Mutex::Mutex() thread_wrappers_pthread.h:149
+==17248==    by 0x401E44: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:85
+==17248==    by 0x402A76: _GLOBAL__I_MU racecheck_unittest.cc:3745
+==17248==    by 0x40FC69: (within a.out)
+==17248==    by 0x401552: (within a.out)
+==17248==    by 0x40FBC7: (within a.out)
+==17248==    by 0x40FC10: __libc_csu_init (in a.out)
+==17248==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
+==17248==   Location 0x534D778 is 0 bytes inside a block of size 8 alloc'd
+==17248==    at 0x4A06FF9: operator new(unsigned long) /home/kcc/valgrind/hgdev/coregrind/m_replacemalloc/vg_replace_malloc.c:230
+==17248==    by 0x402C73: test304::Run() racecheck_unittest.cc:3734
+==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
+}}}
+
+==Rerunning with more segments==
+
 
 =Possible improvements=
   * Implement Helgrind client requests to attach symbolic names to threads and locks. 
