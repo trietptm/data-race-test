@@ -99,6 +99,31 @@ The report about the data race itself starts with
 }}}
 Here we have the thread id `T3`, access type (`read` or `write`), size in bytes, and the address of the memory location. 
 
+Next, the stack trace (context) of the access follows: 
+{{{
+==15966==    at 0x401BFE: test301::Worker2() racecheck_unittest.cc:3633
+==15966==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==15966==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==15966==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+}}}
+
+After the access context we get the old and the new states of this memory location (for details about states refer to [MSMProp1]).
+{{{
+==15966==   old state = {Write; #SS=1; #LS=0; S2/T2}
+==15966==   new state = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
+}}}
+In this particular report we see that before the last access the state contains only one thread segment and now it has two thread segments. 
+Since the state is `Write` and the lockset is empty, we have a race. 
+
+Next line shows whether this memory location has been procted by any lock. (in this case it hasn't, more example follow). 
+{{{
+==15966==   Location 0x6196F4 has never been protected by any lock
+}}}
+
+The last line shows us the debug information for the memory location. If we are lucky to get a race on a global variable, we will see it's name. 
+{{{
+==15966==   Address 0x6196F4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
+}}}
 
 
 
