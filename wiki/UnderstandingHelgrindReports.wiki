@@ -704,6 +704,7 @@ And rerun Helgrind:
 ==21495==
 }}}
 
+This report shows the contexts of creation for each segment involved in the data race. 
 
 TODO
 
