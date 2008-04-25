@@ -589,6 +589,16 @@ TODO
 ==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
 }}}
 
+The key information in the report is contained in these two lines: 
+{{{
+==17248==   old state = {Read; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
+==17248==   new state = {Write; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
+}}}
+These lines should be read like this: 
+  * The memory location has been accessed from four different threads (T2, T4, T5, T6).
+  * All but the last accesses were reads.
+  * The accesses do not share any common lock. 
+
 ==Rerunning with more segments==
 TODO
 
