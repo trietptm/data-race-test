@@ -177,11 +177,20 @@ The trace contains:
 ==21787== }}}
 }}}
 
-=Using traces (when the data race happens twice=
+=Using traces (when the data race happens twice)=
+So, in the the first example the data race is quite obvious from the report (isn't it?). We have a global variable which is not protected by any common lock. 
+
+However, in most real case the racey memory is hidden somewhere deep inside data structures and accessd from many different places. 
+Analyzing the data race by just looking at the race context is impossible. However, if the race on the given memory location happens at least twice, we can use *access traces* to understand the race. 
+
+== Source code ==
+
+== Running Helgrind == 
+
 
 =Using annotations (when the data race happens once)=
 TODO
 
-=Using segment (when the data race happens once and annotations do not help)=
+=Using segments (when the data race happens once and annotations do not help)=
 TODO
 
