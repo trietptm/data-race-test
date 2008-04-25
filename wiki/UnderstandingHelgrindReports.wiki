@@ -494,6 +494,6 @@ while not holding any lock. We are done!
 TODO
 
 =Possible improvements=
-* Implement Helgrind client requests to attach symbolic names to threads and locks. 
-* TODO
+  * Implement Helgrind client requests to attach symbolic names to threads and locks. 
+  * TODO
 
