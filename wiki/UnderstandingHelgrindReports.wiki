@@ -30,6 +30,8 @@ The simplest example of a data race is *test301* of RacecheckUnittest.
 3643 }
 }}}
 
+Note that the global variable `GLOB` is accessed in two threads, while not holding any *common* lock. 
+
 ==Running Helgrind==
 {{{
 % valgrind --tool=helgrind ./a.out 301
