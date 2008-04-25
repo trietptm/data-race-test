@@ -39,7 +39,7 @@ Note that the global variable `GLOB` is accessed in two threads, while not holdi
 ==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
 ==21787==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
 ==21787==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x4A0A601: pthread_create@* /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:213
+==21787==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
 ==21787==    by 0x40DDB3: MyThread::Start(void*) thread_wrappers_pthread.h:242
 ==21787==    by 0x403AFF: test301::Run() racecheck_unittest.cc:3640
 ==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
@@ -48,20 +48,20 @@ Note that the global variable `GLOB` is accessed in two threads, while not holdi
 ==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
 ==21787==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
 ==21787==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x4A0A601: pthread_create@* /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:213
+==21787==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
 ==21787==    by 0x40DDB3: MyThread::Start(void*) thread_wrappers_pthread.h:242
 ==21787==    by 0x403B0D: test301::Run() racecheck_unittest.cc:3641
 ==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
 ==21787==
 ==21787== T4: Possible data race during write of size 4 at 0x6197D4
 ==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==21787==   old state = {Write; #SS=1; #LS=1; S2/T2}
 ==21787==   new state = {Write; #SS=2; #LS=0; S2/T2, S7/T4}
 ==21787==   Last consistently used lock for 0x6197D4 was first observed
-==21787==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==21787==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
 ==21787==    by 0x40D0EF: Mutex::Mutex() thread_wrappers_pthread.h:149
 ==21787==    by 0x402928: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3632
 ==21787==    by 0x4029BA: _GLOBAL__I_MU racecheck_unittest.cc:3692
@@ -107,7 +107,7 @@ Here we have the thread id `T4`, access type (`read` or `write`), size in bytes,
 Next, the stack trace (context) of the access follows: 
 {{{
 ==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 }}}
@@ -124,7 +124,7 @@ Next line shows whether this memory location has been procted by any lock.
 In this case, this is the lock `MU1`, the report gives the context of `MU1` creation.
 {{{
 ==21787==   Last consistently used lock for 0x6197D4 was first observed
-==21787==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==21787==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
 ==21787==    by 0x40D0EF: Mutex::Mutex() thread_wrappers_pthread.h:149
 ==21787==    by 0x402928: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3632
 ...
@@ -198,13 +198,13 @@ In the following test we have many memory accesses and much less obvious race (o
 ...
 ==29853== T2: Possible data race during write of size 4 at 0x619C3C
 ==29853==    at 0x404E0D: test302::Worker() racecheck_unittest.cc:3672
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==   old state = {Read; #SS=2; #LS=0; S11/T4, S13/T2}
 ==29853==   new state = {Write; #SS=2; #LS=0; S11/T4, S13/T2}
 ==29853==   Last consistently used lock for 0x619C3C was first observed
-==29853==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==29853==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
 ==29853==    by 0x40D37F: Mutex::Mutex() thread_wrappers_pthread.h:149
 ==29853==    by 0x4029CB: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3654
 ...
@@ -213,12 +213,12 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== TRACE {{{: Access = {0x619C3C S13/T2 write} State = {Write; #SS=1; #LS=1; S13/T2}
 ==29853==  Access stack trace:
 ==29853==    at 0x404E0D: test302::Worker() racecheck_unittest.cc:3672
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404E03: test302::Worker() racecheck_unittest.cc:3672
 ...
@@ -227,12 +227,12 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== TRACE {{{: Access = {0x619C3C S17/T2 read} State = {Read; #SS=1; #LS=1; S17/T2}
 ==29853==  Access stack trace:
 ==29853==    at 0x404D56: test302::Worker() racecheck_unittest.cc:3660
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404D55: test302::Worker() racecheck_unittest.cc:3660
 ...
@@ -241,12 +241,12 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== TRACE {{{: Access = {0x619C3C S15/T4 read} State = {Read; #SS=2; #LS=1; S15/T4, S17/T2}
 ==29853==  Access stack trace:
 ==29853==    at 0x404DCB: test302::Worker() racecheck_unittest.cc:3668
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404DCA: test302::Worker() racecheck_unittest.cc:3668
 ...
@@ -255,12 +255,12 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== TRACE {{{: Access = {0x619C3C S19/T2 read} State = {Read; #SS=2; #LS=0; S15/T4, S19/T2}
 ==29853==  Access stack trace:
 ==29853==    at 0x404D92: test302::Worker() racecheck_unittest.cc:3664
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117F18/0x619CD0
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404D91: test302::Worker() racecheck_unittest.cc:3664
 ...
@@ -269,12 +269,12 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== TRACE {{{: Access = {0x619C3C S21/T4 read} State = {Read; #SS=2; #LS=0; S19/T2, S21/T4}
 ==29853==  Access stack trace:
 ==29853==    at 0x404E04: test302::Worker() racecheck_unittest.cc:3672
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404E03: test302::Worker() racecheck_unittest.cc:3672
 ...
@@ -283,12 +283,12 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== TRACE {{{: Access = {0x619C3C S21/T4 write} State = {Write; #SS=2; #LS=0; S19/T2, S21/T4}
 ==29853==  Access stack trace:
 ==29853==    at 0x404E0D: test302::Worker() racecheck_unittest.cc:3672
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404E03: test302::Worker() racecheck_unittest.cc:3672
 ...
@@ -304,13 +304,13 @@ So, the race report itself gives us very little information:
 {{{
 ==29853== T2: Possible data race during write of size 4 at 0x619C3C
 ==29853==    at 0x404E0D: test302::Worker() racecheck_unittest.cc:3672
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==   old state = {Read; #SS=2; #LS=0; S11/T4, S13/T2}
 ==29853==   new state = {Write; #SS=2; #LS=0; S11/T4, S13/T2}
 ==29853==   Last consistently used lock for 0x619C3C was first observed
-==29853==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==29853==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
 ==29853==    by 0x40D37F: Mutex::Mutex() thread_wrappers_pthread.h:149
 ==29853==    by 0x4029CB: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3654
 ...
@@ -349,12 +349,12 @@ Let's look at the accesses 3 and 4:
 ==29853== TRACE {{{: Access = {0x619C3C S15/T4 read} State = {Read; #SS=2; #LS=1; S15/T4, S17/T2}
 ==29853==  Access stack trace:
 ==29853==    at 0x404DCB: test302::Worker() racecheck_unittest.cc:3668
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404DCA: test302::Worker() racecheck_unittest.cc:3668
 ...
@@ -363,12 +363,12 @@ Let's look at the accesses 3 and 4:
 ==29853== TRACE {{{: Access = {0x619C3C S19/T2 read} State = {Read; #SS=2; #LS=0; S15/T4, S19/T2}
 ==29853==  Access stack trace:
 ==29853==    at 0x404D92: test302::Worker() racecheck_unittest.cc:3664
-==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==29853==  Locks held:
 ==29853==    L:0x402117F18/0x619CD0
-==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
 ==29853==    by 0x404D91: test302::Worker() racecheck_unittest.cc:3664
 ...
@@ -421,7 +421,7 @@ How to find this unsynchronized access?
 ...
 ==11115== T3: Possible data race during write of size 4 at 0x619BDC
 ==11115==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
-==11115==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==11115==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==11115==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==11115==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==11115==   old state = {Read; #SS=1; #LS=0; S2/T2}
@@ -447,7 +447,7 @@ So, let's rerun Helgrind:
 {{{
 % valgrind --tool=helgrind --trace-level=2 ./a.out 303
 ==13317== ENABLED TRACE {{{: 0x619BDC; S1/T1
-==13317==    at 0x4A0AD1D: AnnotateTraceMemory /home/kcc/valgrind/hgdev/helgrind/hg_annotations.c:267
+==13317==    at 0x4A0AD1D: AnnotateTraceMemory hg_annotations.c:267
 ==13317==    by 0x404BA5: test303::Run() racecheck_unittest.cc:3702
 ==13317==    by 0x40A4CE: main racecheck_unittest.cc:144
 ==13317== }}}
@@ -455,7 +455,7 @@ So, let's rerun Helgrind:
 ==13317== TRACE {{{: Access = {0x619BDC S2/T2 read} State = {Read; #SS=1; #LS=0; S2/T2}
 ==13317==  Access stack trace:
 ==13317==    at 0x401BEE: test303::Worker1() racecheck_unittest.cc:3697
-==13317==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==13317==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==13317==  Locks held:
@@ -465,15 +465,15 @@ So, let's rerun Helgrind:
 ==13317== TRACE {{{: Access = {0x619BDC S4/T3 write} State = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
 ==13317==  Access stack trace:
 ==13317==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
-==13317==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==13317==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==13317==  Locks held:
 ==13317==    L:0x402118030/0x619C10
-==13317==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==13317==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
 ==13317==    by 0x40E110: Mutex::Lock() thread_wrappers_pthread.h:156
 ==13317==    by 0x40461D: test303::Worker2() racecheck_unittest.cc:3698
-==13317==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==13317==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
 ==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
 ==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 ==13317== }}}
