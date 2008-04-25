@@ -1,6 +1,6 @@
 ﻿#summary Helgrind reports explained on examples 
 
-The goal of this page is to explain to users how to read and understand the Helgrind reports.
+The goal of this page is to explain users how to read and understand the Helgrind reports.
 
 Simple races could be obvious once you get a report from Helgrind.
 However in some cases getting a Helgrind report is just a beginning of the bug analysis.
@@ -136,7 +136,7 @@ In this particular report we see that before the last access the state contains 
 Since the new state is `Write` and the lockset is empty, we have a race. 
 
 Next line shows whether this memory location has been procted by any lock. 
-In this case, this is the lock `MU1`, the report give the context of the `MU1` creation.
+In this case, this is the lock `MU1`, the report gives the context of `MU1` creation.
 {{{
 ==21787==   Last consistently used lock for 0x6197D4 was first observed
 ==21787==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
@@ -154,10 +154,10 @@ The last line shows us the debug information for the memory location. If we are 
 Once a data race has been reported, Helgrind turns on *tracing* for this particular memory location. And the trace of the last (racey) access is printed immideately. 
 
 The trace contains:
-* Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
-* State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
-* Access stack trace (context).
-* List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
+  * Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
+  * State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
+  * Access stack trace (context).
+  * List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
 
 {{{
 ==21787== TRACE {{{: Access = {0x6197D4 S7/T4 write} State = {Write; #SS=1; #LS=1; S7/T4}
@@ -368,7 +368,7 @@ In this test case we are lucky -- the race happened twice:
 After the race has been found twice, the memory tracing is disabled forever for this memory location. 
 
 
-Let's looks at the lines startting with `TRACE`: 
+Let's look at the lines starting with `TRACE`: 
 {{{
 1: TRACE {{{: Access = {0x619C3C S13/T2 write} State = {Write; #SS=1; #LS=1; S13/T2}
 2: TRACE {{{: Access = {0x619C3C S17/T2 read} State = {Read; #SS=1; #LS=1; S17/T2}
