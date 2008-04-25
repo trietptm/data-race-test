@@ -340,6 +340,83 @@ In the following test we have many memory accesses and much less obvious race (o
 ==29853== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 8 from 3)
 }}}
 
+== Understanding the traces ==
+So, the race report itself gives us very little information: 
+{{{
+==29853== T2: Possible data race during write of size 4 at 0x619C3C
+==29853==    at 0x404E0D: test302::Worker() racecheck_unittest.cc:3672
+==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==29853==   old state = {Read; #SS=2; #LS=0; S11/T4, S13/T2}
+==29853==   new state = {Write; #SS=2; #LS=0; S11/T4, S13/T2}
+==29853==   Last consistently used lock for 0x619C3C was first observed
+==29853==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==29853==    by 0x40D37F: Mutex::Mutex() thread_wrappers_pthread.h:149
+==29853==    by 0x4029CB: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3654
+...
+}}}
+
+We see that the racey memory is `GLOB`, but we don't see why there is a race: this access to `GLOB` is protected by a lock. 
+But once the race is reported, Helgrind enables *access tracing* for this particular memory location.
+The state of this memory location is reset to `{Accesstype,currS, currLS}`, i.e. all the previous accesses are forgotten. 
+
+In this test case we are lucky -- the race happened twice: 
+{{{
+==29853== Race on 0x619C3C is found again
+}}}
+After the race has been found twice, the memory tracing is disabled forever for this memory location. 
+
+
+Let's looks at the lines startting with `TRACE`: 
+{{{
+1: TRACE {{{: Access = {0x619C3C S13/T2 write} State = {Write; #SS=1; #LS=1; S13/T2}
+2: TRACE {{{: Access = {0x619C3C S17/T2 read} State = {Read; #SS=1; #LS=1; S17/T2}
+3: TRACE {{{: Access = {0x619C3C S15/T4 read} State = {Read; #SS=2; #LS=1; S15/T4, S17/T2}
+4: TRACE {{{: Access = {0x619C3C S19/T2 read} State = {Read; #SS=2; #LS=0; S15/T4, S19/T2}
+5: TRACE {{{: Access = {0x619C3C S21/T4 read} State = {Read; #SS=2; #LS=0; S19/T2, S21/T4}
+6: TRACE {{{: Access = {0x619C3C S21/T4 write} State = {Write; #SS=2; #LS=0; S19/T2, S21/T4}
+}}}
+
+We see that the Lockset became empty after the access 4 (access 3 has `#LS=1`, access 4 has `#LS=0`).
+Let's look at the accesses 3 and 4: 
+{{{
+==29853== TRACE {{{: Access = {0x619C3C S15/T4 read} State = {Read; #SS=2; #LS=1; S15/T4, S17/T2}
+==29853==  Access stack trace:
+==29853==    at 0x404DCB: test302::Worker() racecheck_unittest.cc:3668
+==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==29853==  Locks held:
+==29853==    L:0x402117E00/0x619C70
+==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
+==29853==    by 0x404DCA: test302::Worker() racecheck_unittest.cc:3668
+...
+==29853== }}}
+
+==29853== TRACE {{{: Access = {0x619C3C S19/T2 read} State = {Read; #SS=2; #LS=0; S15/T4, S19/T2}
+==29853==  Access stack trace:
+==29853==    at 0x404D92: test302::Worker() racecheck_unittest.cc:3664
+==29853==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==29853==  Locks held:
+==29853==    L:0x402117F18/0x619CD0
+==29853==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
+==29853==    by 0x404D91: test302::Worker() racecheck_unittest.cc:3664
+...
+==29853== }}}
+}}}
+
+We see that during these two accesses we hold two different locks (`MU1` and `MU2`) : 
+At this point we are done! 
+
+
+Note, that even though the lock was lost during the access 4, we can not report a race untill access 6 since reading shared data w/o a lock is not a crime. 
+
+
 =Using annotations (when the data race happens once)=
 TODO
 
