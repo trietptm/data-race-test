@@ -177,5 +177,11 @@ The trace contains:
 ==21787== }}}
 }}}
 
+=Using traces (when the data race happens twice=
 
+=Using annotations (when the data race happens once)=
+TODO
+
+=Using segment (when the data race happens once and annotations do not help)=
+TODO
 
