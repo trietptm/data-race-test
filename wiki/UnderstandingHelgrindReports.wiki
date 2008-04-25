@@ -1,6 +1,6 @@
 ﻿#summary Helgrind reports explained on examples 
 
-The goal of this page is to explain users how to read and understand the Helgrind reports.
+The goal of this page is to explain to users how to read and understand the Helgrind reports.
 
 Simple races could be obvious once you get a report from Helgrind.
 However in some cases getting a Helgrind report is just a beginning of the bug analysis.
@@ -11,118 +11,167 @@ Here we show several exemplary races with corresponding reports and explain how 
 All the examples on this page are taken from RacecheckUnittest. 
 
 =Simple example=
+==Source code==
 The simplest example of a data race is *test301* of RacecheckUnittest. 
 {{{
 3630 int     GLOB = 0;
 3631
-3632 void Worker1() { GLOB=1; }
-3633 void Worker2() { GLOB=2; }
-3634
-3635 void Run() {
-3636   printf("test301: simple race.\n");
-3637   MyThread t1(Worker1), t2(Worker2);
-3638   t1.Start();
-3639   t2.Start();
-3640   t1.Join();   t2.Join();
-3641 }
+3632 Mutex MU1;
+3633 Mutex MU2;
+3634 void Worker1() { MU1.Lock(); GLOB=1; MU1.Unlock(); }
+3635 void Worker2() { MU2.Lock(); GLOB=1; MU2.Unlock(); }
+3636
+3637 void Run() {
+3638   printf("test301: simple race.\n");
+3639   MyThread t1(Worker1), t2(Worker2);
+3640   t1.Start();
+3641   t2.Start();
+3642   t1.Join();   t2.Join();
+3643 }
 }}}
 
-Running Helgrind: 
+==Running Helgrind==
 {{{
 % valgrind --tool=helgrind ./a.out 301
-test301: simple race.
-==15966== Thread #2 was created
-==15966==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==15966==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x4A0A601: pthread_create@* /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:213
-==15966==    by 0x40DD1F: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==15966==    by 0x403AB3: test301::Run() racecheck_unittest.cc:3638
-==15966==    by 0x40A238: main racecheck_unittest.cc:144
-==15966==
-==15966== Thread #3 was created
-==15966==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==15966==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x4A0A601: pthread_create@* /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:213
-==15966==    by 0x40DD1F: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==15966==    by 0x403AC1: test301::Run() racecheck_unittest.cc:3639
-==15966==    by 0x40A238: main racecheck_unittest.cc:144
-==15966==
-==15966== T3: Possible data race during write of size 4 at 0x6196F4
-==15966==    at 0x401BFE: test301::Worker2() racecheck_unittest.cc:3633
-==15966==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==15966==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==15966==   old state = {Write; #SS=1; #LS=0; S2/T2}
-==15966==   new state = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
-==15966==   Location 0x6196F4 has never been protected by any lock
-==15966==   Address 0x6196F4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
-==15966==
-==15966== TRACE {{{: Access = {0x6196F4 S4/T3 write} State = {Write; #SS=1; #LS=0; S4/T3}
-==15966==  Access stack trace:
-==15966==    at 0x401BFE: test301::Worker2() racecheck_unittest.cc:3633
-==15966==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==15966==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==15966==  Locks held:
-==15966==    None
-==15966== }}}
-==15966==
-==15966== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 2 from 1)
+==21787== Thread #2 was created
+==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+==21787==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x4A0A601: pthread_create@* /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:213
+==21787==    by 0x40DDB3: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==21787==    by 0x403AFF: test301::Run() racecheck_unittest.cc:3640
+==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
+==21787==
+==21787== Thread #4 was created
+==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+==21787==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x4A0A601: pthread_create@* /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:213
+==21787==    by 0x40DDB3: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==21787==    by 0x403B0D: test301::Run() racecheck_unittest.cc:3641
+==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
+==21787==
+==21787== T4: Possible data race during write of size 4 at 0x6197D4
+==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
+==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==21787==   old state = {Write; #SS=1; #LS=1; S2/T2}
+==21787==   new state = {Write; #SS=2; #LS=0; S2/T2, S7/T4}
+==21787==   Last consistently used lock for 0x6197D4 was first observed
+==21787==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==21787==    by 0x40D0EF: Mutex::Mutex() thread_wrappers_pthread.h:149
+==21787==    by 0x402928: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3632
+==21787==    by 0x4029BA: _GLOBAL__I_MU racecheck_unittest.cc:3692
+==21787==    by 0x40FA69: (within a.out)
+==21787==    by 0x401552: (within a.out)
+==21787==    by 0x40F9C7: (within a.out)
+==21787==    by 0x40FA10: __libc_csu_init (in a.out)
+==21787==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
+==21787==   Address 0x6197D4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
+==21787==
+==21787== TRACE {{{: Access = {0x6197D4 S7/T4 write} State = {Write; #SS=1; #LS=1; S7/T4}
+==21787==  Access stack trace:
+==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
+==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==21787==  Locks held:
+==21787==     L:0x402117CE8/0x619870
+==21787==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==21787==    by 0x40DF0E: Mutex::Lock() thread_wrappers_pthread.h:156
+==21787==    by 0x404563: test301::Worker2() racecheck_unittest.cc:3635
+==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==21787== }}}
+==21787==
+==21787== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 2 from 1)
 }}}
 
-
+==Understanding the report==
 So, what information do we get from Helgrind? <br>
 
-
+=== Threads ===
 First of all, we get the information about the threads involved in the data race. 
 For each thread a stack trace (context) of it's creation is printed. For each thread this is printed just once. 
 {{{
-==15966== Thread #2 was created
-==15966==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+==21787== Thread #2 was created
+==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
 ...
-==15966==    by 0x403AB3: test301::Run() racecheck_unittest.cc:3638
-==15966==    by 0x40A238: main racecheck_unittest.cc:144
+==21787==    by 0x403AFF: test301::Run() racecheck_unittest.cc:3640
+==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
+==21787==
+==21787== Thread #4 was created
+==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
 ...
-==15966== Thread #3 was created
-==15966==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-...
-==15966==    by 0x403AC1: test301::Run() racecheck_unittest.cc:3639
-==15966==    by 0x40A238: main racecheck_unittest.cc:144
+==21787==    by 0x403B0D: test301::Run() racecheck_unittest.cc:3641
+==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
+
 }}}
 
-
+=== Data race == 
 The report about the data race itself starts with 
 {{{
-==15966== T3: Possible data race during write of size 4 at 0x6196F4
+==21787== T4: Possible data race during write of size 4 at 0x6197D4
 }}}
 Here we have the thread id `T3`, access type (`read` or `write`), size in bytes, and the address of the memory location. 
 
 Next, the stack trace (context) of the access follows: 
 {{{
-==15966==    at 0x401BFE: test301::Worker2() racecheck_unittest.cc:3633
-==15966==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==15966==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==15966==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
+==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
 }}}
 
 After the access context we get the old and the new states of this memory location (for details about states refer to [MSMProp1]).
 {{{
-==15966==   old state = {Write; #SS=1; #LS=0; S2/T2}
-==15966==   new state = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
+==21787==   old state = {Write; #SS=1; #LS=1; S2/T2}
+==21787==   new state = {Write; #SS=2; #LS=0; S2/T2, S7/T4}
 }}}
 In this particular report we see that before the last access the state contains only one thread segment and now it has two thread segments. 
 Since the state is `Write` and the lockset is empty, we have a race. 
 
-Next line shows whether this memory location has been procted by any lock. (in this case it hasn't, more example follow). 
+Next line shows whether this memory location has been procted by any lock. 
+In this case, this is the lock `MU1`, the report give the context of the `MU1` creation.
 {{{
-==15966==   Location 0x6196F4 has never been protected by any lock
+==21787==   Last consistently used lock for 0x6197D4 was first observed
+==21787==    at 0x4A0A4EC: pthread_mutex_init /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:346
+==21787==    by 0x40D0EF: Mutex::Mutex() thread_wrappers_pthread.h:149
+==21787==    by 0x402928: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3632
+...
 }}}
 
 The last line shows us the debug information for the memory location. If we are lucky to get a race on a global variable, we will see it's name. 
 {{{
-==15966==   Address 0x6196F4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
+==21787==   Address 0x6197D4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
+}}}
+
+=== Trace === 
+Once a data race has been reported, Helgrind turns on *tracing* for this particular memory location. 
+The trace contains 
+* Access information: `Access = {0x6196F4 S4/T3 write}`
+* State of the memory location (right after the access): `State = {Write; #SS=1; #LS=0; S4/T3}`
+* Access stack trace (context).
+* List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen).
+
+{{{
+==21787== TRACE {{{: Access = {0x6197D4 S7/T4 write} State = {Write; #SS=1; #LS=1; S7/T4}
+==21787==  Access stack trace:
+==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
+==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==21787==  Locks held:
+==21787==    L:0x402117CE8/0x619870
+==21787==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==21787==    by 0x40DF0E: Mutex::Lock() thread_wrappers_pthread.h:156
+==21787==    by 0x404563: test301::Worker2() racecheck_unittest.cc:3635
+==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==21787== }}}
 }}}
 
 
