@@ -135,8 +135,6 @@ The last line shows us the debug information for the memory location. If we are 
 ==21787==   Address 0x6197D4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
 }}}
 
-=== Trace === 
-
 =Using traces (when the data race happens twice)=
 So, in the the first example the data race is quite obvious from the report (isn't it?). 
 We have a global variable which is not protected by any common lock. 
@@ -389,4 +387,8 @@ TODO
 
 =Using segments (when the data race happens once and annotations do not help)=
 TODO
+
+=Possible improvements=
+  * Implement Helgrind client requests to attach a symbolic name to threads and locks. 
+  * 
 
