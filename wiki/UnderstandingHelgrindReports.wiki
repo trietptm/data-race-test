@@ -72,22 +72,7 @@ Note that the global variable `GLOB` is accessed in two threads, while not holdi
 ==21787==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
 ==21787==   Address 0x6197D4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
 ==21787==
-==21787== TRACE {{{: Access = {0x6197D4 S7/T4 write} State = {Write; #SS=1; #LS=1; S7/T4}
-==21787==  Access stack trace:
-==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21787==  Locks held:
-==21787==     L:0x402117CE8/0x619870
-==21787==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
-==21787==    by 0x40DF0E: Mutex::Lock() thread_wrappers_pthread.h:156
-==21787==    by 0x404563: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21787== }}}
-==21787==
+...
 ==21787== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 2 from 1)
 }}}
 
@@ -151,31 +136,6 @@ The last line shows us the debug information for the memory location. If we are 
 }}}
 
 === Trace === 
-Once a data race has been reported, Helgrind turns on *tracing* for this particular memory location. And the trace of the last (racey) access is printed immideately. 
-
-The trace contains:
-  * Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
-  * State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
-  * Access stack trace (context).
-  * List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
-
-{{{
-==21787== TRACE {{{: Access = {0x6197D4 S7/T4 write} State = {Write; #SS=1; #LS=1; S7/T4}
-==21787==  Access stack trace:
-==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21787==  Locks held:
-==21787==    L:0x402117CE8/0x619870
-==21787==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
-==21787==    by 0x40DF0E: Mutex::Lock() thread_wrappers_pthread.h:156
-==21787==    by 0x404563: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21787== }}}
-}}}
 
 =Using traces (when the data race happens twice)=
 So, in the the first example the data race is quite obvious from the report (isn't it?). 
@@ -360,6 +320,12 @@ So, the race report itself gives us very little information:
 We see that the racey memory is `GLOB`, but we don't see why there is a race: this access to `GLOB` is protected by a lock. 
 But once the race is reported, Helgrind enables *access tracing* for this particular memory location.
 The state of this memory location is reset to `{Accesstype,currS, currLS}`, i.e. all the previous accesses are forgotten. 
+
+Each trace contains:
+  * Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
+  * State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
+  * Access stack trace (context).
+  * List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
 
 In this test case we are lucky -- the race happened twice: 
 {{{
