@@ -1,17 +1,17 @@
 ﻿#summary Helgrind reports explained on examples 
 
-The goal of this page 
+The goal of this page is to explain users how to read and understand the Helgrind reports.
 
-Simple races could be obvious once you get a report from Helgrind. <br>
-However in some cases getting a Helgrind report is just a beginning of the bug analysis. <br>
-Here we show several exemplary races with corresponding reports and explain how to analyze the races in each case. <br>
+Simple races could be obvious once you get a report from Helgrind.
+However in some cases getting a Helgrind report is just a beginning of the bug analysis.
+Here we show several exemplary races with corresponding reports and explain how to analyze the races in each case.
 
 *TODO*: Under construction! 
 
 All the examples on this page are taken from RacecheckUnittest. 
 
-=Simple race=
-The simplest example of data race is *test301* of RacecheckUnittest. 
+=Simple example=
+The simplest example of a data race is *test301* of RacecheckUnittest. 
 {{{
 3630 int     GLOB = 0;
 3631
