@@ -27,7 +27,7 @@ The simplest example of data race is *test301* of RacecheckUnittest.
 3641 }
 }}}
 
-Running helgrind: 
+Running Helgrind: 
 {{{
 % valgrind --tool=helgrind ./a.out 301
 test301: simple race.
@@ -70,8 +70,30 @@ test301: simple race.
 ==15966== }}}
 ==15966==
 ==15966== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 2 from 1)
-
 }}}
+
+
+So, what information do we get from Helgrind? <br>
+
+
+First of all, we get the information about the threads involved in the data race. 
+For each thread a stack trace (context) of it's creation is printed. For each thread this is printed just once. 
+{{{
+==15966== Thread #2 was created
+==15966==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+...
+==15966==    by 0x403AB3: test301::Run() racecheck_unittest.cc:3638
+==15966==    by 0x40A238: main racecheck_unittest.cc:144
+...
+==15966== Thread #3 was created
+==15966==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
+...
+==15966==    by 0x403AC1: test301::Run() racecheck_unittest.cc:3639
+==15966==    by 0x40A238: main racecheck_unittest.cc:144
+}}}
+
+
+
 
 
 
