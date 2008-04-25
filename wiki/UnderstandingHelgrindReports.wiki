@@ -178,13 +178,17 @@ The trace contains:
 }}}
 
 =Using traces (when the data race happens twice)=
-So, in the the first example the data race is quite obvious from the report (isn't it?). We have a global variable which is not protected by any common lock. 
+So, in the the first example the data race is quite obvious from the report (isn't it?). 
+We have a global variable which is not protected by any common lock. 
 
-However, in most real case the racey memory is hidden somewhere deep inside data structures and accessd from many different places. 
-Analyzing the data race by just looking at the race context is impossible. However, if the race on the given memory location happens at least twice, we can use *access traces* to understand the race. 
+However, in most real cases the racey memory is hidden somewhere deep inside 
+the data structures and accessed from many different places. 
+Analyzing the data race by just looking at the race context is impossible. 
+However, if the race on the given memory location happens at least twice, 
+we can use *access traces* to understand the race. 
 
 == Source code ==
-In the following test we have more memory access and much less obvious race (one access is mistakenly protected by a wron lock). 
+In the following test we have many memory accesses and much less obvious race (one access is mistakenly protected by a wrong lock). 
 {{{
 3649 // In this test we have many different accesses to GLOB and only one access
 3650 // is not synchronized properly.
