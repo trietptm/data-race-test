@@ -496,7 +496,6 @@ Unfortunately, annotating the racey memory location is
 not always possible (e.g. if a memory location is some field 
 inside an STL object). 
 
-TODO
 
 == Source code == 
 {{{
@@ -619,9 +618,6 @@ If we knew the context of these 3 accesses, it would be possible to analyze the 
 But the object might be used in hundreds of different places throghout the program! 
 
 
-TODO
-
-
 ==Rerunning with more segments==
 *Right now we have a very subtle machinery that helps (sometimes) find the accesses involved in the data race. 
 We either need to improve this technique significantly, or create something else. *
@@ -707,6 +703,13 @@ And rerun Helgrind:
 This report shows the contexts of creation for each segment involved in the data race. 
 
 *TODO*: we may need to remember the locksets during segment creation.
+
+
+*TODO*: What if we can not find all the accesses to the object and 
+insert an annotations before each access? 
+Just insert annotations everywhere! 
+Automatically? Using some kind of binary search? 
+
 
 TODO
 
