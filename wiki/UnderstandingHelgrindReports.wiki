@@ -706,6 +706,8 @@ And rerun Helgrind:
 
 This report shows the contexts of creation for each segment involved in the data race. 
 
+*TODO*: we may need to remember the locksets during segment creation.
+
 TODO
 
 
