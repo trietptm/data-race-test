@@ -389,6 +389,6 @@ TODO
 TODO
 
 =Possible improvements=
-  * Implement Helgrind client requests to attach a symbolic name to threads and locks. 
-  * 
+  * Implement Helgrind client requests to attach symbolic names to threads and locks. 
+  * TODO
 
