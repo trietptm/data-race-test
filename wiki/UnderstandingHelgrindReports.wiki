@@ -191,6 +191,7 @@ In the following test we have many memory accesses and much less obvious race (o
 
 == Running Helgrind == 
 {{{
+% valgrind --tool=helgrind ./a.out 302
 ==29853== Thread #2 was created
 ...
 ==29853== Thread #4 was created
@@ -383,12 +384,115 @@ we can not report a race untill access 6 since reading shared data w/o a lock is
 
 
 =Using annotations (when the data race happens once)=
-TODO
+Ok, now we know how to analyze races that happen twice (according to TODO 80% of races do happen twice).
+But what shall we do if a race never repeats? 
+
+In some cases, source code annotations and a second run of Helgrind helps! 
+
+== Source code == 
+Suppose we have a real large application and some memory 
+location is accessed once w/o a proper synchronization 
+(and many times with proper synchronization).
+How to find this unsynchronized access?
+
+{{{
+3694 int     GLOB = 0;
+3695
+3696 Mutex MU;
+3697 void Worker1() { CHECK(GLOB >= 0); }
+3698 void Worker2() { MU.Lock(); GLOB=1;  MU.Unlock();}
+3699
+3700 void Run() {
+3701   printf("test303: a race that needs annotations.\n");
+3702   ANNOTATE_TRACE_MEMORY(&GLOB);
+3703   MyThreadArray t(Worker1, Worker2);
+3704   t.Start();
+3705   t.Join();
+3706 }
+}}}
+
+
+== Running Helgrind == 
+{{{
+% valgrind --tool=helgrind ./a.out 303
+==11115== Thread #2 was created
+...
+==11115== Thread #3 was created
+...
+==11115== T3: Possible data race during write of size 4 at 0x619BDC
+==11115==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
+==11115==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==11115==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==11115==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==11115==   old state = {Read; #SS=1; #LS=0; S2/T2}
+==11115==   new state = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
+==11115==   Location 0x619BDC has never been protected by any lock
+==11115==   Address 0x619BDC is 0 bytes inside data symbol "_ZN7test3034GLOBE"
+}}}
+
+==Annotating the source code and rerunning Helgrind== 
+The report gave us the racey memory location 
+(in this case it is a global variable, 
+but it could be a field in a heap allocated structure or anything else). 
+In many cases the simplets way to analyze the race is to annotate the racey address 
+and rerun Helgrind with `--trace-level=2`.
+
+Note that our example is already annotated: 
+{{{
+3702   ANNOTATE_TRACE_MEMORY(&GLOB);
+}}}
+The annotation is an executable code and should be inserted before the first use of this memory location (when possible).
+
+{{{
+% valgrind --tool=helgrind --trace-level=2 ./a.out 303
+==13317== ENABLED TRACE {{{: 0x619BDC; S1/T1
+==13317==    at 0x4A0AD1D: AnnotateTraceMemory /home/kcc/valgrind/hgdev/helgrind/hg_annotations.c:267
+==13317==    by 0x404BA5: test303::Run() racecheck_unittest.cc:3702
+==13317==    by 0x40A4CE: main racecheck_unittest.cc:144
+==13317== }}}
+...
+==13317== TRACE {{{: Access = {0x619BDC S2/T2 read} State = {Read; #SS=1; #LS=0; S2/T2}
+==13317==  Access stack trace:
+==13317==    at 0x401BEE: test303::Worker1() racecheck_unittest.cc:3697
+==13317==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==13317==  Locks held:
+==13317==    None
+==13317== }}}
+...
+==13317== TRACE {{{: Access = {0x619BDC S4/T3 write} State = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
+==13317==  Access stack trace:
+==13317==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
+==13317==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==13317==  Locks held:
+==13317==    L:0x402118030/0x619C10
+==13317==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
+==13317==    by 0x40E110: Mutex::Lock() thread_wrappers_pthread.h:156
+==13317==    by 0x40461D: test303::Worker2() racecheck_unittest.cc:3698
+==13317==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
+==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
+==13317== }}}
+...
+==13317== T3: Possible data race during write of size 4 at 0x619BDC
+==13317==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
+...
+}}}
+
+So, we see the access traces on each access after 
+the statement `ANNOTATE_TRACE_MEMORY(&GLOB);` has been executed. 
+
+Looking at these two traces we see that the first access was made 
+while not holding any lock. We are done! 
+
 
 =Using segments (when the data race happens once and annotations do not help)=
 TODO
 
 =Possible improvements=
-  * Implement Helgrind client requests to attach symbolic names to threads and locks. 
-  * TODO
+* Implement Helgrind client requests to attach symbolic names to threads and locks. 
+* TODO
 
