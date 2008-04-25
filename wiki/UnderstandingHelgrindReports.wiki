@@ -151,10 +151,10 @@ The last line shows us the debug information for the memory location. If we are 
 === Trace === 
 Once a data race has been reported, Helgrind turns on *tracing* for this particular memory location. 
 The trace contains 
-* Access information: `Access = {0x6196F4 S4/T3 write}`
-* State of the memory location (right after the access): `State = {Write; #SS=1; #LS=0; S4/T3}`
+* Access information: `Access = {0x6196F4 S4/T3 write}` (address, segment/thread, access type)
+* State of the memory location (right after the access): `State = {Write; #SS=1; #LS=0; S4/T3}` (See MSMProp1).
 * Access stack trace (context).
-* List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen).
+* List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
 
 {{{
 ==21787== TRACE {{{: Access = {0x6197D4 S7/T4 write} State = {Write; #SS=1; #LS=1; S7/T4}
