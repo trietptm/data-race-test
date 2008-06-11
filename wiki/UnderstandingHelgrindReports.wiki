@@ -1,4 +1,4 @@
-﻿#summary Helgrind reports explained on examples 
+﻿#summary Helgrind reports explained on examples
 
 The goal of this page is to explain users how to read and understand the Helgrind reports.
 
@@ -324,7 +324,7 @@ Each trace contains:
   * Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
   * State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
   * Access stack trace (context).
-  * List of locks held during the access (if the access is `read`, RW- and R-locks are showen; for `write` only RW-locks are showen). For each lock the report shows the context of the lock acquisition.
+  * List of locks held during the access (if the access is `read`, RW- and R-locks are shown; for `write` only RW-locks are shown). For each lock the report shows the context of the lock acquisition.
 
 In this test case we are lucky -- the race happened twice: 
 {{{
@@ -717,4 +717,3 @@ TODO
 =Possible improvements=
   * Implement Helgrind client requests to attach symbolic names to threads and locks. 
   * TODO
-
