@@ -39,7 +39,8 @@ int main() {
 
 {{{
 % g++ -g race_checker.cc race_checker_unittest.cc -lpthread
-% ./a.out
+}}}
+{{{
 % RACECHECKER=1 ./a.out 2>&1 | head -19  | ./symbolize.py | c++filt
 Race found between these points
 === writer:
