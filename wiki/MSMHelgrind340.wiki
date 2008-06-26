@@ -41,7 +41,7 @@ States:
 }}}
 
 
-Compared to [MSMHelgrind] this state machine fixes at least these tests: 
+Compared to [MSMHelgrind MSMHelgrind 3.3.0] this state machine fixes at least these tests: 
   * False negative *test10*. 
   * False positives *test11*, *test12*, *test13*, *test14*, *test16*, *test17*, *test32*, *test39*, *test40*, *test44*.
 This state machine still has several false positives (*test28, test29, test36, test38, test46*).
