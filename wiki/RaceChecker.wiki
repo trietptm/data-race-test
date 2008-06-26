@@ -1,4 +1,4 @@
-﻿#summary The !RaceChecker class -- helps confirming data races.
+﻿#summary The RaceChecker class -- helps confirming data races.
 
 The !RaceChecker class helps confirming data races, e.g. those detected by Helgrind. 
 
