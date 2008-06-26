@@ -3,7 +3,7 @@
 For legend see  MemoryStateMachines. 
 
 
-    http://data-race-test.googlecode.com/svn/trunk/msm/prop1.png
+    http://data-race-test.googlecode.com/svn/trunk/msm/helgrind340.png
 States: 
   * New -- the memory has been just allocated and never accessed since that. 
   * RdO (Read only) -- the memory has been read by one or more threads.
