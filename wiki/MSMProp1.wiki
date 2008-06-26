@@ -1,5 +1,7 @@
 ﻿#summary Proposed memory state machine, MSMProp1
 
+This state machine has been accepted to the Helgrind develoment branch and renamed to [MSMHelgrind340 MSMHelgrind 3.4.0]
+
 For legend see  MemoryStateMachines. 
 
 
