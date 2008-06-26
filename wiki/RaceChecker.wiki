@@ -2,5 +2,5 @@
 
 
 See [http://code.google.com/p/data-race-test/source/browse/trunk/race_checker/race_checker.h race_checker.h] and 
-[http://code.google.com/p/data-race-test/source/browse/trunk/race_checker all race_checker files]
+[http://code.google.com/p/data-race-test/source/browse/trunk/race_checker all race checker files]
 
