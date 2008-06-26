@@ -3,8 +3,8 @@
 On this page I would like to collect links to various known state machines for Eraser-like algorithms and discuss some new approaches. 
 
 See: 
-  * [MSMHelgrind]
-  * [MSMProp1]
+  * [MSMHelgrind    MSMHelgrind 3.3.0]
+  * [MSMHelgrind340 MSMHelgrind 3.4.0]
   * [MSMUnika]
 
 Comparison of the state machines is at RacecheckUnittest. 
