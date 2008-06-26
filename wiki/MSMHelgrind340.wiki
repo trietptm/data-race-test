@@ -5,7 +5,7 @@ For legend see  MemoryStateMachines.
 
     http://data-race-test.googlecode.com/svn/trunk/msm/helgrind340.png
 States: 
-  * New -- the memory has been just allocated and never accessed since that. 
+  * New -- the memory has been allocated and never accessed since that. 
   * RdO (Read only) -- the memory has been read by one or more threads.
   * Mod (Modified) -- the memory has been accessed by one or more threads and at least one access was a write.
 
