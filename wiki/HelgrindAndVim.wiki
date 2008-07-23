@@ -19,4 +19,4 @@ nnoremap ;f :call Gfw()<cr>
 Then, open the Helgrind log file and split the window vertically (using :vsplit).
 Move the cursor the the {{{file_name.cc:1234}}} and type {{{;f}}}.
 
-http://data-race-test.googlecode.com/svn/wiki/helgrind-vim.jpg
+http://data-race-test.googlecode.com/svn/wiki/helgrind-vim.png
