@@ -2,6 +2,21 @@
 
 You may use [http://www.vim.org vim] to simplify browsing the Helgrind reports.
 
+First, add this to your vimrc: 
+{{{
+function! Gfw()
+  let b = bufnr('')
+  normal mz
+  let b = bufnr('')
+  wincmd w
+  exe "b " . b
+  normal `zgF
+endfun
 
+nnoremap ;f :call Gfw()<cr>
+}}}
+
+Then, open the Helgrind log file and split the window vertically (using :vsplit).
+Move the cursor the the {{{file_name.cc:1234}}} and type {;f}.
 
 http://data-race-test.googlecode.com/svn/wiki/helgrind-vim.png
