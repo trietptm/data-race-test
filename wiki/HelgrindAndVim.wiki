@@ -1,0 +1,7 @@
+#summary Using Vim to analyze Helgrind reports
+
+You may use [http://www.vim.org vim] to simplify browsing the Helgrind reports.
+
+
+
+http://data-race-test.googlecode.com/svn/wiki/helgrind-vim.png
