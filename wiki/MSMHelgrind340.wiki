@@ -49,4 +49,4 @@ See tests in RacecheckUnittest.
 
 Tests *test16, test17, test39* pass with this machine only with BarrierSupport.  
 
-Implementation: the segments and segment sets can be replaces with just vector time stamp (will try this soon). This will certainly improve performance, but I find segments and segment sets simpler to understand. 
+*Implementation*: the segments and segment sets can be replaces with just vector time stamp (will try this soon). This will certainly improve performance, but I find segments and segment sets simpler to understand. 
