@@ -1,4 +1,4 @@
-﻿#summary Memory state machine in the Helgrind development branch, will be part of Valgrind 3.4.0
+﻿#summary Memory state machine in the Helgrind development branch, may become a part of Valgrind 3.4.0
 
 For legend see  MemoryStateMachines. 
 
@@ -48,3 +48,5 @@ This state machine still has several false positives (*test28, test29, test36, t
 See tests in RacecheckUnittest. 
 
 Tests *test16, test17, test39* pass with this machine only with BarrierSupport.  
+
+Implementation: the segments and segment sets can be replaces with just vector time stamp (will try this soon). This will certainly improve performance, but I find segments and segment sets simpler to understand. 
