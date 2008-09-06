@@ -16,7 +16,29 @@ All the examples on this page are taken from RacecheckUnittest.
 
 Unfortunately or not, but Helgrind users have to understand how the tool works. 
 
-// http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
+Helgrind is a dynamic data race detector, meaning that it runs the application being tested. 
+While running an application Helgrind observes certain events, each event happening in some thread. 
+
+The events are: 
+  * Memory access
+    * Read  {T,A,size}
+    * Write {T,A,size}
+  * Locking event 
+    * WriteLock {T,L}
+    * ReaderLock {T,L}
+  * Happens-before event 
+    * Signal {T, H}
+    * Wait {T,H}
+
+Legend: 
+  * T -- a thread 
+  * A -- a memory address
+  * size -- a size of memory access (usually one of 1, 2, 4, 8)
+  * L -- a lock object (actually just an address)
+  * H -- a happens-before synchronization object (again, just an address).
+
+
+ http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
 
 =Simple example=
 ==Source code==
