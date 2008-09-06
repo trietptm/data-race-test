@@ -11,9 +11,12 @@ Here we show several exemplary races with corresponding reports and explain how 
 All the examples on this page are taken from RacecheckUnittest. 
 
 =Helgrind basics=
+
+*Under construction!*
+
 Unfortunately or not, but Helgrind users have to understand how the tool works. 
 
-http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
+// http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
 
 =Simple example=
 ==Source code==
