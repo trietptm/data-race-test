@@ -34,7 +34,7 @@ Legend:
   * T -- a thread 
   * A -- a memory address
   * size -- a size of memory access (usually one of 1, 2, 4, 8)
-  * L -- a lock object (actually just an address)
+  * L -- a lock object (actually just an address). For example, this could be a `pthread_mutex_t` object.
   * H -- a happens-before synchronization object (again, just an address).
 
 An example: 
