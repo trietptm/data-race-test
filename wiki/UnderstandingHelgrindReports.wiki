@@ -41,7 +41,7 @@ An example:
 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
 
- In this example we have two thread, *T1* and *T2*, one happens-before synchronization object *H*, onle locking object *L* and two memory locations, *A* and *B*.
+ In this example we have two threads, *T1* and *T2*, one happens-before synchronization object *H*, one locking object *L* and two memory locations, *A* and *B*.
 
 
 =Simple example=
