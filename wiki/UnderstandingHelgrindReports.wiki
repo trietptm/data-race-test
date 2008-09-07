@@ -42,8 +42,11 @@ An example:
 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
 
-In this example we have two threads, *T1* and *T2*, one happens-before synchronization object *H*, one locking object *L* and two memory locations, *A* and *B*. <BR>
-*B* is proteceted with lock *L*. *A* is protected with *H*. 
+In this example we have two threads, *T1* and *T2*, one happens-before synchronization object *H*, one locking object *L* and two memory locations, *A* and *B*. 
+
+*B* is proteceted with lock *L*. 
+
+*A* is protected with *H*. 
 
 
 =Simple example=
