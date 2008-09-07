@@ -46,7 +46,7 @@ In this example we have two threads, *T1* and *T2*, one happens-before synchroni
 
 *B* is proteceted with lock *L*. 
 
-*A* is protected with *H*. 
+Ownership of *A* is passed between threads using *H*. 
 
 
 =Simple example=
