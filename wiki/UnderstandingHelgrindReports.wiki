@@ -26,6 +26,7 @@ The events are:
   * Locking event 
     * !WriteLock {T,L}
     * !ReaderLock {T,L}
+	* Unlock {T,L}
   * Happens-before event 
     * Signal {T, H}
     * Wait {T,H}
