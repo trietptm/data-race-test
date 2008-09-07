@@ -43,10 +43,11 @@ An example:
  http://data-race-test.googlecode.com/svn/trunk/msm/exa1.png
 
 In this example we have two threads, *T1* and *T2*, one happens-before synchronization object *H*, one locking object *L* and two memory locations, *A* and *B*. 
-
 *B* is proteceted with lock *L*. 
-
 Ownership of *A* is passed between threads using *H*. 
+
+All *memory access* events of one thread that occur between two *happens-before* events form a *segment*. 
+ http://data-race-test.googlecode.com/svn/trunk/msm/exa2.png
 
 
 =Simple example=
