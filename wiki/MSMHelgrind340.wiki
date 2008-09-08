@@ -9,7 +9,7 @@ A *shadow-word* for each memory location is in one of these states:
 
 When a shadow-word is in Mod or RdO state it contains a *segment set* and a *lock set*.
 
-Each memory acess updates the state according to the following rules: 
+Each memory access updates the state according to the following rules: 
 
 If the shadow word is in state *New*, the state becomes either *Mod* (if the access is a write) or *RdO* (otherwise).
 The segment set is set to a singleton segment containing the current segment of the accessing thread.
