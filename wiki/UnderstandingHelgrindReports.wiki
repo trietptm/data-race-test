@@ -58,6 +58,10 @@ In this example:
 Happens-before relation is transitive: in the example below, we have HB(Seg1, Seg7).
  http://data-race-test.googlecode.com/svn/trunk/msm/exa3.png
 
+One Signal may be connected to multiple Wait events and vice versa. 
+ http://data-race-test.googlecode.com/svn/trunk/msm/exa4.png
+
+
 TODO: this section is not complete.
 
 =Simple example=
