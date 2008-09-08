@@ -16,7 +16,7 @@ The segment set is set to a singleton segment containing the current segment of 
 The lock set is set to the current lock set of the accessing thred (RW-lockset if the access is a write, R-lockset otherwise).
 
 For *Mod* and *RdO* states, if the current segment of the accessing thread happens-after all segments in the shadow word's segment set, 
-the state is changed as if it was *New* before the access. 
+the state is changed in the same way as if it was *New* before the access. 
 
 Otherwise: 
   * The current segment is inserted into the shadow word's segment set.
@@ -24,6 +24,11 @@ Otherwise:
   * The lock set becomes the intersection of the previous shadow word's lock set and the current thread's lock set.
   * If the access is a Write, the state is changed to *Mod*.
 
+
+The race is reported when the following three statements are true: 
+  * The state is *Mod*
+  * The segment set contains at least two segments.
+  * The lock set is empty.
 
 =Formal digram=
 For legend see  MemoryStateMachines. 
