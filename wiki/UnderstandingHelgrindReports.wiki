@@ -61,7 +61,7 @@ Happens-before relation is transitive: in the example below, we have HB(Seg1, Se
 One Signal may be connected to multiple Wait events and vice versa. 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa4.png
 
-A *Barrier* is simply a situation when every thread signals and then every signal waits. 
+A *Barrier* is simply a situation when every thread signals and then every thread waits. 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa5.png
 
 
