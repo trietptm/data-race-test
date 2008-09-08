@@ -15,7 +15,7 @@ The 'official' Helgrind behaves a bit differently.
 
 =Helgrind basics=
 
-*Under construction!*
+TODO *This section is under construction!*
 
 Unfortunately or not, but Helgrind users have to understand how the tool works. 
 
@@ -86,7 +86,6 @@ The precise desciprtion of the current state machine is at [MSMHelgrind340].
 
 
 
-TODO: this section is not complete.
 
 =Simple example=
 In this section we show simple examples of racey code and the reports produced by Helgrind.
