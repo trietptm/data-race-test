@@ -73,15 +73,17 @@ A *Barrier* is simply a situation where every thread signals and then every thre
 
 == Lock set == 
 Each thread maintains a *lock set* -- a set of locks currently held. 
-More precisely, there are two locksets: *RW-lockset* (contains locks that are held in write mode)) and *R-lockset* (reader locks).
-*R-lockset* is a supreset of *RW-lockset*. 
+More precisely, there are two locksets: *RW-lockset* (contains locks that are held in write mode) and *R-lockset* (reader locks).
+*R-lockset* is a supreset of *RW-lockset*.
 
 == State machine == 
 For each memory location accessed during the execution, Helgrind maintains a *shadow-word*, 
-a 64-bit value that encrypts the information about previous accessed to this memory. Currently, the shadow-word contains this information: 
-  * Lock set -- a set of locks.
-  * Segment set  -- a set of segments.
-  * Mod/RdO -- Mod stands for *modified*, RdO stands for read-only.
+a 64-bit value that encrypts the information about previous accessed to this memory. 
+Each memory access changes the shadow-word according to certain rules (the set of rules is called  a *state machine*). 
+The contents of the shadow words and the state machine is a subject to change.
+The precise desciprtion of the current state machine is at [MSMHelgrind340].
+
+
 
 
 TODO: this section is not complete.
