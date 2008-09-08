@@ -16,6 +16,7 @@ All the examples on this page are taken from RacecheckUnittest.
 
 Unfortunately or not, but Helgrind users have to understand how the tool works. 
 
+== Events == 
 Helgrind is a dynamic data race detector, meaning that it executes the application being tested. 
 While executing an application Helgrind observes certain events, each event happening in some thread. 
 
@@ -46,6 +47,8 @@ In this example we have two threads, *T1* and *T2*, one happens-before synchroni
 *B* is proteceted with lock *L*. 
 Ownership of *A* is passed between threads using *H*. 
 
+== Happens-before ==
+
 All *memory access* events of one thread that occur between *happens-before* events form a *segment*. 
 We say that that segment S1 happens-before segment S2 (*HB(S1,S2)*) if there is an ordering constraint on these two segments such that the first event of S2 will occur after the last event of S1. For any two segments that belong to the same thread, a segment with the smaller number happens-before a segmnet with the greater number.
 A pair of  *Signal* and *Wait* events whith a matching synchronization object *H* creates a so called *happens-before* arc. All segments that occured before *Signal* in the signalling thread happen-before all segments that occur after *Wait* in the wating thread. 
@@ -69,6 +72,7 @@ A *Barrier* is simply a situation when every thread signals and then every threa
 TODO: this section is not complete.
 
 =Simple example=
+In this section we show simple examples of racey code and the reports produced for them by Helgrind.
 ==Source code==
 The simplest example of a data race is *test301* of RacecheckUnittest. 
 {{{
