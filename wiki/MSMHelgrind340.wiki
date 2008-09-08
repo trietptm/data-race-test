@@ -1,21 +1,21 @@
 ﻿#summary Memory state machine in the Helgrind development branch, may become a part of Valgrind 3.4.0
 
-= Human redable decription = 
+= Human redable description = 
 
 A *shadow-word* for each memory location is in one of these states: 
   * *New* -- the memory has been allocated and never accessed since that. When memory is freed it returns to this state.
   * *RdO* (Read only) -- the memory has been read by one or more threads.
   * *Mod* (Modified) -- the memory has been accessed by one or more threads and at least one access was a write.
 
-When a shadow-word is in Mod or !RdO state it contains a *segment set* and a *lock set*.
+When a shadow-word is in Mod or RdO state it contains a *segment set* and a *lock set*.
 
 Each memory acess updates the state according to the following rules: 
 
-If the shadow word is in state *New*, the state becomes either *Mod* (if the access is a write) or *!RdO* (otherwise).
+If the shadow word is in state *New*, the state becomes either *Mod* (if the access is a write) or *RdO* (otherwise).
 The segment set is set to a singleton segment containing the current segment of the accessing thread.
 The lock set is set to the current lock set of the accessing thred (RW-lockset if the access is a write, R-lockset otherwise).
 
-For *Mod* and *!RdO* states, if the current segment of the accessing thread happens-after all segments in the shadow word's segment set, 
+For *Mod* and *RdO* states, if the current segment of the accessing thread happens-after all segments in the shadow word's segment set, 
 the state is changed as if it was *New* before the access. 
 
 Otherwise: 
