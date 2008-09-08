@@ -1,13 +1,15 @@
 ﻿#summary Memory state machine in the Helgrind development branch, may become a part of Valgrind 3.4.0
 
-For legend see  MemoryStateMachines. 
 
 
-    http://data-race-test.googlecode.com/svn/trunk/msm/helgrind340.png
 States: 
-  * *New* -- the memory has been allocated and never accessed since that. 
+  * *New* -- the memory has been allocated and never accessed since that. When memory is freed it returns to this state.
   * *RdO* (Read only) -- the memory has been read by one or more threads.
   * *Mod* (Modified) -- the memory has been accessed by one or more threads and at least one access was a write.
+
+==Formal digram==
+For legend see  MemoryStateMachines. 
+http://data-race-test.googlecode.com/svn/trunk/msm/helgrind340.png
 
 || *Edge* || *Old state* || *Access type*     ||  *Condition*     || *New state* || *Segment set*     || *Lock set*      || *Race if ...* ||
 || E1     || New         || read              ||  -               || RdO         || {currS}           || {currLS}        || - ||
@@ -40,6 +42,8 @@ States:
     LS = newLS
 }}}
 
+
+==Comments==
 
 Compared to [MSMHelgrind MSMHelgrind 3.3.0] this state machine fixes at least these tests: 
   * False negative *test10*. 
