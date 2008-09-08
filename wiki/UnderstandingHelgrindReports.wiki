@@ -10,6 +10,9 @@ Here we show several exemplary races with corresponding reports and explain how 
 
 All the examples on this page are taken from RacecheckUnittest. 
 
+This page describes the bahavior of the Helgrind variant available from http://data-race-test.googlecode.com/svn/trunk/helgrind. 
+The 'official' Helgrind behaves a bit differently.
+
 =Helgrind basics=
 
 *Under construction!*
@@ -64,15 +67,27 @@ Happens-before relation is transitive: in the example below, we have HB(Seg1, Se
 One Signal may be connected to multiple Wait events and vice versa. 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa4.png
 
-A *Barrier* is simply a situation when every thread signals and then every thread waits. 
+A *Barrier* is simply a situation where every thread signals and then every thread waits. 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa5.png
 
+
+== Lock set == 
+Each thread maintains a *lock set* -- a set of locks currently held. 
+More precisely, there are two locksets: *RW-lockset* (contains locks that are held in write mode)) and *R-lockset* (reader locks).
+*R-lockset* is a supreset of *RW-lockset*. 
+
+== State machine == 
+For each memory location accessed during the execution, Helgrind maintains a *shadow-word*, 
+a 64-bit value that encrypts the information about previous accessed to this memory. Currently, the shadow-word contains this information: 
+  * Lock set -- a set of locks.
+  * Segment set  -- a set of segments.
+  * Mod/RdO -- Mod stands for *modified*, RdO stands for read-only.
 
 
 TODO: this section is not complete.
 
 =Simple example=
-In this section we show simple examples of racey code and the reports produced for them by Helgrind.
+In this section we show simple examples of racey code and the reports produced by Helgrind.
 ==Source code==
 The simplest example of a data race is *test301* of RacecheckUnittest. 
 {{{
