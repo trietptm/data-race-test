@@ -53,7 +53,7 @@ Ownership of *A* is passed between threads using *H*.
 == Happens-before ==
 
 All *memory access* events of one thread that occur between *happens-before* events form a *segment*. 
-We say that that segment S1 happens-before segment S2 (*HB(S1,S2)*) if there is an ordering constraint on these two segments such that the first event of S2 will occur after the last event of S1. For any two segments that belong to the same thread, a segment with the smaller number happens-before a segmnet with the greater number.
+We say that that segment S1 happens-before segment S2 (*HB(S1,S2)*) if there is an ordering constraint on these two segments such that the first event of S2 will occur after the last event of S1. For any two segments that belong to the same thread, a segment with the smaller number happens-before a segment with the greater number.
 A pair of  *Signal* and *Wait* events whith a matching synchronization object *H* creates a so called *happens-before* arc. All segments that occured before *Signal* in the signalling thread happen-before all segments that occur after *Wait* in the wating thread. 
  http://data-race-test.googlecode.com/svn/trunk/msm/exa2.png
 In this example: 
