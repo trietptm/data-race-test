@@ -491,38 +491,40 @@ location is accessed once w/o a proper synchronization
 How to find this unsynchronized access?
 
 {{{
-3694 int     GLOB = 0;
-3695
-3696 Mutex MU;
-3697 void Worker1() { CHECK(GLOB >= 0); }
-3698 void Worker2() { MU.Lock(); GLOB=1;  MU.Unlock();}
-3699
-3700 void Run() {
-3701   printf("test303: a race that needs annotations.\n");
-3702   ANNOTATE_TRACE_MEMORY(&GLOB);
-3703   MyThreadArray t(Worker1, Worker2);
-3704   t.Start();
-3705   t.Join();
-3706 }
+4670 int     GLOB = 0;
+4671
+4672 Mutex MU;
+4673 void Worker1() { CHECK(GLOB >= 0); }
+4674 void Worker2() { MU.Lock(); GLOB=1;  MU.Unlock();}
+4675
+4676 void Run() {
+4677   printf("test303: a race that needs annotations.\n");
+4678   ANNOTATE_TRACE_MEMORY(&GLOB);
+4679   MyThreadArray t(Worker1, Worker2);
+4680   t.Start();
+4681   t.Join();
+4682 }
 }}}
 
 
 == Running Helgrind == 
 {{{
 % valgrind --tool=helgrind ./a.out 303
-==11115== Thread #2 was created
+==9432== Thread T3 was created
 ...
-==11115== Thread #3 was created
+==9432== Thread T4 was created
 ...
-==11115== T3: Possible data race during write of size 4 at 0x619BDC
-==11115==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
-==11115==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==11115==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==11115==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==11115==   old state = {Read; #SS=1; #LS=0; S2/T2}
-==11115==   new state = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
-==11115==   Location 0x619BDC has never been protected by any lock
-==11115==   Address 0x619BDC is 0 bytes inside data symbol "_ZN7test3034GLOBE"
+==9432== T4: Possible data race during write of size 4 at 0x62791C
+==9432==    at 0x405A4A: test303::Worker2() racecheck_unittest.cc:4674
+==9432==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==9432==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==9432==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==9432==   old state = {RdO; #LS=0; #SS=1; T3/S5}
+==9432==   new state = {Mod; #LS=0; #SS=2; T3/S5, T4/S7}
+==9432==   Location 0x62791C has never been protected by any lock
+==9432==   Address 0x62791C is 0 bytes inside data symbol "_ZN7test3034GLOBE"
+...
+==9432== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 3 from 1)
 }}}
 
 ==Annotating the source code and rerunning Helgrind== 
@@ -534,47 +536,48 @@ and rerun Helgrind with `--trace-level=2`.
 
 Note that our example is already annotated: 
 {{{
-3702   ANNOTATE_TRACE_MEMORY(&GLOB);
+4678   ANNOTATE_TRACE_MEMORY(&GLOB);
 }}}
 The annotation is an executable code and should be inserted before the first use of this memory location (when possible).
 
 So, let's rerun Helgrind:
 {{{
 % valgrind --tool=helgrind --trace-level=2 ./a.out 303
-==13317== ENABLED TRACE {{{: 0x619BDC; S1/T1
-==13317==    at 0x4A0AD1D: AnnotateTraceMemory hg_annotations.c:267
-==13317==    by 0x404BA5: test303::Run() racecheck_unittest.cc:3702
-==13317==    by 0x40A4CE: main racecheck_unittest.cc:144
-==13317== }}}
+==9536== ENABLED TRACE {{{: 0x62793C; S2/T1
+==9536==    at 0x92DC6E5: AnnotateTraceMemory hg_annotations.c:285
+==9536==    by 0x408CF8: test303::Run() racecheck_unittest.cc:4678
+==9536==    by 0x4170BA: Test::Run() racecheck_unittest.cc:142
+==9536==    by 0x40F099: main racecheck_unittest.cc:192
+==9536== }}}
 ...
-==13317== TRACE {{{: Access = {0x619BDC S2/T2 read} State = {Read; #SS=1; #LS=0; S2/T2}
-==13317==  Access stack trace:
-==13317==    at 0x401BEE: test303::Worker1() racecheck_unittest.cc:3697
-==13317==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==13317==  Locks held:
-==13317==    None
-==13317== }}}
+==9536== TRACE[1] {{{: Access{T3/S5 rd 0x62793C} -> new State{RdO; #LS=0; #SS=1; T3/S5}
+==9536==  Access stack trace:
+==9536==    at 0x402100: test303::Worker1() racecheck_unittest.cc:4673
+==9536==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==9536==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==9536==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==9536==  Locks held:
+==9536==    None
+==9536== }}}
 ...
-==13317== TRACE {{{: Access = {0x619BDC S4/T3 write} State = {Write; #SS=2; #LS=0; S2/T2, S4/T3}
-==13317==  Access stack trace:
-==13317==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
-==13317==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==13317==  Locks held:
-==13317==    L:0x402118030/0x619C10
-==13317==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
-==13317==    by 0x40E110: Mutex::Lock() thread_wrappers_pthread.h:156
-==13317==    by 0x40461D: test303::Worker2() racecheck_unittest.cc:3698
-==13317==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==13317==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==13317==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==13317== }}}
+==9536== TRACE[2] {{{: Access{T4/S7 wr 0x62793C} -> new State{Mod; #LS=0; #SS=2; T3/S5, T4/S7}
+==9536==  Access stack trace:
+==9536==    at 0x405A4A: test303::Worker2() racecheck_unittest.cc:4674
+==9536==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==9536==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==9536==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==9536==  Locks held:
+==9536==    Lock located at 0x627970 and first observed
+==9536==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==9536==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==9536==    by 0x405A49: test303::Worker2() racecheck_unittest.cc:4674
+==9536==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==9536==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==9536==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==9536== }}}
 ...
-==13317== T3: Possible data race during write of size 4 at 0x619BDC
-==13317==    at 0x40461E: test303::Worker2() racecheck_unittest.cc:3698
+==9536== T4: Possible data race during write of size 4 at 0x62793C
+==9536==    at 0x405A4A: test303::Worker2() racecheck_unittest.cc:4674
 ...
 }}}
 
