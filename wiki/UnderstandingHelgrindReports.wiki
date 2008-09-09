@@ -391,7 +391,7 @@ In the following test we have many memory accesses and much less obvious race (o
 ==7969==
 ==7969==
 ==7969== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 7 from 3)
-
+}}}
 
 == Understanding the traces ==
 So, the race report itself gives us very little information: 
