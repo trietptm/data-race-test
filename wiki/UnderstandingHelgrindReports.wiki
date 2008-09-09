@@ -597,123 +597,90 @@ inside an STL object).
 
 == Source code == 
 {{{
-3714 string *STR;
-3715
-3716 void Worker1() {
-3717   sleep(0);
-3718   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
-3719 }
-3720 void Worker2() {
-3721   sleep(1);
-3722   CHECK(STR->length() >= 4); // Unprotected!
-3723 }
-3724 void Worker3() {
-3725   sleep(2);
-3726   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
-3727 }
-3728 void Worker4() {
-3729   sleep(3);
-3730   MU.Lock(); *STR += " + a very very long string"; MU.Unlock();
-3731 }
-3732
-3733 void Run() {
-3734   STR = new string ("The String");
-3735   printf("test304: a race where memory tracing does not work.\n");
-3736   MyThreadArray t(Worker1, Worker2, Worker3, Worker4);
-3737   t.Start();
-3738   t.Join();
-3739
-3740   printf("%s\n", STR->c_str());
-3741   delete STR;
-3742 }
+4690 string *STR;
+4691 Mutex   MU;
+4692
+4693 void Worker1() {
+4694   sleep(0);
+4695   // <will use this line below>
+4696   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+4697 }
+4698 void Worker2() {
+4699   sleep(1);
+4700   // <will use this line below>
+4701   CHECK(STR->length() >= 4); // Unprotected!
+4702 }
+4703 void Worker3() {
+4704   sleep(2);
+4705   // <will use this line below>
+4706   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+4707 }
+4708 void Worker4() {
+4709   sleep(3);
+4710   // <will use this line below>
+4711   MU.Lock(); *STR += " + a very very long string"; MU.Unlock();
+4712 }
+4713
+4714 void Run() {
+4715   STR = new string ("The String");
+4716   printf("test304: a race where memory tracing does not work.\n");
+4717   MyThreadArray t(Worker1, Worker2, Worker3, Worker4);
+4718   t.Start();
+4719   t.Join();
+4720
+4721   printf("%s\n", STR->c_str());
+4722   delete STR;
+4723 }
 }}}
 
 ==Running Helgrind==
 {{{
 % valgrind --tool=helgrind  ./a.out 304
-==17248== Thread #2 was created
-==17248==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==17248==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
-==17248==    by 0x40DFB5: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==17248==    by 0x40E013: MyThreadArray::Start() racecheck_unittest.cc:179
-==17248==    by 0x402CDF: test304::Run() racecheck_unittest.cc:3737
-==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
-==17248==
-==17248== Thread #4 was created
-==17248==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==17248==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
-==17248==    by 0x40DFB5: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==17248==    by 0x40E013: MyThreadArray::Start() racecheck_unittest.cc:179
-==17248==    by 0x402CDF: test304::Run() racecheck_unittest.cc:3737
-==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
-==17248==
-==17248== Thread #5 was created
-==17248==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==17248==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
-==17248==    by 0x40DFB5: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==17248==    by 0x40E013: MyThreadArray::Start() racecheck_unittest.cc:179
-==17248==    by 0x402CDF: test304::Run() racecheck_unittest.cc:3737
-==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
-==17248==
-==17248== T6: Possible data race during write of size 8 at 0x534D778
-==17248==    at 0x4ED69D3: std::string::reserve(unsigned long) 
-==17248==    by 0x4ED6BE5: std::string::append(char const*, unsigned long) 
-==17248==    by 0x404562: test304::Worker4() racecheck_unittest.cc:3730
-==17248==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==17248==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==17248==   old state = {Read; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
-==17248==   new state = {Write; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
-==17248==   Last consistently used lock for 0x534D778 was first observed
-==17248==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
-==17248==    by 0x40D2F1: Mutex::Mutex() thread_wrappers_pthread.h:149
-==17248==    by 0x401E44: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:85
-==17248==    by 0x402A76: _GLOBAL__I_MU racecheck_unittest.cc:3745
-==17248==    by 0x40FC69: (within a.out)
-==17248==    by 0x401552: (within a.out)
-==17248==    by 0x40FBC7: (within a.out)
-==17248==    by 0x40FC10: __libc_csu_init (in a.out)
-==17248==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
-=17248==   Location 0x534D778 is 0 bytes inside a block of size 8 alloc'd
-==17248==    at 0x4A06FF9: operator new(unsigned long) vg_replace_malloc.c:230
-==17248==    by 0x402C73: test304::Run() racecheck_unittest.cc:3734
-==17248==    by 0x40A4CE: main racecheck_unittest.cc:144
-==17248==
-==17248== TRACE ...
-==17248==  Locks held:
-==17248==    L:0x402114580/0x618950
-==17248==    at 0x4A078D5: pthread_mutex_lock /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:408
-==17248==    by 0x40E110: Mutex::Lock() thread_wrappers_pthread.h:156
-==17248==    by 0x404551: test304::Worker4() racecheck_unittest.cc:3730
-==17248==    by 0x4A0A71E: mythread_wrapper /home/kcc/valgrind/hgdev/helgrind/hg_intercepts.c:193
-==17248==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==17248==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==17248== }}}
-
+==11526== Thread T3 was created
+...
+==11526== Thread T4 was created
+...
+==11526== Thread T5 was created
+...
+==11526== T6: Possible data race during write of size 8 at 0xA1C4D00
+==11526==    at 0x97A89D3: std::string::reserve(unsigned long)
+==11526==    by 0x97A8BE5: std::string::append(char const*, unsigned long)
+==11526==    by 0x40AE04: test304::Worker4() racecheck_unittest.cc:4711
+==11526==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==11526==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==11526==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==11526==   old state = {RdO; #LS=0; #SS=4; T3/S5, T4/S9, T5/S11, T6/S13}
+==11526==   new state = {Mod; #LS=0; #SS=4; T3/S5, T4/S9, T5/S11, T6/S13}
+==11526==   Last consistently used lock for 0xA1C4D00 was first observed
+==11526==    at 0x92DBDBC: pthread_mutex_init hg_intercepts.c:346
+==11526==    by 0x414DC7: Mutex::Mutex() thread_wrappers_pthread.h:149
+==11526==    by 0x404407: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:4691
+...
+==11526==   Location 0xA1C4D00 is 0 bytes inside a block of size 8 alloc'd
+==11526==    at 0x92D86F7: operator new(unsigned long)
+==11526==    by 0x408D57: test304::Run() racecheck_unittest.cc:4715
+==11526==    by 0x41706A: Test::Run() racecheck_unittest.cc:142
+==11526==    by 0x40F049: main racecheck_unittest.cc:192
+==11526==
+...
 }}}
 
 The key information in the report is contained in these two lines: 
 {{{
-==17248==   old state = {Read; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
-==17248==   new state = {Write; #SS=4; #LS=0; S2/T2, S7/T4, S9/T5, S11/T6}
+==11526==   old state = {RdO; #LS=0; #SS=4; T3/S5, T4/S9, T5/S11, T6/S13}
+==11526==   new state = {Mod; #LS=0; #SS=4; T3/S5, T4/S9, T5/S11, T6/S13}
 }}}
 These lines should be read like this: 
-  * The memory location has been accessed from four different threads (T2, T4, T5, T6).
+  * The memory location has been accessed from four different threads (T3, T4, T5, T6).
   * All but the last accesses were reads.
   * The accesses do not share any common lock. 
 
 Does this information help us? Not really. 
 We know more or less everything about the last access (the context and the locks held)
 but the last access seems to be correctly synchronized.
-There were three other accesses in threads T2, T4, T5, and one of them is buggy. 
+There were three other accesses in threads T3, T4, T5, and one of them is buggy. 
 If we knew the context of these 3 accesses, it would be possible to analyze the source code manually and check the synchronization. 
-But the object might be used in hundreds of different places throghout the program! 
+But the object might be used in hundreds of different places throughout the program! 
 
 
 ==Rerunning with more segments==
@@ -723,79 +690,92 @@ We either need to improve this technique significantly, or create something else
 Suppose we can find all accesses to the racey object. 
 Then we chould annotate each such access with `ANNOTATE_CONDVAR_SIGNAL(some_constant)`. Like this: 
 {{{
-3716 void Worker1() {
-3717   sleep(0);
-3718   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
-3719   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
-3720 }
-3721 void Worker2() {
-3722   sleep(1);
-3723   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
-3724   CHECK(STR->length() >= 4); // Unprotected!
-3725 }
-3726 void Worker3() {
-3727   sleep(2);
-3728   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
-3729   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
-3730 }
-3731 void Worker4() {
-3732   sleep(3);
-3733   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
-3734   MU.Lock(); *STR += " + a very very long string"; MU.Unlock();
-3735 }
+4690 string *STR;
+4691 Mutex   MU;
+4692
+4693 void Worker1() {
+4694   sleep(0);
+4695   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+4696   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+4697 }
+4698 void Worker2() {
+4699   sleep(1);
+4700   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+4701   CHECK(STR->length() >= 4); // Unprotected!
+4702 }
+4703 void Worker3() {
+4704   sleep(2);
+4705   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+4706   MU.Lock(); CHECK(STR->length() >= 4); MU.Unlock();
+4707 }
+4708 void Worker4() {
+4709   sleep(3);
+4710   ANNOTATE_CONDVAR_SIGNAL((void*)0xDEADBEAF);
+4711   MU.Lock(); *STR += " + a very very long string"; MU.Unlock();
+4712 }
+4713
+4714 void Run() {
+4715   STR = new string ("The String");
+4716   printf("test304: a race where memory tracing does not work.\n");
+4717   MyThreadArray t(Worker1, Worker2, Worker3, Worker4);
+4718   t.Start();
+4719   t.Join();
+4720
+4721   printf("%s\n", STR->c_str());
+4722   delete STR;
+4723 }
 }}}
 
 And rerun Helgrind: 
 {{{
 % valgrind --tool=helgrind  ./a.out 304
-==21495== T6: Possible data race during write of size 8 at 0x534D778
-==21495==    at 0x4ED69D3: std::string::reserve(unsigned long) 
-==21495==    by 0x4ED6BE5: std::string::append(char const*, unsigned long) 
-==21495==    by 0x4045E4: test304::Worker4() racecheck_unittest.cc:3734
-==21495==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==21495==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21495==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21495==   old state = {Read; #SS=4; #LS=0; S4/T2, S16/T4, S19/T5, S24/T6}
-==21495==   new state = {Write; #SS=4; #LS=0; S4/T2, S16/T4, S19/T5, S24/T6}
-==21495==  SS4/T2:
-==21495==    at 0x4A0A924: AnnotateCondVarSignal hg_annotations.c:174
-==21495==    by 0x404677: test304::Worker1() racecheck_unittest.cc:3718
-==21495==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==21495==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21495==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21495==  SS16/T4:
-==21495==    at 0x4A0A924: AnnotateCondVarSignal hg_annotations.c:174
-==21495==    by 0x404505: test304::Worker2() racecheck_unittest.cc:3723
-==21495==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==21495==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21495==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21495==  SS19/T5:
-==21495==    at 0x4A0A924: AnnotateCondVarSignal hg_annotations.c:174
-==21495==    by 0x404613: test304::Worker3() racecheck_unittest.cc:3728
-==21495==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==21495==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21495==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21495==  SS24/T6:
-==21495==    at 0x4A0A924: AnnotateCondVarSignal hg_annotations.c:174
-==21495==    by 0x4045C9: test304::Worker4() racecheck_unittest.cc:3733
-==21495==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==21495==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21495==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21495==   Last consistently used lock for 0x534D778 was first observed
-==21495==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
-==21495==    by 0x40D341: Mutex::Mutex() thread_wrappers_pthread.h:149
-==21495==    by 0x401E44: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:85
-==21495==    by 0x402A76: _GLOBAL__I_MU racecheck_unittest.cc:3749
-==21495==    by 0x40FCB9: (within a.out)
-==21495==    by 0x401552: (within a.out)
-==21495==    by 0x40FC17: (within a.out)
-==21495==    by 0x40FC60: __libc_csu_init (in a.out)
-==21495==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
-==21495==   Location 0x534D778 is 0 bytes inside a block of size 8 alloc'd
-==21495==    at 0x4A06FF9: operator new(unsigned long) 
-==21495==    by 0x402C73: test304::Run() racecheck_unittest.cc:3738
-==21495==    by 0x40A51E: main racecheck_unittest.cc:144
-==21495==
+==12810== T6: Possible data race during write of size 8 at 0xA1C4D00
+==12810==    at 0x97A89D3: std::string::reserve(unsigned long)
+==12810==    by 0x97A8BE5: std::string::append(char const*, unsigned long)
+==12810==    by 0x40AE18: test304::Worker4() racecheck_unittest.cc:4711
+==12810==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==12810==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==12810==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==12810==   old state = {RdO; #LS=0; #SS=4; T3/S7, T4/S18, T5/S21, T6/S26}
+==12810==   new state = {Mod; #LS=0; #SS=4; T3/S7, T4/S18, T5/S21, T6/S26}
+==12810==  T3/S7 starts
+==12810==    at 0x92DC1F4: AnnotateCondVarSignal hg_annotations.c:175
+==12810==    by 0x40AEFB: test304::Worker1() racecheck_unittest.cc:4695
+==12810==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==12810==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==12810==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==12810==  T4/S18 starts
+==12810==    at 0x92DC1F4: AnnotateCondVarSignal hg_annotations.c:175
+==12810==    by 0x40AEAB: test304::Worker2() racecheck_unittest.cc:4700
+==12810==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==12810==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==12810==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==12810==  T5/S21 starts
+==12810==    at 0x92DC1F4: AnnotateCondVarSignal hg_annotations.c:175
+==12810==    by 0x40AE47: test304::Worker3() racecheck_unittest.cc:4705
+==12810==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==12810==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==12810==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==12810==  T6/S26 starts
+==12810==    at 0x92DC1F4: AnnotateCondVarSignal hg_annotations.c:175
+==12810==    by 0x40ADFD: test304::Worker4() racecheck_unittest.cc:4710
+==12810==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==12810==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==12810==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==12810==   Last consistently used lock for 0xA1C4D00 was first observed
+==12810==    at 0x92DBDBC: pthread_mutex_init hg_intercepts.c:346
+==12810==    by 0x414E17: Mutex::Mutex() thread_wrappers_pthread.h:149
+==12810==    by 0x404407: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:4691
+==12810==    by 0x4046D8: _GLOBAL__I_RunningOnValgrind racecheck_unittest.cc:5263
+==12810==    by 0x417619: (within a.out)
+==12810==    by 0x40180A: (within a.out)
+==12810==    by 0x4175B9: __libc_csu_init (in a.out)
+==12810==    by 0x417570: __libc_csu_init (in a.out)
+==12810==   Location 0xA1C4D00 is 0 bytes inside a block of size 8 alloc'd
+==12810==    at 0x92D86F7: operator new(unsigned long)
+==12810==    by 0x408D57: test304::Run() racecheck_unittest.cc:4715
+==12810==    by 0x4170BA: Test::Run() racecheck_unittest.cc:142
+==12810==    by 0x40F099: main racecheck_unittest.cc:192
 }}}
 
 This report shows the contexts of creation for each segment involved in the data race. 
