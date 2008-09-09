@@ -92,20 +92,20 @@ In this section we show simple examples of racey code and the reports produced b
 ==Source code==
 The simplest example of a data race is *test301* of RacecheckUnittest. 
 {{{
-3630 int     GLOB = 0;
-3631
-3632 Mutex MU1;
-3633 Mutex MU2;
-3634 void Worker1() { MU1.Lock(); GLOB=1; MU1.Unlock(); }
-3635 void Worker2() { MU2.Lock(); GLOB=1; MU2.Unlock(); }
-3636
-3637 void Run() {
-3638   printf("test301: simple race.\n");
-3639   MyThread t1(Worker1), t2(Worker2);
-3640   t1.Start();
-3641   t2.Start();
-3642   t1.Join();   t2.Join();
-3643 }
+4606 int     GLOB = 0;
+4607
+4608 Mutex MU1;
+4609 Mutex MU2;
+4610 void Worker1() { MU1.Lock(); GLOB=1; MU1.Unlock(); }
+4611 void Worker2() { MU2.Lock(); GLOB=1; MU2.Unlock(); }
+4612
+4613 void Run() {
+4614   printf("test301: simple race.\n");
+4615   MyThread t1(Worker1), t2(Worker2);
+4616   t1.Start();
+4617   t2.Start();
+4618   t1.Join();   t2.Join();
+4619 }
 }}}
 
 Note that the global variable `GLOB` is accessed in two threads, while not holding any *common* lock. 
@@ -113,45 +113,46 @@ Note that the global variable `GLOB` is accessed in two threads, while not holdi
 ==Running Helgrind==
 {{{
 % valgrind --tool=helgrind ./a.out 301
-==21787== Thread #2 was created
-==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==21787==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
-==21787==    by 0x40DDB3: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==21787==    by 0x403AFF: test301::Run() racecheck_unittest.cc:3640
-==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
-==21787==
-==21787== Thread #4 was created
-==21787==    at 0x3D840B5E60: clone (in /lib64/tls/libc-2.3.5.so)
-==21787==    by 0x4C2B0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x4C2BAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x4A0A601: pthread_create@* hg_intercepts.c:213
-==21787==    by 0x40DDB3: MyThread::Start(void*) thread_wrappers_pthread.h:242
-==21787==    by 0x403B0D: test301::Run() racecheck_unittest.cc:3641
-==21787==    by 0x40A2CC: main racecheck_unittest.cc:144
-==21787==
-==21787== T4: Possible data race during write of size 4 at 0x6197D4
-==21787==    at 0x404564: test301::Worker2() racecheck_unittest.cc:3635
-==21787==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==21787==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==21787==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==21787==   old state = {Write; #SS=1; #LS=1; S2/T2}
-==21787==   new state = {Write; #SS=2; #LS=0; S2/T2, S7/T4}
-==21787==   Last consistently used lock for 0x6197D4 was first observed
-==21787==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
-==21787==    by 0x40D0EF: Mutex::Mutex() thread_wrappers_pthread.h:149
-==21787==    by 0x402928: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3632
-==21787==    by 0x4029BA: _GLOBAL__I_MU racecheck_unittest.cc:3692
-==21787==    by 0x40FA69: (within a.out)
-==21787==    by 0x401552: (within a.out)
-==21787==    by 0x40F9C7: (within a.out)
-==21787==    by 0x40FA10: __libc_csu_init (in a.out)
-==21787==    by 0x3D8401CA75: (below main) (in /lib64/tls/libc-2.3.5.so)
-==21787==   Address 0x6197D4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
-==21787==
+==12739== Thread T3 was created
+==12739==    at 0x9F4EE60: clone (in /lib64/tls/libc-2.3.5.so)
+==12739==    by 0x94FD0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==12739==    by 0x94FDAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==12739==    by 0x92DBED1: pthread_create@* hg_intercepts.c:213
+==12739==    by 0x41622D: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==12739==    by 0x4081D2: test301::Run() racecheck_unittest.cc:4616
+==12739==    by 0x4170BA: Test::Run() racecheck_unittest.cc:142
+==12739==    by 0x40F099: main racecheck_unittest.cc:192
+==12739==
+==12739== Thread T4 was created
+==12739==    at 0x9F4EE60: clone (in /lib64/tls/libc-2.3.5.so)
+==12739==    by 0x94FD0D3: do_clone (in /lib64/tls/libpthread-2.3.5.so)
+==12739==    by 0x94FDAE1: pthread_create@@GLIBC_2.2.5 (in /lib64/tls/libpthread-2.3.5.so)
+==12739==    by 0x92DBED1: pthread_create@* hg_intercepts.c:213
+==12739==    by 0x41622D: MyThread::Start(void*) thread_wrappers_pthread.h:242
+==12739==    by 0x4081E0: test301::Run() racecheck_unittest.cc:4617
+==12739==    by 0x4170BA: Test::Run() racecheck_unittest.cc:142
+==12739==    by 0x40F099: main racecheck_unittest.cc:192
+==12739==
+==12739== T4: Possible data race during write of size 4 at 0x6277A4
+==12739==    at 0x405BB6: test301::Worker2() racecheck_unittest.cc:4611
+==12739==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==12739==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==12739==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==12739==   old state = {Mod; #LS=1; #SS=1; T3/S5}
+==12739==   new state = {Mod; #LS=0; #SS=2; T3/S5, T4/S9}
+==12739==   Last consistently used lock for 0x6277A4 was first observed
+==12739==    at 0x92DBDBC: pthread_mutex_init hg_intercepts.c:346
+==12739==    by 0x414E17: Mutex::Mutex() thread_wrappers_pthread.h:149
+==12739==    by 0x404326: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:4608
+==12739==    by 0x4046D8: _GLOBAL__I_RunningOnValgrind racecheck_unittest.cc:5263
+==12739==    by 0x417619: (within a.out)
+==12739==    by 0x40180A: (within a.out)
+==12739==    by 0x4175B9: __libc_csu_init (in a.out)
+==12739==    by 0x417570: __libc_csu_init (in a.out)
+==12739==   Address 0x6277A4 is 0 bytes inside data symbol "_ZN7test3014GLOBE"
+==12739==
 ...
-==21787== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 2 from 1)
+==12739== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 2 from 1)
 }}}
 
 ==Understanding the report==
