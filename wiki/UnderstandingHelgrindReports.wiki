@@ -271,127 +271,143 @@ In the following test we have many memory accesses and much less obvious race (o
 == Running Helgrind == 
 {{{
 % valgrind --tool=helgrind ./a.out 302
-==4660== Thread T3 was created
+==7969== Thread T3 was created
 ...
-==4660== Thread T4 was created
+==7969== Thread T4 was created
 ...
-==4660== T3: Possible data race during write of size 4 at 0x62787C
-==4660==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==   old state = {RdO; #LS=0; #SS=2; T4/S13, T3/S15}
-==4660==   new state = {Mod; #LS=0; #SS=2; T4/S13, T3/S15}
+==7969== T3: Possible data race during write of size 4 at 0x62787C
+==7969==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==   old state = {RdO; #LS=0; #SS=2; T4/S13, T3/S15}
+==7969==   new state = {Mod; #LS=0; #SS=2; T4/S13, T3/S15}
 ...
-==4660==   Last consistently used lock for 0x62787C was first observed
-==4660==    at 0x92DBDBC: pthread_mutex_init hg_intercepts.c:346
-==4660==    by 0x414E17: Mutex::Mutex() thread_wrappers_pthread.h:149
-==4660==    by 0x404399: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:4630
+==7969==   Last consistently used lock for 0x62787C was first observed
+==7969==    at 0x92DBDBC: pthread_mutex_init hg_intercepts.c:346
+==7969==    by 0x414E17: Mutex::Mutex() thread_wrappers_pthread.h:149
+==7969==    by 0x404399: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:4630
 ...
-==4660==   Address 0x62787C is 0 bytes inside data symbol "_ZN7test3024GLOBE"
-==4660==
-==4660== TRACE[1] {{{: Access{T3/S15 wr 0x62787C} -> new State{Mod; #LS=1; #SS=1; TR; T3/S15}
-==4660==  Access stack trace:
-==4660==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==  Locks held:
-==4660==    Lock located at 0x6278B0 and first observed
-==4660==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
-==4660==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
-==4660==    by 0x405B73: test302::Worker() racecheck_unittest.cc:4648
+==7969==   Address 0x62787C is 0 bytes inside data symbol "_ZN7test3024GLOBE"
+==7969==
+==7969== TRACE[1] {{{: Access{T3/S15 wr 0x62787C} -> new State{Mod; #LS=1; #SS=1; TR; T3/S15}
+==7969==  Access stack trace:
+==7969==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B73: test302::Worker() racecheck_unittest.cc:4648
 ...
-==4660== TRACE[2] {{{: Access{T4/S17 rd 0x62787C} -> new State{Mod; #LS=1; #SS=2; TR; T3/S15, T4/S17}
-==4660==  Access stack trace:
-==4660==    at 0x405B3B: test302::Worker() racecheck_unittest.cc:4644
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==  Locks held:
-==4660==    Lock located at 0x6278B0 and first observed
-==4660==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
-==4660==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
-==4660==    by 0x405B3A: test302::Worker() racecheck_unittest.cc:4644
+==7969== }}}
+==7969==
+==7969== TRACE[2] {{{: Access{T3/S19 rd 0x62787C} -> new State{RdO; #LS=1; #SS=1; TR; T3/S19}
+==7969==  Access stack trace:
+==7969==    at 0x405AC6: test302::Worker() racecheck_unittest.cc:4636
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405AC5: test302::Worker() racecheck_unittest.cc:4636
 ...
-==4660== }}}
-==4660== 
-==4660== TRACE[3] {{{: Access{T3/S19 rd 0x62787C} -> new State{Mod; #LS=1; #SS=2; TR; T4/S17, T3/S19}
-==4660==  Access stack trace:
-==4660==    at 0x405AC6: test302::Worker() racecheck_unittest.cc:4636
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==  Locks held:
-==4660==    Lock located at 0x6278B0 and first observed
-==4660==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
-==4660==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
-==4660==    by 0x405AC5: test302::Worker() racecheck_unittest.cc:4636
+==7969== }}}
+==7969==
+==7969== TRACE[3] {{{: Access{T4/S17 rd 0x62787C} -> new State{RdO; #LS=1; #SS=2; TR; T4/S17, T3/S19}
+==7969==  Access stack trace:
+==7969==    at 0x405B3B: test302::Worker() racecheck_unittest.cc:4644
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B3A: test302::Worker() racecheck_unittest.cc:4644
 ...
-==4660== }}}
-==4660==
-==4660== TRACE[4] {{{: Access{T4/S21 rd 0x62787C} -> new State{Mod; #LS=1; #SS=2; TR; T3/S19, T4/S21}
-==4660==  Access stack trace:
-==4660==    at 0x405B74: test302::Worker() racecheck_unittest.cc:4648
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==  Locks held:
-==4660==    Lock located at 0x6278B0 and first observed
-==4660==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
-==4660==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
-==4660==    by 0x405B73: test302::Worker() racecheck_unittest.cc:4648
+==7969== }}}
+==7969==
+==7969== TRACE[4] {{{: Access{T3/S21 rd 0x62787C} -> new State{RdO; #LS=0; #SS=2; TR; T4/S17, T3/S21}
+==7969==  Access stack trace:
+==7969==    at 0x405B02: test302::Worker() racecheck_unittest.cc:4640
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x627910 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B01: test302::Worker() racecheck_unittest.cc:4640
 ...
-==4660== }}}
-==4660==
-==4660== TRACE[5] {{{: Access{T3/S23 rd 0x62787C} -> new State{Mod; #LS=0; #SS=2; TR; T4/S21, T3/S23}
-==4660==  Access stack trace:
-==4660==    at 0x405B02: test302::Worker() racecheck_unittest.cc:4640
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==  Locks held:
-==4660==    Lock located at 0x627910 and first observed
-==4660==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
-==4660==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
-==4660==    by 0x405B01: test302::Worker() racecheck_unittest.cc:4640
+==7969== }}}
+==7969==
+==7969== TRACE[5] {{{: Access{T4/S23 rd 0x62787C} -> new State{RdO; #LS=0; #SS=2; TR; T3/S21, T4/S23}
+==7969==  Access stack trace:
+==7969==    at 0x405B74: test302::Worker() racecheck_unittest.cc:4648
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B73: test302::Worker() racecheck_unittest.cc:4648
 ...
-==4660== }}}
-==4660==
-==4660== Race on 0x62787C is found again after 5 accesses. Last access:
-==4660== TRACE[5] {{{: Access{T3/S23 rd 0x62787C} -> new State{Mod; #LS=0; #SS=2; TR; T4/S21, T3/S23}
-==4660==  Access stack trace:
-==4660==    at 0x405B02: test302::Worker() racecheck_unittest.cc:4640
-==4660==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
-==4660==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==4660==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
-==4660==  Locks held:
-==4660==    Lock located at 0x627910 and first observed
-==4660==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
-==4660==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
-==4660==    by 0x405B01: test302::Worker() racecheck_unittest.cc:4640
+==7969== }}}
+==7969==
+==7969== TRACE[6] {{{: Access{T4/S23 wr 0x62787C} -> new State{Mod; #LS=0; #SS=2; TR; T3/S21, T4/S23}
+==7969==  Access stack trace:
+==7969==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B73: test302::Worker() racecheck_unittest.cc:4648
 ...
-==4660== }}}
-==4660==
-==4660==
-==4660==
-==4660== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 7 from 3)
-}}}
+==7969== }}}
+==7969==
+==7969== Race on 0x62787C is found again after 6 accesses. Last access:
+==7969== TRACE[6] {{{: Access{T4/S23 wr 0x62787C} -> new State{Mod; #LS=0; #SS=2; TR; T3/S21, T4/S23}
+==7969==  Access stack trace:
+==7969==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B73: test302::Worker() racecheck_unittest.cc:4648
+...
+==7969== }}}
+==7969==
+==7969==
+==7969== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 7 from 3)
+
 
 == Understanding the traces ==
 So, the race report itself gives us very little information: 
 {{{
-==29853== T2: Possible data race during write of size 4 at 0x619C3C
-==29853==    at 0x404E0D: test302::Worker() racecheck_unittest.cc:3672
-==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==29853==   old state = {Read; #SS=2; #LS=0; S11/T4, S13/T2}
-==29853==   new state = {Write; #SS=2; #LS=0; S11/T4, S13/T2}
-==29853==   Last consistently used lock for 0x619C3C was first observed
-==29853==    at 0x4A0A4EC: pthread_mutex_init hg_intercepts.c:346
-==29853==    by 0x40D37F: Mutex::Mutex() thread_wrappers_pthread.h:149
-==29853==    by 0x4029CB: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:3654
+==7969== T3: Possible data race during write of size 4 at 0x62787C
+==7969==    at 0x405B7D: test302::Worker() racecheck_unittest.cc:4648
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==   old state = {RdO; #LS=0; #SS=2; T4/S13, T3/S15}
+==7969==   new state = {Mod; #LS=0; #SS=2; T4/S13, T3/S15}
+...
+==7969==   Last consistently used lock for 0x62787C was first observed
+==7969==    at 0x92DBDBC: pthread_mutex_init hg_intercepts.c:346
+==7969==    by 0x414E17: Mutex::Mutex() thread_wrappers_pthread.h:149
+==7969==    by 0x404399: __static_initialization_and_destruction_0(int, int) racecheck_unittest.cc:4630
 ...
 }}}
 
@@ -400,58 +416,58 @@ But once the race is reported, Helgrind enables *access tracing* for this partic
 The state of this memory location is reset to `{Accesstype,currS, currLS}`, i.e. all the previous accesses are forgotten. 
 
 Each trace contains:
-  * Access information: `Access = {0x6197D4 S7/T4 write}` (address, segment/thread, access type)
-  * State of the memory location (right after the access): `State = {Write; #SS=1; #LS=1; S7/T4}` (See MSMProp1).
+  * Access information: `Access{T3/S15 wr 0x62787C}` (thread/segment, access type, address)
+  * State of the memory location (right after the access): `State = State{Mod; #LS=1; #SS=1; TR; T3/S15}` (See MSMHelgrind340).
   * Access stack trace (context).
   * List of locks held during the access (if the access is `read`, RW- and R-locks are shown; for `write` only RW-locks are shown). For each lock the report shows the context of the lock acquisition.
 
 In this test case we are lucky -- the race happened twice: 
 {{{
-==29853== Race on 0x619C3C is found again
+==7969== Race on 0x62787C is found again after 6 accesses.
 }}}
 After the race has been found twice, the memory tracing is disabled forever for this memory location. 
 
 
 Let's look at the lines starting with `TRACE`: 
 {{{
-1: TRACE {{{: Access = {0x619C3C S13/T2 write} State = {Write; #SS=1; #LS=1; S13/T2}
-2: TRACE {{{: Access = {0x619C3C S17/T2 read} State = {Read; #SS=1; #LS=1; S17/T2}
-3: TRACE {{{: Access = {0x619C3C S15/T4 read} State = {Read; #SS=2; #LS=1; S15/T4, S17/T2}
-4: TRACE {{{: Access = {0x619C3C S19/T2 read} State = {Read; #SS=2; #LS=0; S15/T4, S19/T2}
-5: TRACE {{{: Access = {0x619C3C S21/T4 read} State = {Read; #SS=2; #LS=0; S19/T2, S21/T4}
-6: TRACE {{{: Access = {0x619C3C S21/T4 write} State = {Write; #SS=2; #LS=0; S19/T2, S21/T4}
+1: TRACE[1] {{{: Access{T3/S15 wr 0x62787C} -> new State{Mod; #LS=1; #SS=1; TR; T3/S15}
+2: TRACE[2] {{{: Access{T3/S19 rd 0x62787C} -> new State{RdO; #LS=1; #SS=1; TR; T3/S19}
+3: TRACE[3] {{{: Access{T4/S17 rd 0x62787C} -> new State{RdO; #LS=1; #SS=2; TR; T4/S17, T3/S19}
+4: TRACE[4] {{{: Access{T3/S21 rd 0x62787C} -> new State{RdO; #LS=0; #SS=2; TR; T4/S17, T3/S21}
+5: TRACE[5] {{{: Access{T4/S23 rd 0x62787C} -> new State{RdO; #LS=0; #SS=2; TR; T3/S21, T4/S23}
+6. TRACE[6] {{{: Access{T4/S23 wr 0x62787C} -> new State{Mod; #LS=0; #SS=2; TR; T3/S21, T4/S23}
 }}}
 
 We see that the Lockset became empty after the access 4 (access 3 has `#LS=1`, access 4 has `#LS=0`).
 Let's look at the accesses 3 and 4: 
 {{{
-==29853== TRACE {{{: Access = {0x619C3C S15/T4 read} State = {Read; #SS=2; #LS=1; S15/T4, S17/T2}
-==29853==  Access stack trace:
-==29853==    at 0x404DCB: test302::Worker() racecheck_unittest.cc:3668
-==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==29853==  Locks held:
-==29853==    L:0x402117E00/0x619C70
-==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
-==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
-==29853==    by 0x404DCA: test302::Worker() racecheck_unittest.cc:3668
+==7969== TRACE[3] {{{: Access{T4/S17 rd 0x62787C} -> new State{RdO; #LS=1; #SS=2; TR; T4/S17, T3/S19}
+==7969==  Access stack trace:
+==7969==    at 0x405B3B: test302::Worker() racecheck_unittest.cc:4644
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x6278B0 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B3A: test302::Worker() racecheck_unittest.cc:4644
 ...
-==29853== }}}
-
-==29853== TRACE {{{: Access = {0x619C3C S19/T2 read} State = {Read; #SS=2; #LS=0; S15/T4, S19/T2}
-==29853==  Access stack trace:
-==29853==    at 0x404D92: test302::Worker() racecheck_unittest.cc:3664
-==29853==    by 0x4A0A71E: mythread_wrapper hg_intercepts.c:193
-==29853==    by 0x4C2AF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
-==29853==    by 0x3D840B5EA1: clone (in /lib64/tls/libc-2.3.5.so)
-==29853==  Locks held:
-==29853==    L:0x402117F18/0x619CD0
-==29853==    at 0x4A078D5: pthread_mutex_lock hg_intercepts.c:408
-==29853==    by 0x40E19E: Mutex::Lock() thread_wrappers_pthread.h:156
-==29853==    by 0x404D91: test302::Worker() racecheck_unittest.cc:3664
+==7969== }}}
+==7969==
+==7969== TRACE[4] {{{: Access{T3/S21 rd 0x62787C} -> new State{RdO; #LS=0; #SS=2; TR; T4/S17, T3/S21}
+==7969==  Access stack trace:
+==7969==    at 0x405B02: test302::Worker() racecheck_unittest.cc:4640
+==7969==    by 0x92DBFEE: mythread_wrapper hg_intercepts.c:193
+==7969==    by 0x94FCF9E: start_thread (in /lib64/tls/libpthread-2.3.5.so)
+==7969==    by 0x9F4EEA1: clone (in /lib64/tls/libc-2.3.5.so)
+==7969==  Locks held:
+==7969==    Lock located at 0x627910 and first observed
+==7969==    at 0x92D91A5: pthread_mutex_lock hg_intercepts.c:408
+==7969==    by 0x415B18: Mutex::Lock() thread_wrappers_pthread.h:156
+==7969==    by 0x405B01: test302::Worker() racecheck_unittest.cc:4640
 ...
-==29853== }}}
+==7969== }}}
 }}}
 
 We see that during these two accesses we hold two different locks (`MU1` and `MU2`).
