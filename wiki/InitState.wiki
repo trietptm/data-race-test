@@ -53,8 +53,7 @@ Now, if we want to avoid the false positive in the second test we have
 these choices:
   * Use `ANNOTATE_CONDVAR_{SIGNAL,WAIT}` pair (most helgrind-friendly)
   * Use `ANNOTATE_PUBLISH_MEMORY_RANGE` (most user friendly)
-  * Use `ANNOTATE_MUTEX_IS_USED_AS_COND_VAR` (a big hummer, use it only in
-complicated cases)
+  * Use `ANNOTATE_MUTEX_IS_USED_AS_COND_VAR` (a big hummer, use it only in complicated cases)
   * Use `--pure-happens-before=yes` (doesn't really work well, too slow)
   * Use some other race detector which uses a pure happens-before scheme.
 
@@ -64,8 +63,6 @@ TEST2.
 This is how it works (for curious):
   * The initialization_bit is set for each new memory location.
   * If the initialization_bit is set:
-    * If the new access happens in the same thread as the previous access,
-     the initialization_bit remains set.
-    * Otherwise the initialization_bit is cleared and we transition to
-      exclusive state containing the new thread's segment.
+    * If the new access happens in the same thread as the previous access, the initialization_bit remains set.
+    * Otherwise the initialization_bit is cleared and we transition to exclusive state containing the new thread's segment.
 
