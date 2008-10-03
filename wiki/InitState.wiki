@@ -57,9 +57,8 @@ these choices:
   * Use `--pure-happens-before=yes` (doesn't really work well, too slow)
   * Use some other race detector which uses a pure happens-before scheme.
 
-We've implemented a new helgrind switch, --initialization-state=yes,
-that will miss the race on TEST1 and will avoid false positive on
-TEST2.
+We've implemented a new helgrind switch, *--initialization-state=yes*,
+that will miss the race on TEST1 and will avoid false positive on TEST2.
 This is how it works (for curious):
   * The initialization_bit is set for each new memory location.
   * If the initialization_bit is set:
