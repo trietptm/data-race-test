@@ -1,1 +1,42 @@
-#summary Initialization State
+﻿#summary Initialization State
+
+Current hybrid detection scheme in Helgrind has a mode, similar to Eraser's *initialization state*.
+
+Consider two tests: 
+
+*TEST1:*
+{{
+  int *p = 0;
+  Thread1() {
+	p = new int;
+	*p = 1;
+  }
+
+  Thread2() {
+	sleep(1);
+	*p = 2;
+  }
+}}
+
+*TEST2:*
+{{
+  int *p = 0;
+  Thread1() {
+	int *x = new int;
+	*x = 1;
+	mu.Lock();
+	p = x;
+	mu.Unlock();
+  }
+
+  Thread2() {
+	sleep(1);
+	int *x = 0;
+	mu.Lock();
+	x = p;
+	mu.Unlock();
+	if (x) {
+	  *x = 2;
+	}
+  }
+}}
