@@ -5,7 +5,7 @@ Current hybrid detection scheme in Helgrind has a mode, similar to Eraser's *ini
 Consider two tests: 
 
 *TEST1:*
-{{
+{{{
   int *p = 0;
   Thread1() {
 	p = new int;
@@ -16,10 +16,10 @@ Consider two tests:
 	sleep(1);
 	*p = 2;
   }
-}}
+}}}
 
 *TEST2:*
-{{
+{{{
   int *p = 0;
   Thread1() {
 	int *x = new int;
@@ -39,4 +39,4 @@ Consider two tests:
 	  *x = 2;
 	}
   }
-}}
+}}}
