@@ -18,4 +18,4 @@ Compared to [MSMHelgrind] this state machine has overal 8 states:
 
 
 
-More details about *MSMUnika* is going to be published soon.
+More details about *MSMUnika* can be found in the paper: [http://doi.acm.org/10.1145/1390841.1390847 On-the-fly race detection in multi-threaded programs]
