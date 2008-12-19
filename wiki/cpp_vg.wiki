@@ -5,4 +5,6 @@ See trunk/cpp_vg
 
 = Details =
   # valgrind trunk rev 8843, VEX rev 1878
-  # added libstdc++-v3 (gcc-4.3.2)
+  # added libstdc++-v3 (gcc-4.3.2):
+    * gcc-4.3.2/libstdc++-v3/include/ to include/m_stl
+    * gcc-4.3.2/libstdc++-v3/src/ to coregrind/m_stl/src
