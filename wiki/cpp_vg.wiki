@@ -1,0 +1,7 @@
+#summary cpp_vg - an attempt to integrate C++/STL into valgrind
+
+= Introduction =
+See trunk/cpp_vg
+
+= Details =
+1. valgrind trunk rev 8843, VEX rev 1878
