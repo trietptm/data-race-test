@@ -8,3 +8,8 @@ See trunk/cpp_vg
   # added libstdc++-v3 (gcc-4.3.2):
     * gcc-4.3.2/libstdc++-v3/include/ to include/m_stl
     * gcc-4.3.2/libstdc++-v3/src/ to coregrind/m_stl/src
+  # added cppgrind - a simple C++/STL/Valgrind integration test
+
+= TODOs =
+  # copyrights in coregrind/m_stl/symbols.cc and cppgrind/cp_main.cc
+  # more .cc's in coregrind/Makefile.am
