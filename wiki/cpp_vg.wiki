@@ -4,5 +4,5 @@
 See trunk/cpp_vg
 
 = Details =
-   1. valgrind trunk rev 8843, VEX rev 1878
-   2. added libstdc++-v3 (gcc-4.3.2)
+  # valgrind trunk rev 8843, VEX rev 1878
+  # added libstdc++-v3 (gcc-4.3.2)
