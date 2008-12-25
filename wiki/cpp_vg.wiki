@@ -48,7 +48,7 @@ Look at the code:
   # added libstdc++-v3 (gcc-4.3.2):
     * gcc-4.3.2/libstdc++-v3/include/ to include/m_stl
     * gcc-4.3.2/libstdc++-v3/src/ to coregrind/m_stl/src
-  # added stlport (TODO(timurrrr): which version?)
+  # added stlport 5.2.0
   # added cppgrind - a simple C++/STL/Valgrind integration test
 
 
