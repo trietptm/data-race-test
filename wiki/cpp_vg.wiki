@@ -24,7 +24,7 @@ cd cpp_vg
 }}}
 
 Choose STL: edit the file `cppgrind/Makefile.am`. <br>
-The default stl is libstdc++-v3 (requires compilation of .cc files). <br>
+One option is libstdc++-v3 (requires compilation of .cc files). <br>
 Alternative stl is stlport (header files only). 
 
 Build:
