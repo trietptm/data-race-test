@@ -39,6 +39,11 @@ Run the cppgrind tool on any binary. This will run some STL-ish tests:
 ./vg-in-place --profile-heap=yes -q  --tool=cppgrind ls /dev/null
 }}}
 
+Look at the code: 
+  * cppgrind/cp_main.cc -- an example of C++ tool with stl. Includes tests for heap profiler.
+  * coregrind/m_cplusplus_support.cc -- definitions of `operator new`, etc
+  * include/pub_tool_cplusplus.h -- currently, just the support for heap profiler
+
 
 = Files that were changed: =
 {{{
