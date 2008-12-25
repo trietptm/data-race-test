@@ -1,7 +1,9 @@
 #summary cpp_vg - an attempt to integrate C++/STL into valgrind
 
 = Introduction =
-See trunk/cpp_vg
+
+We took valgrind sources and made few changes to make it tpossible to use C++ and STL in valgrind tools. 
+For the source, see trunk/cpp_vg
 
 = Details =
   # valgrind trunk rev 8843, VEX rev 1878
