@@ -19,6 +19,15 @@ Checkout:
 svn checkout http://data-race-test.googlecode.com/svn/trunk/cpp_vg cpp_vg
 }}}
 
+Build:
+{{{
+cd cpp_vg
+./autogen.sh
+./configure --prefix=`pwd`/Inst
+make -j install 
+
+}}}
+
 = TODOs =
   # copyrights in coregrind/m_stl/symbols.cc and cppgrind/cp_main.cc
   # more .cc's in coregrind/Makefile.am
