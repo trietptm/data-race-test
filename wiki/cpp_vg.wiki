@@ -10,6 +10,12 @@ See trunk/cpp_vg
     * gcc-4.3.2/libstdc++-v3/src/ to coregrind/m_stl/src
   # added cppgrind - a simple C++/STL/Valgrind integration test
 
+= How to try = 
+Checkout: 
+{{{
+svn checkout http://data-race-test.googlecode.com/svn/trunk/cpp_vg cpp_vg
+}}}
+
 = TODOs =
   # copyrights in coregrind/m_stl/symbols.cc and cppgrind/cp_main.cc
   # more .cc's in coregrind/Makefile.am
