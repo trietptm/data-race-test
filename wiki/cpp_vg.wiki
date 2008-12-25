@@ -34,26 +34,18 @@ Build:
 make -j install 
 }}}
 
+Run the cppgrind tool on any binary. This will run some STL-ish tests: 
+{{{
+./Inst/bin/valgrind -q  --tool=cppgrind ls /dev/null
+}}}
+
+
 = Files that were changed: =
 {{{
 # all files 
 % svn diff -r 616  | grep '^Index:'
-# lots...
-
 # non-stl files: 
 % svn diff -r 616  | grep '^Index:' | grep -v 'include/stlport\|include/m_stl\|coregrind/m_stl'
-Index: cppgrind/tests/Makefile.am
-Index: cppgrind/docs/Makefile.am
-Index: cppgrind/Makefile.am
-Index: cppgrind/cp_main.cc
-Index: Makefile.tool-flags.am
-Index: Makefile.core.am
-Index: include/pub_tool_tooliface.h
-Index: include/pub_tool_libcassert.h
-Index: configure.in
-Index: Makefile.flags.am
-Index: Makefile.am
-Index: coregrind/Makefile.am
 }}}
 
 
