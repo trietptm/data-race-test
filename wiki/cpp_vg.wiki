@@ -2,7 +2,10 @@
 
 = Introduction =
 
-We took valgrind sources and made few changes to make it tpossible to use C++ and STL in valgrind tools. 
+We took valgrind sources and made few changes to make it tpossible to use C++ and STL in valgrind tools. <BR>
+
+We added two different implementations of STL: one from g++ distribution, and one from www.stlport.org. We will have to choose one, of course. 
+
 For the source, see trunk/cpp_vg
 
 = Details =
