@@ -31,12 +31,12 @@ Build:
 {{{
 ./autogen.sh
 ./configure --prefix=`pwd`/Inst
-make -j install 
+make -j 
 }}}
 
 Run the cppgrind tool on any binary. This will run some STL-ish tests: 
 {{{
-./Inst/bin/valgrind -q  --tool=cppgrind ls /dev/null
+./vg-in-place --profile-heap=yes -q  --tool=cppgrind ls /dev/null
 }}}
 
 
