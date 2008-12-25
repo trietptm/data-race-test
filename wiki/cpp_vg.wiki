@@ -24,7 +24,7 @@ Build:
 make -j 
 }}}
 
-Run the cppgrind tool on any binary. This will run some STL-ish tests: 
+Run the cppgrind tool on any binary. This will run some STL-ish tests (including some for the heap profiler): 
 {{{
 ./vg-in-place --profile-heap=yes -q  --tool=cppgrind ls /dev/null
 }}}
