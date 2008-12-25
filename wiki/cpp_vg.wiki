@@ -51,8 +51,8 @@ Index: configure.in
 Index: Makefile.flags.am
 Index: Makefile.am
 Index: coregrind/Makefile.am
-
 }}}
+
 
 = TODOs =
   # copyrights in coregrind/m_stl/symbols.cc and cppgrind/cp_main.cc
