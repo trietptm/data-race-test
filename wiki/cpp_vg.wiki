@@ -6,16 +6,6 @@ We took valgrind sources and made few changes to make it possible to use C++ and
 
 We added two different implementations of STL: one from g++ distribution, and one from www.stlport.org. We will have to choose one, of course. 
 
-For the source, see trunk/cpp_vg
-
-= Details =
-  # valgrind trunk rev 8843, VEX rev 1878
-  # added libstdc++-v3 (gcc-4.3.2):
-    * gcc-4.3.2/libstdc++-v3/include/ to include/m_stl
-    * gcc-4.3.2/libstdc++-v3/src/ to coregrind/m_stl/src
-  # added stlport (TODO(timurrrr): which version?)
-  # added cppgrind - a simple C++/STL/Valgrind integration test
-
 = How to try = 
 Checkout: 
 {{{
@@ -52,6 +42,14 @@ Look at the code:
 # non-stl files: 
 % svn diff -r 616  | grep '^Index:' | grep -v 'include/stlport\|include/m_stl\|coregrind/m_stl'
 }}}
+
+= Versions =
+  # valgrind trunk rev 8843, VEX rev 1878
+  # added libstdc++-v3 (gcc-4.3.2):
+    * gcc-4.3.2/libstdc++-v3/include/ to include/m_stl
+    * gcc-4.3.2/libstdc++-v3/src/ to coregrind/m_stl/src
+  # added stlport (TODO(timurrrr): which version?)
+  # added cppgrind - a simple C++/STL/Valgrind integration test
 
 
 = TODOs =
