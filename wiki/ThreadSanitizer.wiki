@@ -8,6 +8,10 @@ differences (TODO).
 
 
 = Using ThreadSanitizer =
+Just like any other valgrind-based tool: 
+{{{
+valgrind [valgrind options] --tool=tsan [tsan options] your/program [program options]
+}}}
 
 
 = Details =
