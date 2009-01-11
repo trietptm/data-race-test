@@ -13,10 +13,34 @@ Just like any other valgrind-based tool:
 valgrind [valgrind options] --tool=tsan [tsan options] your/program [program options]
 }}}
 
+= Building ThreadSanitizer =
+ThreadSanitizer is not a part of the official valgrind distribution, so you will 
+have to download valgrind and ThreadSanitizer separately. 
 
-= Details =
+{{{
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+
+}}}
+
+= Command line flags = 
+|| --keep-history=0|1|2 || 1 ||  Keep the history of the previous accesses. Setting this option to zero will make the tool run 10%-30% faster, but will make the reports less informative. Use --keep-history=0 in continuous builds, and --keep-history=1 when analyzing reports. Values greater than 1 are experimental. ||
+
+  Analysis sensitivity flags:
+	   ThreadSanitizer can work in different modes that affect accuracy (number of detected bugs, number of false reports) and speed.
+	    --fast-mode=yes|no	 yes   Be faster, but miss some races.
+		 --pure-happens-before=yes|no  no  Act as a pure happens-before detector. Useful if you are testing a code which has a lot of custom not annotated synchronization (e.g. message passing. See also DynamicAnnotations)
+		  --ignore-in-dtor=yes|no
+			 yes   Ignore reports with a Destructor in stack trace.
+			  Interface flags:
+				   Flags that affect the generated output.
+				    --color	 no
+					   Add colors to the output.
+					    --show-pc  no  Show pc (program counter) in the stack traces.
+						 --announce-threads	 no
+						   Show the the stack traces of thread creation .
+						    --file_prefix_to_cut=file_prefix	 Remove "^.*file_prefix" from the printed file names.
+							 The standard tsan driver passes --file_prefix_to_cut=/google3/ 
+							  You may pass this flag several times.
+							   --full-output=yes|no	 no	 Print everything (revert the effect of --show-pc=no, --ignore-in-dtor=yes, --prefix-to-cut=prefix --announce-threads=no). Useful if the output goes to some analysis script, GUI, etc
+
+= Screen shot= 
