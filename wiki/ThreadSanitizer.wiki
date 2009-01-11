@@ -24,7 +24,6 @@ have to download valgrind and ThreadSanitizer separately.
 
 = Command line flags = 
 || --keep-history=0|1|2 || 1 ||  Keep the history of the previous accesses. <BR> Setting this option to zero will make the tool run 10%-30% faster, but will make the reports less informative. Use --keep-history=0 in continuous builds, and --keep-history=1 when analyzing reports. Values greater than 1 are experimental. ||
-
 ||  Analysis sensitivity flags: || || ThreadSanitizer can work in different modes that affect accuracy (number of detected bugs, number of false reports) and speed.||
 	    --fast-mode=yes|no	 yes   Be faster, but miss some races.
 		 --pure-happens-before=yes|no  no  Act as a pure happens-before detector. Useful if you are testing a code which has a lot of custom not annotated synchronization (e.g. message passing. See also DynamicAnnotations)
