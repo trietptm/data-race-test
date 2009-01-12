@@ -35,4 +35,4 @@ have to download valgrind and ThreadSanitizer separately.
 ||  --file_prefix_to_cut=file_prefix || ||   Remove "^.*file_prefix" from the printed file names.  You may pass this flag several times. ||
 
 = Screenshot= 
-http://./tsan-in-vim3.png
+../wiki/tsan-in-vim3.png
