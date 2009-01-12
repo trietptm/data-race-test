@@ -32,7 +32,7 @@ have to download valgrind and ThreadSanitizer separately.
 ||  --color                      ||  no ||  Add colors to the output (uses http://en.wikipedia.org/wiki/ANSI_escape_code). ||
 ||  --show-pc                    || no  || Show pc (program counter) in the stack traces. ||
 ||  --announce-threads           || no  || Show the the stack traces of thread creation . ||
-||  --file_prefix_to_cut=file_prefix || ||   Remove "^.*file_prefix" from the printed file names.  You may pass this flag several times. ||
+||  --file_prefix_to_cut=file_prefix || ||   Remove `"^.*file_prefix"` from the printed file names.  You may pass this flag several times. ||
 
 = Screenshot= 
 ThreadSanitizer's output viewed in vim (www.vim.org) with syntax highlightning and 
