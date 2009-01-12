@@ -28,15 +28,10 @@ have to download valgrind and ThreadSanitizer separately.
 ||  --fast-mode=yes|no           || yes ||  Be faster, but miss some races. ||
 ||  --pure-happens-before=yes|no || no  || Act as a pure happens-before detector. Useful if you are testing a code which has a lot of custom not annotated synchronization (e.g. message passing. See also DynamicAnnotations (TODO)) ||
 ||  --ignore-in-dtor=yes|no      || yes || Ignore reports with a Destructor in stack trace. ||
-||        Interface flags:       ||     ||      Flags that affect the generated output. ||
-            --color   no
-             Add colors to the output.
-              --show-pc  no  Show pc (program counter) in the stack traces.
-             --announce-threads   no
-               Show the the stack traces of thread creation .
-                --file_prefix_to_cut=file_prefix   Remove "^.*file_prefix" from the printed file names.
-               The standard tsan driver passes --file_prefix_to_cut=/google3/ 
-                You may pass this flag several times.
-                 --full-output=yes|no   no   Print everything (revert the effect of --show-pc=no, --ignore-in-dtor=yes, --prefix-to-cut=prefix --announce-threads=no). Useful if the output goes to some analysis script, GUI, etc
+||        *Interface flags:*     ||     ||      Flags that affect the generated output. ||
+||  --color                      ||  no ||  Add colors to the output (uses http://en.wikipedia.org/wiki/ANSI_escape_code). ||
+||  --show-pc                    || no  || Show pc (program counter) in the stack traces. ||
+||  --announce-threads           || no  || Show the the stack traces of thread creation . ||
+||  --file_prefix_to_cut=file_prefix || ||   Remove "^.*file_prefix" from the printed file names.  You may pass this flag several times. ||
 
-= Screen shot= 
+= Screenshot= 
