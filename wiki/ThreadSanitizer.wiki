@@ -23,7 +23,18 @@ have to download valgrind and ThreadSanitizer separately.
 svn co svn://svn.valgrind.org/valgrind/trunk valgrind
 # Get ThreadSanitizer trunk. Will create directory 'tsan'.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
-
+# Create symlinks of tsan files (and some dummy files) in valgrind directory
+cd valgrind
+mkdir tsan
+cd tsan
+ln -s ../../tsan/[A-Za-z]* .
+mkdir docs tests
+touch docs/Makefile.am tests/Makefile.am
+# apply a patch to the valgrind files 
+cd ../
+patch -p 0 tsan/valgrind.patch
+# Build the whole thing
+autogen.sh && ./configure --prefix=`pwd`/inst && make install
 }}}
 
 = Command line flags = 
