@@ -1,11 +1,12 @@
 ﻿#summary ThreadSanitizer is an experimental Valgrind-based detector of data races
 
+*UNDER CONSTRUCTION*
+
 = Introduction =
 
 *ThreadSanitizer* (aka *tsan*) is an experimental data race detector. 
 It is similar to Helgrind in many ways, but it also has several 
 differences (TODO). 
-
 
 = Using ThreadSanitizer =
 Just like any other valgrind-based tool: 
@@ -20,7 +21,7 @@ have to download valgrind and ThreadSanitizer separately.
 {{{
 # Get valgrind trunk. Will create directory 'valgrind'.
 svn co svn://svn.valgrind.org/valgrind/trunk valgrind
-# get ThreadSanitizer trunk. Will create directory 'tsan'.
+# Get ThreadSanitizer trunk. Will create directory 'tsan'.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
 
 }}}
