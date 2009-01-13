@@ -32,7 +32,7 @@ mkdir docs tests
 touch docs/Makefile.am tests/Makefile.am
 # apply a patch to the valgrind files 
 cd ../
-patch -p 0 tsan/valgrind.patch
+patch -p 0 < tsan/valgrind.patch
 # Build the whole thing
 ./autogen.sh && ./configure --prefix=`pwd`/inst && make install
 }}}
