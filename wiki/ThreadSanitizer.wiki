@@ -34,7 +34,7 @@ touch docs/Makefile.am tests/Makefile.am
 cd ../
 patch -p 0 tsan/valgrind.patch
 # Build the whole thing
-autogen.sh && ./configure --prefix=`pwd`/inst && make install
+./autogen.sh && ./configure --prefix=`pwd`/inst && make install
 }}}
 
 = Command line flags = 
