@@ -16,7 +16,8 @@ valgrind [valgrind options] --tool=tsan [tsan options] your/program [program opt
 
 = Building ThreadSanitizer =
 ThreadSanitizer is not a part of the official valgrind distribution, so you will 
-have to download valgrind and ThreadSanitizer separately. 
+have to download valgrind and ThreadSanitizer separately. You will also have to 
+apply a small patch to valgrind. Just paste the following script into your terminal window.
 
 {{{
 # Get valgrind trunk. Will create directory 'valgrind'.
@@ -30,11 +31,12 @@ cd tsan
 ln -s ../../tsan/[A-Za-z]* .
 mkdir docs tests
 touch docs/Makefile.am tests/Makefile.am
-# apply a patch to the valgrind files 
+# Apply a patch to the valgrind files.
 cd ../
 patch -p 0 < tsan/valgrind.patch
-# Build the whole thing
+# Build the whole thing.
 ./autogen.sh && ./configure --prefix=`pwd`/inst && make install
+# Done.
 }}}
 
 = Command line flags = 
