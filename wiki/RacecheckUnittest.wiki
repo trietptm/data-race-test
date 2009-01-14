@@ -3,6 +3,9 @@
 The file [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/racecheck_unittest.cc racecheck_unittest.cc] 
 contains various unit tests for a data race detector. The tests are named test01, test02, and so on. For details see the source. 
 
+
+*TODO*:  The following is outdated. 
+
 The table below summarises the results of the state machines on this test suite.  
 
 A machine fails a test if it finds a non-existing race or if it does not find a real race. 
