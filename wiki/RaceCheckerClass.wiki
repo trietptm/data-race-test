@@ -1,6 +1,6 @@
 ﻿#summary The RaceChecker class -- helps confirming data races.
 
-The !RaceChecker class helps confirming data races, e.g. those detected by Helgrind. 
+The !RaceChecker class helps confirming data races, e.g. those detected by Helgrind or ThreadSanitizer. 
 
 Example: 
 {{{
@@ -67,4 +67,3 @@ Race found between these points
 
 See [http://code.google.com/p/data-race-test/source/browse/trunk/race_checker/race_checker.h race_checker.h] and 
 [http://code.google.com/p/data-race-test/source/browse/trunk/race_checker all race checker files] for details.
-
