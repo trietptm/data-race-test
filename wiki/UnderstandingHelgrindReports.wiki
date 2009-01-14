@@ -1,5 +1,8 @@
 ﻿#summary Helgrind reports explained on examples
 
+*This PAGE is mostly OUTDATED*
+
+
 The goal of this page is to explain users how to read and understand the Helgrind reports.
 
 Simple races could be obvious once you get a report from Helgrind.
