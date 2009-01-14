@@ -116,10 +116,14 @@ def IsRace(SSwr, SSrd):
       if (not (W <= R) and IntersectionIsEmpty(LS1, LS2)):
         return True
   return false
-
-
 }}}
 
 =Pure happens-before mode= 
+If we treat the following event pairs as happens-before arcs (in addition to `Signal`/`Wait` pairs), we will get a pure happens-before detector: 
+  * `Wrunlock(T1,A)` and `Wrlock(T2,A)`
+  * `Rdunlock(T1,A)` and `Wrlock(T2,A)`
+  * `Wrunlock(T1,A)` and `Rdlock(T2,A)`
+
+
 =Fast mode=
 =Implementation details=
