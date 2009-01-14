@@ -17,13 +17,13 @@ ThreadSanitizer is being actively developed and used at [http://www.google.com G
 See also: ThreadSanitizerAlgorithm, ThreadSanitizerIgnores, ThreadSanitizerVsOthers, RacecheckUnittest
 
 
-= Using ThreadSanitizer =
+=Using ThreadSanitizer=
 Just like any other valgrind-based tool: 
 {{{
 valgrind [valgrind options] --tool=tsan [tsan options] your/program [program options]
 }}}
 
-= Building ThreadSanitizer =
+=Building ThreadSanitizer=
 ThreadSanitizer is not a part of the official valgrind distribution, so you will 
 have to download valgrind and ThreadSanitizer separately. You will also have to 
 apply a small patch to valgrind. Just paste the following script into your terminal window.
