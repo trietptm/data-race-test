@@ -134,7 +134,7 @@ Another use of cache lines is the *fast mode*.
 def HandleMemoryAccessInFastMode(tid, addr): 
   cache_line = GetCacheLine(addr)
   creator_tid = cache_line.creator_tid
-  if (cache_line.WasNeverusedBefore()):
+  if (cache_line.WasNeverUsedBefore()):
     # we see this cache line for the first time.
     cache_line.set_creator_tid = tid:
     return
