@@ -9,12 +9,12 @@ Maybe someday similar mechanism will become a part of valgrind core.
 You can use a `--ignore=<filename>` flag to pass a file which contains lines like this: 
 {{{
 # specifies object file name using a wildcard. 
-# All function in this object will not be instrumented. 
+# All functions in this object will not be instrumented. 
 obj:*/libpthread-*.so
 obj:*/ld-*.so
 # all functions in this source file will be ignored
 src:*file_with_some_tricky_code.cc
-# These functions will be ignore as well
+# These functions will be ignored as well
 fun:*_ZN4base6subtle*
 }}}
 
