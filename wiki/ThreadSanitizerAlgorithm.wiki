@@ -44,12 +44,15 @@ the event `X` *happens-before* or *preceedes* the event `Y` (in short, `X < Y`) 
 
 *Segment*: a sequence of events of one thread that contains no
 synchronization events. The context of a segment is the context of the
-first event in the segment. Each segment has it's writer and reader LockSets.
-
+first event in the segment. Each segment has it's writer and reader Lock Sets.
 
 http://data-race-test.googlecode.com/svn/trunk/msm/exa3.png
 
 The figure above shows three different threads divided into segments.
+  * `S1 < S4` because these segments are in the same thread.
+  * `S1 < S5` due to happens-before arc created by `Signal(T1,H1)` and `Wait(T2,H2)`.
+  * `S1 < S7` because happens-before is transitive.
+  * `!(S4 < S2)` (`S4` does not happen-before `S2`) 
 
 
 
