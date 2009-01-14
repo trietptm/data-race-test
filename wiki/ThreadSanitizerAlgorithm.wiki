@@ -63,11 +63,19 @@ The figure above shows three different threads divided into segments.
 with the same address and at least one of the events is `Write`.
 
 
-
-
-
-
 =State machine=
+The state of ThreadSanitizer consists global and per-byte states.
+Global state is the information about synchronization events that were observed
+so far (lock sets, happens-before arcs). Per-byte state (also called
+Shadow memory or metadata) is the information about each address (one byte of memory) of the running program. It consists of two segment sets: writer
+segment set `SSwr` and reader segment set `SSrd`.
+`SSwr` of a given address is a set of segments where the writes to this address
+appeared. `SSrd` is a set of all segments where the reads from the given
+address appeared, such that for every segment `Sr` in `SSrd` and segment `Sw` in `SSwr`, 
+`Sr` does not happen-before `Sw`.
+
+
+
 =Pure happens-before mode= 
 =Fast mode=
 =Implementation details=
