@@ -2,6 +2,8 @@
 
 *UNDER CONSTRUCTION!*
 
+<wiki:toc max_depth="1" />
+
 =Definitions=
 
 *Tid* (thread id): a unique number identifying a thread of the running program.
@@ -28,6 +30,15 @@ number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L
 
 
 *Happens-before arc*: a pair of events `X=Signal(Tx,Ax)` and `Y= Wait(Ty,Ay)` such that   `Ax = Ay`, `Tx != Ty` and `X` is observed first.
+
+
+
+*Happens-before*: a partial order on the set of events. <BR>
+Given two events `X=TypeX(Tx,Ax)` and `Y=TypeY(Ty,Ay)` 
+the event `X` *happens-before* or *preceedes* the event `Y` (in short, $X \hb Y$) if $X$ has been observed before $Y$
+and at least on of the following statements is true:
+
+
 
 
 
