@@ -74,6 +74,22 @@ appeared. `SSrd` is a set of all segments where the reads from the given
 address appeared, such that for every segment `Sr` in `SSrd` and segment `Sw` in `SSwr`, 
 `Sr` does not happen-before `Sw`.
 
+The state machine updates the state on each event and reports a
+possible data race if needed.
+
+{{{
+def HandleReadOrWriteEvent(is_write, tid, addr):
+  (SSwr, SSrd) = GetPerByteState(addr)
+  seg = GetCurrentSegment(tid)
+  if (is_write): # handle Write event
+    SSrd = UpdateSegmentSet(SSrd, {}, seg)
+    SSwr = UpdateSegmentSet(SSwr, seg, seg)
+  else: # handle Read event
+    SSrd = UpdateSegmentSet(SSrd, seg, seg)
+  SetPerByteState(SSwr, SSrd)
+  if (IsRace(SSwr, SSrd)): 
+    ReportRace(is_write, tid, seg, addr)
+}}}
 
 
 =Pure happens-before mode= 
