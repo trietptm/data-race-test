@@ -6,7 +6,10 @@
 
 *ThreadSanitizer* (aka *tsan*) is an experimental data race detector. 
 It is similar to Helgrind in many ways, but it also has several 
-differences (TODO). 
+differences. 
+
+See also: ThreadSanitizerAlgorithm, ThreadSanitizerIgnores, ThreadSanitizerVsOthers
+
 
 = Using ThreadSanitizer =
 Just like any other valgrind-based tool: 
