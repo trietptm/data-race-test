@@ -118,6 +118,10 @@ def IsRace(SSwr, SSrd):
   return false
 }}}
 
+=Reporting races=
+
+TODO
+
 =Pure happens-before mode= 
 If we treat the following event pairs as happens-before arcs (in addition to `Signal`/`Wait` pairs), we will get a pure happens-before detector: 
   * `Wrunlock(T1,A)` and `Wrlock(T2,A)`
