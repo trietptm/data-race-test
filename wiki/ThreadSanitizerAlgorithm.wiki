@@ -146,3 +146,6 @@ def HandleMemoryAccessInFastMode(tid, addr):
     cache_line.set_creator_tid = INVALID_TID)
   HandleMemoryAccess(tid, addr)
 }}}
+
+The fast mode helps to avoid some false positives of the hybrid scheme.
+This mode is a bit similar to the initialization state in Eraser (TODO: link). 
