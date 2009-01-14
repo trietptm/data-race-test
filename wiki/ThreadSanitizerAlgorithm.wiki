@@ -5,14 +5,10 @@
 =Definitions=
 
 *Tid* (thread id): a unique number identifying a thread of the running program.
-
-*Addr* (address):  a pointer to the memory of the running program (a
-    64-bit number on a 64-bit system).
-
+*Addr* (address):  a pointer to the memory of the running program (a 64-bit number on a 64-bit system).
 *Event-Type*: one of  `Read`, `Write` (memory access events),
 `Wrlock`, `Rdlock`, `Wrunlock`, `Rdunlock` (locking events),
 `Signal`, `Wait` (happens-before events).
-
 *Event*: a triple `{Event-Type, Tid, Addr}`. 
 We will write `Event-Type(Tid,Addr)` or `Event-Type(Addr)` if `Tid` is obvious from the context.
 
