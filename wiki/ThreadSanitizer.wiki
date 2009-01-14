@@ -21,7 +21,7 @@ apply a small patch to valgrind. Just paste the following script into your termi
 
 {{{
 # Get valgrind trunk revision 8942 (the one we used so far).
-# Will create directory 'valgrind'.
+# This will create directory 'valgrind'.
 svn co svn://svn.valgrind.org/valgrind/trunk -r 8942 valgrind
 # Get ThreadSanitizer trunk. Will create directory 'tsan'.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
