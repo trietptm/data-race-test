@@ -14,7 +14,7 @@ differences. The instrumentation code is partially taken from Helgrind; the race
 
 ThreadSanitizer is being actively developed and used at [http://www.google.com Google].
 
-See also: ThreadSanitizerAlgorithm, ThreadSanitizerIgnores, ThreadSanitizerVsOthers
+See also: ThreadSanitizerAlgorithm, ThreadSanitizerIgnores, ThreadSanitizerVsOthers, RacecheckUnittest
 
 
 = Using ThreadSanitizer =
