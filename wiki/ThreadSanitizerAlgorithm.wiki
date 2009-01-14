@@ -21,13 +21,14 @@ A lock `L` is *wr-held* by a thread `T` at a given point of time if the number o
 A lock `L` is *rd-held* by thread `T` if it is wr-held by `T` or if the
 number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L)`.
 
-
-
 *Lock Set*: (`LS`) a set of locks. <BR>
 *Writer Lock Set* (`LSwr`): the set of all wr-held locks of a given thread. <BR>
 *Reader Lock Set* (`LSrd`): the set of all rd-held locks of a given thread. <BR>
 *Event Lock Set*:  `LSwr` for a `Write` event and `LSrd` for a `Read` event.
 
+
+*Happens-before arc*: a pair of events X=`Signal(Tx,Ax) and Y=`Wait(Ty,Ay)`
+`Ax`=`Ay`, `Tx` != `Ty` and X is observed first.
 
 
 
