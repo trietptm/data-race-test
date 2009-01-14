@@ -19,7 +19,7 @@ We will write `Event-Type(Tid,Addr)` or `Event-Type(Addr)` if `Tid` is obvious f
 A lock `L` is *wr-held* by a thread `T` at a given point of time if the number of events
 `Wrlock(T,L) observed so far is greater than the number of events
 `Wrunlock(T,L)`. <BR>
-A Lock `L` is *rd-held* by thread `T` if it is wr-held by `T` or if the
+A lock `L` is *rd-held* by thread `T` if it is wr-held by `T` or if the
 number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L)`.
 
 
