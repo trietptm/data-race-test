@@ -1,0 +1,3 @@
+#summary Data race detection algorithm used by ThreadSanitizer.
+
+TODO
