@@ -135,20 +135,17 @@ The primary purpose of cache lines is to implent fast `GetPerByteState()` functi
 Another use of cache lines is the *fast mode*.
 
 {{{
-def HandleMemoryAccessInFastMode(tid, addr): 
+def HandleMemoryAccessInFastMode(is_write, tid, addr): 
   cache_line = GetCacheLine(addr)
-  creator_tid = cache_line.creator_tid
   if (cache_line.WasNeverUsedBefore()):
-    # we see this cache line for the first time.
-    cache_line.set_creator_tid = tid:
+    # We see this cache line for the first time.
+    cache_line.creator_tid = tid:
     return
-  if (creator_tid == tid):
-    # We are still in the same tid. Just return.
+  if (cache_line.creator_tid == tid):
+    # We are still in the same tid.
     return
-  if (creator_tid != INVALID_TID):
-    # we are transitioning from the creator tid.
-    cache_line.set_creator_tid = INVALID_TID)
-  HandleMemoryAccess(tid, addr)
+  cache_line.creator_tid = INVALID_TID
+  HandleReadOrWriteEvent(is_write, tid, addr)
 }}}
 
 The fast mode helps to avoid some false positives of the hybrid scheme.
