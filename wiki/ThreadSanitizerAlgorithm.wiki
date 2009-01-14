@@ -14,7 +14,7 @@
 `Signal`, `Wait` (happens-before events).
 
 *Event*: a triple `{Event-Type, Tid, Addr}`. 
-We will write `Event-Type`,,`Tid`,,`(Addr)` or `Event-Type(Addr)` if `Tid` is obvious from the context.
+We will write `Event-Type(Tid,Addr)` or `Event-Type(Addr)` if `Tid` is obvious from the context.
 
 =State machine=
 
