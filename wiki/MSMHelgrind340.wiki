@@ -1,5 +1,8 @@
 ﻿#summary Memory state machine in the Helgrind development branch, may become a part of Valgrind 3.4.0
 
+
+*This PAGE is mostly OUTDATED*
+
 = Human redable description = 
 
 A *shadow-word* for each memory location is in one of these states: 
