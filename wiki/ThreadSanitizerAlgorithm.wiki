@@ -136,14 +136,13 @@ def HandleMemoryAccessInFastMode(tid, addr):
   creator_tid = cache_line.creator_tid
   if (cache_line.WasNeverusedBefore()):
     # we see this cache line for the first time.
-    cache_line->set_creator_tid(tid):
+    cache_line.set_creator_tid = tid:
     return
-  if (creator_tid  == tid):
+  if (creator_tid == tid):
     # We are still in the same tid. Just return.
     return
   if (creator_tid != INVALID_TID):
     # we are transitioning from the creator tid.
-    cache_line->set_creator_tid(INVALID_TID)
+    cache_line.set_creator_tid = INVALID_TID)
   HandleMemoryAccess(tid, addr)
 }}}
-
