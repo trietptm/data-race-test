@@ -91,6 +91,14 @@ def HandleReadOrWriteEvent(is_write, tid, addr):
     ReportRace(is_write, tid, seg, addr)
 }}}
 
+{{{
+def UpdateSegmentSet(seg_set, init, seg)
+  new_seg_set = init
+  foreach s in seg_set: 
+    if (not (s <= seg)): 
+       new_seg_set = union(new_seg_set, s)
+  return new_seg_set
+}}}
 
 =Pure happens-before mode= 
 =Fast mode=
