@@ -4,7 +4,7 @@ Besides regular valgrind suppressions,
 ThreadSanitizer supports yet another machinery for suppressing reports. It is complimentary to valgrind suppressions.
 Maybe someday similar mechanism will become a part of valgrind core.
 
-You can use a --ignore=<filename> flag to pass a file which contains lines like this: 
+You can use a `--ignore=<filename>` flag to pass a file which contains lines like this: 
 {{{
 # specifies object file name using a wildcard. 
 # All function in this object will not be instrumented. 
@@ -27,7 +27,7 @@ The reports may show the stack that belong to reads, thus you will have to write
 Ignore file is also used to suppress warnings from libpthread and ld.so 
 
 Second, the ignore file allows to *speed up tsan by a large factor* (sometimes, several times). 
-By using --sample-events=<N> you can collect the hotspots of the program (those that slowdown tsan the most) and put them into the ignore file. 
+By using `--sample-events=<N>` you can collect the hotspots of the program (those that slowdown tsan the most) and put them into the ignore file. 
 
 
 
