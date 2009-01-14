@@ -23,6 +23,14 @@ number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L
 
 
 
+*Lock Set*: (`LS`) a set of locks. <BR>
+*Writer Lock Set* (`LSwr`): the set of all wr-held locks of a given thread. <BR>
+*Reader Lock Set* (`LSrd`): the set of all rd-held locks of a given thread. <BR>
+*Event Lock Set*:  `LSwr` for a `Write` event and `LSrd` for a `Read` event.
+
+
+
+
 =State machine=
 
 =Pure happens-before mode= 
