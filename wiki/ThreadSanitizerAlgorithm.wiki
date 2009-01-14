@@ -9,7 +9,7 @@
 *Addr* (address):  a pointer to the memory of the running program (a
     64-bit number on a 64-bit system).
 
-`Event-Type`: one of  `Read`, `Write` (memory access events),
+*Event-Type*: one of  `Read`, `Write` (memory access events),
 `Wrlock`, `Rdlock`, `Wrunlock`, `Rdunlock` (locking events),
 `Signal`, `Wait` (happens-before events).
 
