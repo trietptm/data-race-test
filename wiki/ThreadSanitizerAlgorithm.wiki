@@ -111,9 +111,9 @@ def IsRace(SSwr, SSrd):
       Assert(not (W1 <= W2) and not (W2 <= W1))
       if (IntersectionIsEmpty(LS1, LS2)): 
         return True
-    for R in SSrd: 
-      LS2 = R.LockSet()
-      if (not (W <= R) and IntersectionIsEmpty(LS1, LS2)):
+    foreach R in SSrd: 
+      LS3 = R.LockSet()
+      if (not (W1 <= R) and IntersectionIsEmpty(LS1, LS3)):
         return True
   return false
 }}}
