@@ -64,7 +64,7 @@ with the same address and at least one of the events is `Write`.
 
 
 =State machine=
-The state of ThreadSanitizer consists global and per-byte states.
+The state of ThreadSanitizer consists of global and per-byte states.
 Global state is the information about synchronization events that were observed
 so far (lock sets, happens-before arcs). Per-byte state (also called
 Shadow memory or metadata) is the information about each address (one byte of memory) of the running program. It consists of two segment sets: writer
