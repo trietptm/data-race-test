@@ -1,0 +1,7 @@
+#summary Dynamic Annotations are used to annotate custom synchronization utilities
+
+= Introduction =
+
+*UNDER CONSTRUCTION* 
+
+For now, look [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.h here]. 
