@@ -1,7 +1,10 @@
-#summary Comparison of ThreadSanitizer, Helgrind, Drd and Intel Thread Checker
+﻿#summary Comparison of ThreadSanitizer, Helgrind, Drd and Intel Thread Checker
 
 *UNDER CONSTRUCTION!*
 
-Oh, well. This page is not ready. Come back later. 
+Here we compare !ThreadSanitizer with Helgrind (and a bit with DRD and Intel Thread Checker).
 
-One of the main differences between ThreadSanitizer and such detectors as Helgrind (3.4), DRD, and Intel Thread Checker is that ThreadSanitizer has both hybrid and pure happens-before state machines.
+ !ThreadSanitizer has both hybrid and pure happens-before state machines
+ while such detectors as Helgrind (3.4), DRD, and Intel Thread Checker use only pure happens-before machine.
+
+
