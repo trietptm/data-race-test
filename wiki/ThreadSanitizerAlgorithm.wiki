@@ -183,8 +183,13 @@ void Thread2() {
 
 Here we have a race between `Thread1` and `Thread2` on the variable `X`. <BR>
 The order in which events E1 and E3 are actually executed depends on the scheduler (i.e. quite random). <BR>
+
 If E1 is executed first, than a happens-before arc E2->E3 will be created. <BR>
+http://data-race-test.googlecode.com/svn/trunk/msm/purehb1.png
+
 Otherwise (E3 is executed first), an arc E4->E1 will be created.  <BR>
+http://data-race-test.googlecode.com/svn/trunk/msm/purehb2.png
+
 So, the ability of the pure happens-before race detector to detect this race depends on the scheduler, 
 in other words the pure happens-before detector is less predictable. <BR>
 
