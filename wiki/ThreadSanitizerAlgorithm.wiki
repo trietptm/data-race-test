@@ -211,7 +211,8 @@ void Thread2() {
 }
 }}}
 This code (though weird) is correct, but a Hybrid detector will report a false positive. 
-A pure happens-before detector will be silent.
+A pure happens-before detector will be silent. DynamicAnnotations can be used to make 
+such code friendly to Hybrid detectors.
 
 
 
