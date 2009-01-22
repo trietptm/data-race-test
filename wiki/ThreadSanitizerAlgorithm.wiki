@@ -1,4 +1,4 @@
-#summary Data race detection algorithm used by ThreadSanitizer.
+﻿#summary Data race detection algorithm used by ThreadSanitizer.
 
 *UNDER CONSTRUCTION!*
 
@@ -40,7 +40,8 @@ the event `X` *happens-before* or *preceedes* the event `Y` (in short, `X < Y`) 
   * `{X,Y}` is a happens-before arc.
   * There exist two events `E1` and `E2`, such that `X <= E1 < E2 <= Y` (i.e. happens-before is transitive).
 
-*Context of event*: information that allows the users to understand where the given event has appeared. Usually, the context is a stack trace (TODO).
+*Context of event*: information that allows the users to understand where the given event has appeared. 
+Usually, the context is a stack trace of the event.
 
 *Segment*: a sequence of events of one thread that contains no
 synchronization events. The context of a segment is the context of the
@@ -78,7 +79,7 @@ The state machine updates the state on each event and reports a
 possible data race if needed.
 
 {{{
-def HandleReadOrWriteEvent(is_write, tid, addr):
+def HandleMemoryAccess(is_write, tid, addr):
   (SSwr, SSrd) = GetPerByteState(addr)
   seg = GetCurrentSegment(tid)
   if (is_write): # handle Write event
@@ -120,7 +121,28 @@ def IsRace(SSwr, SSrd):
 
 =Reporting races=
 
-TODO
+While reporting a race we want to show all accesses involved in it and all locks held during each of the accesses. 
+
+{{{
+def ReportRace(is_write, tid, seg, addr):
+  (SSwr, SSrd) = GetPerByteState(addr)
+  Printf("Possible data race during %s at address %p\n", 
+    is_write ? "write" : "read", addr)
+  PrintCurrentContext(tid)
+  PrintCurrentLockSets(tid)
+  foreach S in (SSwr w/o seg): 
+    Printf("Concurrent write(s):\n")
+    PrintSegmentContext(S) 
+    PrintSegmentLockSets(S)
+  if not is_write:
+    return
+  foreach S in (SSwr w/o seg): 
+    if not (S <= seg):
+      Printf("Concurrent write(s):\n")
+      PrintSegmentContext(S) 
+      PrintSegmentLockSets(S)
+}}}
+
 
 =Pure happens-before mode= 
 If we treat the following event pairs as happens-before arcs (in addition to `Signal`/`Wait` pairs), we will get a pure happens-before detector: 
@@ -145,8 +167,8 @@ def HandleMemoryAccessInFastMode(is_write, tid, addr):
     # We are still in the same tid.
     return
   cache_line.creator_tid = INVALID_TID
-  HandleReadOrWriteEvent(is_write, tid, addr)
+  HandleMemoryAccess(is_write, tid, addr)
 }}}
 
 The fast mode helps to avoid some false positives of the hybrid scheme.
-This mode is a bit similar to the initialization state in Eraser (TODO: link). 
+This mode is a bit similar to the initialization state in [www.cs.washington.edu/homes/tom/pubs/eraser.pdf Eraser]. 

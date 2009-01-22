@@ -10,7 +10,9 @@ Come back later for a complete documentation, but feel free to ask questions at 
 
 *!ThreadSanitizer* (aka *tsan*) is an experimental data race detector. 
 It is similar to Helgrind in many ways, but it also has several 
-differences. The instrumentation code is partially taken from Helgrind; the race detection machinery is new (the code is written in C++). The source code is published under GPLv2+.
+differences. The instrumentation code is partially taken from Helgrind; 
+the race detection machinery is new (the code is written in C++). 
+The source code is published under GPLv2+.
 
 !ThreadSanitizer is being actively developed and used at [http://www.google.com Google].
 
@@ -56,7 +58,7 @@ patch -p 0 < tsan/valgrind.patch
 ||  --pure-happens-before=yes|no || no  || Act as a pure happens-before detector. Useful if you are testing a code which has a lot of custom not annotated synchronization (e.g. message passing. See also DynamicAnnotations (TODO)) ||
 ||  --ignore-in-dtor=yes|no      || yes || Ignore reports with a Destructor in stack trace. ||
 ||        *Interface flags:*     ||     ||      Flags that affect the generated output. ||
-||  --color                      ||  no ||  Add colors to the output (uses http://en.wikipedia.org/wiki/ANSI_escape_code). ||
+||  --color                      ||  no ||  Add colors to the output using [http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape codes]. ||
 ||  --show-pc                    || no  || Show pc (program counter) in the stack traces. ||
 ||  --announce-threads           || no  || Show the the stack traces of thread creation . ||
 ||  --file_prefix_to_cut=file_prefix || ||   Remove `"^.*file_prefix"` from the printed file names.  You may pass this flag several times. ||
@@ -64,7 +66,7 @@ patch -p 0 < tsan/valgrind.patch
 || --sample-events=N || 0 ||  If non zero, tsan will sample one of 2^N events and at the end print the event profile. TODO (add more details). ||
 
 = Screenshot= 
-ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and 
+  !ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and 
 source code in the second window: 
 
  http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim3.png
