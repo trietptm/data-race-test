@@ -66,7 +66,6 @@ patch -p 0 < tsan/valgrind.patch
 || --sample-events=N || 0 ||  If non zero, tsan will sample one of 2^N events and at the end print the event profile. TODO (add more details). ||
 
 = Screenshot= 
-  !ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and 
-source code in the second window: 
+!ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and source code in the second window: 
 
  http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim3.png
