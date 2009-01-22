@@ -167,7 +167,7 @@ If we treat the following event pairs as happens-before arcs (in addition to `Si
 Unless your code uses lock-less synchronization, the pure happens-before 
 mode will never report a false race. So, why bother with hybrid then? 
 
-Let's look a this example: 
+Let's look at this example: 
 {{{
 void Thread1() {
   X = 1;
@@ -209,6 +209,7 @@ void Thread2() {
     mu.Lock(); // E3
     c = COND;
     mu.Unlock(); // E4
+    sleep(1);
   } while(c);
   if (c) {
     X = 2;
@@ -218,9 +219,6 @@ void Thread2() {
 This code (though weird) is correct, but a Hybrid detector will report a false positive. 
 A pure happens-before detector will be silent. DynamicAnnotations can be used to make 
 such code friendly to Hybrid detectors.
-
-
-
 
 
 =Fast mode=
