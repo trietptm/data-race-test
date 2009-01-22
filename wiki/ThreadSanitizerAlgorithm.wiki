@@ -55,7 +55,7 @@ The figure above shows three different threads divided into segments.
   * `S1 < S7` because happens-before is transitive.
   * `!(S4 < S2)` (`S4` does not happen-before `S2`) 
 
-We will write `S1 <= S2` instead of `S1 < S2 or S1 == S2`.
+We will write `(S1 <= S2)` instead of `(S1 < S2 or S1 == S2)`.
 
 
 *Segment Set*: a set of segments such that none of the segments in the set happens-before another segment.
@@ -162,6 +162,60 @@ If we treat the following event pairs as happens-before arcs (in addition to `Si
   * `Wrunlock(T1,A)` and `Wrlock(T2,A)`
   * `Rdunlock(T1,A)` and `Wrlock(T2,A)`
   * `Wrunlock(T1,A)` and `Rdlock(T2,A)`
+
+=Pure happens-before vs Hybrid=
+Unless your code uses lock-less synchronization, the pure happens-before 
+mode will never report a false race. So, why bother with hybrid then? 
+
+Let's look a this example: 
+{{{
+void Thread1() {
+  X = 1;
+  mu.Lock(); // E1
+  mu.Unlock(); // E2
+}
+void Thread2() {
+  mu.Lock(); // E3
+  mu.Unlock(); // E4
+  X = 2;
+}
+}}}
+
+Here we have a race between `Thread1` and `Thread2` on the variable `X`. <BR>
+The order in which events E1 and E3 are actually executed depends on the scheduler (i.e. quite random). <BR>
+If E1 is executed first, than a happens-before arc E2->E3 will be created. <BR>
+Otherwise (E3 is executed first), an arc E4->E1 will be created.  <BR>
+So, the ability of the pure happens-before race detector to detect this race depends on the scheduler, 
+in other words the pure happens-before detector is less predictable. <BR>
+
+
+!LockSet-based or Hybrid detectors do not suffer from this unpredictability and are much faster, but on downside they have false positives, for example this one: 
+{{{
+static int COND = 0;
+void Thread1() {
+  X = 1;
+  mu.Lock(); // E1
+  COND = 1
+  mu.Unlock(); // E2
+}
+void Thread2() {
+  int c;
+  do {
+    mu.Lock(); // E3
+    c = COND;
+    mu.Unlock(); // E4
+  } while(c);
+  if (c) {
+    X = 2;
+  }
+}
+}}}
+This code (though weird) is correct, but a Hybrid detector will report a false positive. 
+A pure happens-before detector will be silent.
+
+
+
+
 
 =Fast mode=
 ThreadSanitizer (similarly to Helgrind) groups memory locations in *cache lines*. <BR>
