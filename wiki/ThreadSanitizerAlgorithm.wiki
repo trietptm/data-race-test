@@ -144,6 +144,17 @@ def ReportRace(is_write, tid, seg, addr):
 }}}
 
 
+*The context of the concurrent accesses printed here is not precise* because 
+we print the context of a segment containing the concurrent access.
+However, if !ThreadSanitizer is used with `--keep-history=1` (which is the default), 
+the tool will create new segment each time the code enters a new super block. 
+As the result, the concurrent accesses will always have *almost* precise stack trace. 
+
+In practice, this means that in 50% cases the stack trace is precise and in other 49.9% cases 
+the printed stack is *nearly precise* (i.e. the top frame differes by few lines, the other frames are precise).
+
+
+
 =Pure happens-before mode= 
 If we treat the following event pairs as happens-before arcs (in addition to `Signal`/`Wait` pairs), we will get a pure happens-before detector: 
   * `Wrunlock(T1,A)` and `Wrlock(T2,A)`
