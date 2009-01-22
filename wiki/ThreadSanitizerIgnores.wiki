@@ -3,7 +3,7 @@
 *UNDER CONSTRUCTION!*
 
 Besides regular valgrind suppressions, 
-ThreadSanitizer supports yet another machinery for suppressing reports. It is complimentary to valgrind suppressions.
+ThreadSanitizer supports yet another machinery for suppressing reports. It is complementary to valgrind suppressions.
 Maybe someday similar mechanism will become a part of valgrind core.
 
 You can use a `--ignore=<filename>` flag to pass a file which contains lines like this: 

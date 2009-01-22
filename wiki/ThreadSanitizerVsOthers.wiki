@@ -18,13 +18,13 @@ while such detectors as Helgrind (3.4), DRD, and Intel Thread Checker use only p
 !ThreadSanitizer prints all accesses involved in a data race and also all locks held during each access. 
 For details see ThreadSanitizerAlgorithm and the screenshot at the main ThreadSanitizer page. 
 
-!ThreadSanitizer has an [ThreadSanitizerIgnores *ignore* feature] which is complimentary to valgrind suppressions.
+!ThreadSanitizer has an [ThreadSanitizerIgnores *ignore* feature] which is complementary to valgrind suppressions.
 
-!ThreadSanitizer does not replace the application's *malloc*, instead it instruments it. 
+!ThreadSanitizer does not replace the application's *malloc*, but gently instruments it. 
 This is important if the application uses a custom malloc function 
 (e.g. [http://goog-perftools.sourceforge.net/doc/tcmalloc.html Google's TCMalloc]) 
 which has important side effects. 
 
-!ThreadSanitizer is written in C++. 
+!ThreadSanitizer is written in C++ with STL. 
 This is, AFAIK, the first valgrind tool written in C++.
 Not a big deal otherwise. :) 
