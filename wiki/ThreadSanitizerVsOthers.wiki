@@ -4,7 +4,20 @@
 
 Here we compare !ThreadSanitizer with Helgrind (and a bit with DRD and Intel Thread Checker).
 
- !ThreadSanitizer has both hybrid and pure happens-before state machines
+ !ThreadSanitizer has both *hybrid* and *pure happens-before* state machines
  while such detectors as Helgrind (3.4), DRD, and Intel Thread Checker use only pure happens-before machine.
 
 
+ !ThreadSanitizer prints all accesses involved in a data race and also all locks held during each access. 
+ For details see ThreadSanitizerAlgorithm and the screenshot at the main ThreadSanitizer page. 
+
+ !ThreadSanitizer has an [ThreadSanitizerIgnores *ignore* feature] which is complimentary to valgrind suppressions.
+
+ !ThreadSanitizer does not replace the application's *malloc*, instead it instruments it. 
+ This is important if the application uses a custom malloc function 
+ (e.g. [http://goog-perftools.sourceforge.net/doc/tcmalloc.html Google's TCMalloc]) 
+ which has important side effects. 
+
+ !ThreadSanitizer is written in C++. 
+ This is, AFAIK, the first valgrind tool written in C++.
+ Not a big deal otherwise. :) 
