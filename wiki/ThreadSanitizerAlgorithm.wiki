@@ -35,7 +35,7 @@ number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L
 
 *Happens-before*: a partial order on the set of events. <BR>
 Given two events `X=TypeX(Tx,Ax)` and `Y=TypeY(Ty,Ay)` 
-the event `X` *happens-before* or *preceedes* the event `Y` (in short, `X < Y`) if `X` has been observed before `Y` and at least on of the following statements is true:
+the event `X` *happens-before* or *preceedes* the event `Y` (in short, `X < Y`) if `X` has been observed before `Y` and at least one of the following statements is true:
   * `Tx = Ty`
   * `{X,Y}` is a happens-before arc.
   * There exist two events `E1` and `E2`, such that `X <= E1 < E2 <= Y` (i.e. happens-before is transitive).
@@ -54,6 +54,8 @@ The figure above shows three different threads divided into segments.
   * `S1 < S5` due to happens-before arc created by `Signal(T1,H1)` and `Wait(T2,H2)`.
   * `S1 < S7` because happens-before is transitive.
   * `!(S4 < S2)` (`S4` does not happen-before `S2`) 
+
+We will write `S1 <= S2` instead of `S1 < S2 or S1 == S2`.
 
 
 *Segment Set*: a set of segments such that none of the segments in the set happens-before another segment.
