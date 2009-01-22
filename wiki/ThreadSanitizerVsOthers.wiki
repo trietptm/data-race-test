@@ -2,11 +2,18 @@
 
 *UNDER CONSTRUCTION!*
 
-Here we compare !ThreadSanitizer with Helgrind (and a bit with DRD and Intel Thread Checker).
+Some features that differ !ThreadSanitizer from Helgrind (and also from DRD and Intel Thread Checker).
 
 !ThreadSanitizer has both *hybrid* and *pure happens-before* state machines
 while such detectors as Helgrind (3.4), DRD, and Intel Thread Checker use only pure happens-before machine.
+  
+  The pure happens-before mode will not report false positives 
+  (unless your program uses lock-less synchronization), but it may miss races and is less predictable. 
 
+  The hybrid machine may give more false positives, but is much faster and predictable. 
+
+!ThreadSanitizer supports DynamicAnnotations which can make any tricky synchronization
+(including lock-less synchronization) to be !ThreadSanitizer-friendly.
 
 !ThreadSanitizer prints all accesses involved in a data race and also all locks held during each access. 
 For details see ThreadSanitizerAlgorithm and the screenshot at the main ThreadSanitizer page. 
