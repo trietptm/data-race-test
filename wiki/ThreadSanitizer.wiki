@@ -16,7 +16,7 @@ The source code is published under GPLv2+.
 
 !ThreadSanitizer is being actively developed and used at [http://www.google.com Google].
 
-See also: ThreadSanitizerAlgorithm, ThreadSanitizerIgnores, ThreadSanitizerVsOthers, RacecheckUnittest
+See also: ThreadSanitizerAlgorithm, ThreadSanitizerIgnores, ThreadSanitizerVsOthers, RacecheckUnittest, DynamicAnnotations.
 
 
 =Using !ThreadSanitizer=
