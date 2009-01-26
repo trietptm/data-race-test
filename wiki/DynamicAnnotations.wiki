@@ -1,7 +1,7 @@
 ﻿#summary Dynamic Annotations are used to annotate custom synchronization utilities
 
 =THIS PAGE IS UNDER CONSTRUCTION=
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 = Introduction =
 
 Dynamic annotation is a source code annotation that affects
