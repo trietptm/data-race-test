@@ -47,7 +47,17 @@ cd ../
 patch -p 0 < tsan/valgrind.patch
 # Build the whole thing.
 ./autogen.sh && ./configure --prefix=`pwd`/inst && make install
-# Done.
+# Get and compile the unittests
+cd ../
+svn checkout http://data-race-test.googlecode.com/svn/trunk/unittest tsan_test
+cd tsan_test/
+make
+# Check if the ThreadSanitizer works: 
+cd ../
+./valgrind/Inst/bin/valgrind --tool=tsan tsan_test/racecheck_unittest 311
+# You should now see the ThreadSanitizer's output, 
+# like the one shown on the screenshot.
+# Done!
 }}}
 
 =Using !ThreadSanitizer=
