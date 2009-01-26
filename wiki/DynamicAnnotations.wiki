@@ -1,7 +1,23 @@
-#summary Dynamic Annotations are used to annotate custom synchronization utilities
+﻿#summary Dynamic Annotations are used to annotate custom synchronization utilities
 
 = Introduction =
 
 *UNDER CONSTRUCTION* 
 
-For now, look [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.h here]. 
+Dynamic annotation is a source code annotation that affects
+the generated code (that is, the annotation is not a comment).
+Each such annotation is attached to a particular
+instruction and/or to a particular object (address) in the program.
+
+Dynamic annotations could be used to pass various kinds of information to dynamic analysis tools, 
+such as Memcheck, Helgrind or !ThreadSanitizer. 
+
+In order to use the dynamic annotations you need to include 
+[http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.h dynamic_annotations.h]
+and link with
+[http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.cc dynamic_annotations.cc].
+
+
+
+
+*TODO*: add examples. 
