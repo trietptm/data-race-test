@@ -88,6 +88,17 @@ Type *MyCoolMessageQueue::Get() {
 }}}
 ==Free lists==
 Free lists are usually implemented in the same manner as message queues. So, see above.
+=FIFO queues= 
+A FIFO message queue (as any other message queue) could be annotated using `ANNOTATE_CONDVAR_SIGNAL` / `ANNOTATE_CONDVAR_WAIT`.
+But the specific `ANNOTATE_PCQ_*` annotations are a bit more race-detector-friendly. 
+The main difference is that if we put a same element into the queue several times, the `SIGNAL` / `WAIT` annotations will make race detectors too conservative 
+(i.e. will create too many wrong happens-before arcs).
+  * `ANNOTATE_PCQ_CREATE(pcq)`
+  * `ANNOTATE_PCQ_DESTROY(pcq)`
+  * `ANNOTATE_PCQ_PUT(pcq)`
+  * `ANNOTATE_PCQ_GET(pcq)`
+
+
 ==Reference counting==
 Reference counting using lock. Need to annotate to avoid false positives in Hybrid detector.
 {{{
@@ -122,8 +133,6 @@ TODO
 If you annotate a mutex =mu= with =ANNOTATE_MUTEX_IS_USED_AS_CONDVAR(&mu)=, 
 the Hybrid detector will treat this particular mutex as in pure happens-before mode. 
 
-=FIFO queues= 
-TODO
 
 =Benign races=
 Use `ANNOTATE_BENIGN_RACE(addr, "Description of this race")` to annotate an expected bening race.

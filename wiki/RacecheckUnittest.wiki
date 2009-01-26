@@ -4,7 +4,7 @@ The file [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/r
 contains various unit tests for a data race detector. The tests are named test01, test02, and so on. For details see the source. 
 
 
-*TODO*:  The following is outdated. 
+*TODO*:  The following is outdated. Need to update.
 
 The table below summarises the results of the state machines on this test suite.  
 
