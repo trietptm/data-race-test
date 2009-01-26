@@ -54,7 +54,7 @@ cd tsan_test/
 make
 # Check if the ThreadSanitizer works: 
 cd ../
-./valgrind/Inst/bin/valgrind --tool=tsan tsan_test/racecheck_unittest 311
+./valgrind/inst/bin/valgrind --tool=tsan tsan_test/racecheck_unittest 311
 # You should now see the ThreadSanitizer's output, 
 # like the one shown on the screenshot.
 # Done!
