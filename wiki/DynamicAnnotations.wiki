@@ -12,7 +12,7 @@ instruction and/or to a particular object (address) in the program.
 Dynamic annotations could be used to pass various kinds of information to dynamic analysis tools, 
 such as Memcheck, Helgrind or !ThreadSanitizer. 
 
-In order to use the dynamic annotations you need to include 
+In order to use the dynamic annotations in your program you need to include 
 [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.h dynamic_annotations.h]
 and link with
 [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.cc dynamic_annotations.cc].
@@ -26,8 +26,54 @@ and link with
 
 =Custom synchronization=
 ==Message queue==
+Message queues that use lock require annotations to avoid false positives in the Hybrid mode 
+(pure happens-before detector will be silent). 
+If a message queue is implemented w/o a lock, an annotations may be required even for a pure happens-before detector.
+{{{
+// Putter 
+void MyCoolMessageQueue::Put(Type *e) {
+  MutexLock lock(&mu_);
+  ANNOTATE_CONDVAR_SIGNAL(e);   //<<<< SIGNAL right before doing Put().
+  PutElementIntoMyQueue(e);
+}
+
+// Getter
+Type *MyCoolMessageQueue::Get() {
+  MutexLock lock(&mu_);
+  Type *e = GetElementFromMyQueue(e);
+  ANNOTATE_CONDVAR_WAIT(e);     //<<<<< WAIT right after Get()
+  return e;
+}
+}}}
 ==Free lists==
+Free lists are usually implemented in the same manner as message queues. So, see above.
 ==Reference counting==
+Reference counting using lock. Need to annotate to avoid false positives in Hybrid detector.
+{{{
+void Unref() {
+  MU.Lock();
+  bool do_delete = (--ref_ == 0);
+  ANNOTATE_CONDVAR_SIGNAL(&ref_);
+  MU.Unlock();
+  if (do_delete) {
+    ANNOTATE_CONDVAR_WAIT(&ref_);
+    delete this;
+  } 
+}
+}}}
+
+In case of lock-less reference counting, the annotation is required even for pure happens-before detectors. 
+{{{
+void Unref() {
+  ANNOTATE_CONDVAR_SIGNAL(&refcount_);
+  if (!AtomicDecrementByOne(&refcount_)) {
+    // refcount_ is now 0
+    ANNOTATE_CONDVAR_WAIT(&refcount_);
+    delete this;
+  }
+}
+}}}
+
 =Safe publication=
 =Pure happens-before Muitex=
 =FIFO queues= 
