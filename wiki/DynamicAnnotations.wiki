@@ -18,7 +18,7 @@ and link with
 [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.cc dynamic_annotations.cc].
 
 
-*TODO*: add examples. 
+*TODO*: add more examples. 
 
 =Custom memory allocation= 
 
@@ -75,11 +75,24 @@ void Unref() {
 }}}
 
 =Safe publication=
+TODO
 =Pure happens-before Muitex=
+If you annotate a mutex =mu= with =ANNOTATE_MUTEX_IS_USED_AS_CONDVAR(&mu)=, 
+the Hybrid detector will treat this particular mutex as in pure happens-before mode. 
 =FIFO queues= 
+TODO
 =Benign races=
+Use =ANNOTATE_BENIGN_RACE(addr)= to annotate an expected bening race.
 =Racey reads=
+It is often the case that we want to protect updates of some value, but can tolerate unsynchronized reads of that value.
+For this kind of benign race we have special annotations:
+  * `ANNOTATE_IGNORE_READS_BEGIN()`, `ANNOTATE_IGNORE_READS_END()`
+  * `ANNOTATE_UNPROTECTED_READ(mem)`
+
+These annotations allow us to ignore certain racey reads, while still checking all other accesses. 
+
 =Custom locks=
+
 =Expected races in unittests= 
 
 
