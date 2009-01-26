@@ -21,7 +21,7 @@ For details see ThreadSanitizerAlgorithm and the screenshot at the main ThreadSa
 !ThreadSanitizer has an [ThreadSanitizerIgnores *ignore* feature] which is complementary to valgrind suppressions.
 
 !ThreadSanitizer does not replace the application's *malloc*, but gently instruments it. 
-This is important if the application uses a custom malloc function 
+This is usefull if the application uses a custom malloc function 
 (e.g. [http://goog-perftools.sourceforge.net/doc/tcmalloc.html Google's TCMalloc]) 
 which has important side effects. 
 
