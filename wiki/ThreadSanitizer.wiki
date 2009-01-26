@@ -10,7 +10,7 @@ Come back later for a complete documentation, but feel free to ask questions at 
 
 *!ThreadSanitizer* (aka *tsan*) is an experimental data race detector based on [http://www.valgrind.org Valgrind]. <BR>
 It is similar to [http://valgrind.org/docs/manual/hg-manual.html Helgrind] in many ways, but it also has several 
-differences. The instrumentation code is partially taken from Helgrind; 
+[ThreadSanitizerVsOthers differences]. The instrumentation code is partially taken from Helgrind; 
 the race detection machinery is new (the code is written in C++). 
 The source code is published under GPLv2+.
 
