@@ -18,6 +18,23 @@ and link with
 [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.cc dynamic_annotations.cc].
 
 
-
-
 *TODO*: add examples. 
+
+=Custom memory allocation= 
+
+=pthread_cond_wait loop=
+
+=Custom synchronization=
+==Message queue==
+==Free lists==
+==Reference counting==
+=Safe publication=
+=Pure happens-before Muitex=
+=FIFO queues= 
+=Benign races=
+=Racey reads=
+=Custom locks=
+=Expected races in unittests= 
+
+
+
