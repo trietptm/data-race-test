@@ -98,6 +98,7 @@ The main difference is that if we put a same element into the queue several time
   * `ANNOTATE_PCQ_PUT(pcq)`
   * `ANNOTATE_PCQ_GET(pcq)`
 
+(PCQ stands for Producer Consumer Queue. The name of these annotations is subject to change).
 
 ==Reference counting==
 Reference counting using lock. Need to annotate to avoid false positives in Hybrid detector.
