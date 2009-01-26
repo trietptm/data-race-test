@@ -10,7 +10,7 @@ while such detectors as Helgrind (3.4), DRD, and Intel Thread Checker use only p
   The pure happens-before mode will not report false positives 
   (unless your program uses lock-less synchronization), but it may miss races and is less predictable. 
 
-  The hybrid machine may give more false positives, but is much faster and predictable. 
+  The hybrid machine may give more false positives, but is much faster, more predictable and find more real races. 
 
 !ThreadSanitizer supports DynamicAnnotations which can make any tricky synchronization
 (including lock-less synchronization) to be !ThreadSanitizer-friendly.
