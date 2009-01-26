@@ -17,12 +17,53 @@ In order to use the dynamic annotations in your program you need to include
 and link with
 [http://code.google.com/p/google-perftools/source/browse/trunk/src/base/dynamic_annotations.cc dynamic_annotations.cc].
 
+You can find examples of the annotations in RacecheckUnittest.
 
 *TODO*: add more examples. 
 
+*TODO*: rewrite examples using vanilla PTHREAD syntax.
+
 =Custom memory allocation= 
+Use `ANNOTATE_NEW_MEMORY(mem, size)` inside custom memory allocators. 
 
 =pthread_cond_wait loop=
+
+We need to establish a happens-before relation between `CondVar::Signal()` and `CondVar::Wait()`.
+In other words, we need to tell the detector that a pair of matching `CondVar::Signal()` and `CondVar::Wait()` perform correct synchronization. 
+
+There's a problem when `CondVar::Signal()` gets called before we enter `CondVar::Wait()` while loop.
+In some cases we may have to annotate user code with `ANNOTATE_CONDVAR_LOCK_WAIT(&CV, &MU)` (or `ANNOTATE_CONDVAR_WAIT(&CV)`)
+If we do not annotate a conditional critical section, there is a chance that a false data race will be reported. 
+
+{{{
+Mutex mu;
+CondVar cv;
+
+// In this example, a false data race on 'GLOB' may be reported if we don't 
+// insert ANNOTATE_CONDVAR_LOCK_WAIT(&cv, &mu);
+void Thread1() {
+  GLOB = 1;  // Access1
+  mu.Lock();
+  COND = 1;
+  cv.Signal();        // <<<<<<<<<<<<<<<<< Does ANNOTATE_CONDVAR_SIGNAL(&cv)
+  mu.Unlock();
+}
+
+void Thread2() {
+  mu.Lock();
+  while(COND != 1)
+	cv.Wait(&mu);
+  // W/o this annotation the race detector may report 
+  // a false race between Access1 and Access2
+  // This annotation should be placed rigth after the while loop
+  ANNOTATE_CONDVAR_LOCK_WAIT(&cv, &mu);  // <<<<<<< Matches SIGNAL in Thread1()
+  mu.Unlock();
+  GLOB = 2; // Access2
+}
+}}}
+
+
+Pure happens-before detectors do not suffer from this issue. 
 
 =Custom synchronization=
 ==Message queue==
@@ -76,11 +117,14 @@ void Unref() {
 
 =Safe publication=
 TODO
-=Pure happens-before Muitex=
+
+=Pure happens-before Mutex=
 If you annotate a mutex =mu= with =ANNOTATE_MUTEX_IS_USED_AS_CONDVAR(&mu)=, 
 the Hybrid detector will treat this particular mutex as in pure happens-before mode. 
+
 =FIFO queues= 
 TODO
+
 =Benign races=
 Use =ANNOTATE_BENIGN_RACE(addr)= to annotate an expected bening race.
 =Racey reads=
