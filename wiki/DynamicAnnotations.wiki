@@ -63,7 +63,7 @@ void Thread2() {
 }}}
 
 
-Pure happens-before detectors do not suffer from this issue. 
+Pure happens-before detectors do not suffer from this issue and do not require this annotation. 
 
 =Custom synchronization=
 ==Message queue==
@@ -126,7 +126,7 @@ the Hybrid detector will treat this particular mutex as in pure happens-before m
 TODO
 
 =Benign races=
-Use =ANNOTATE_BENIGN_RACE(addr)= to annotate an expected bening race.
+Use `ANNOTATE_BENIGN_RACE(addr)` to annotate an expected bening race.
 =Racey reads=
 It is often the case that we want to protect updates of some value, but can tolerate unsynchronized reads of that value.
 For this kind of benign race we have special annotations:
@@ -137,7 +137,15 @@ These annotations allow us to ignore certain racey reads, while still checking a
 
 =Custom locks=
 
-=Expected races in unittests= 
+If you implement your own locking primitive, you have to annotate it in order to make it !ThreadSanitizer-friendly.
 
+  * `ANNOTATE_RWLOCK_CREATE(lock)`
+  * `ANNOTATE_RWLOCK_DESTROY(lock)`
+  * `ANNOTATE_RWLOCK_ACQUIRED(lock, is_w)`
+  * `ANNOTATE_RWLOCK_RELEASED(lock, is_w)`
+
+=Expected races in unittests= 
+Data race that happens on address mem will not be reported. 
+In contrary, if the race detector does not find a race for that address, a warning message will be printed at the end.
 
 
