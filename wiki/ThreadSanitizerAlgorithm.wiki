@@ -242,4 +242,4 @@ def HandleMemoryAccessInFastMode(is_write, tid, addr):
 }}}
 
 The fast mode helps to avoid some false positives of the hybrid scheme.
-This mode is a bit similar to the initialization state in [www.cs.washington.edu/homes/tom/pubs/eraser.pdf Eraser]. 
+This mode is a bit similar to the initialization state in [http://www.cs.washington.edu/homes/tom/pubs/eraser.pdf Eraser]. 
