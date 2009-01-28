@@ -84,8 +84,8 @@ valgrind [valgrind options] --tool=tsan [tsan options] your/program [program opt
 || *Resource usage* || || ||
 || --max-sid ||8388608 (2^23) || This number of unique Segment IDs. <BR> This reflects the amount of memory allocated by !ThreadSanitizer at startup. One Segment ID requires ~100 bytes of memory, so by default approximately 800M of memory is allocated.<BR> The higher this number the better. This number can not be very small (<100000). The upper bound depends on the amount of available memory.  ||
 || --num-callers-in-history || 10 || The size of the stack trace stored for the concurrent accesses. <br> Increasing this number improves the reports and increases the memory footprint. ||
-|| *Other* || || ||
-|| --sample-events=N || 0 ||  If non zero, tsan will sample one of 2^N events and at the end print the event profile. TODO (add more details). ||
+|| *Profiling* || || ||
+|| --sample-events=N || 0 ||  If non zero, !ThreadSanitizer will sample one of 2^N events and at the end print the event profile. <br> This options could be used together with ThreadSanitizerIgnores. ||
 
 = Screenshot= 
 !ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and the [RacecheckUnittest source code] in the second window: 
