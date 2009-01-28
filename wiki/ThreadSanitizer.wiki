@@ -75,7 +75,7 @@ valgrind [valgrind options] --tool=tsan [tsan options] your/program [program opt
 || --keep-history=0|1|2          || 1   ||  Keep the history of the previous accesses. <BR> Setting this option to zero will make the tool run 10%-30% faster, but will make the reports less informative. <BR> Use --keep-history=0 in continuous builds, and --keep-history=1 when analyzing reports. <BR> Values greater than 1 are experimental. ||
 ||  --fast-mode=yes|no           || yes ||  Be faster, but miss some races. ||
 ||  --pure-happens-before=yes|no || no  || Act as a pure happens-before detector. <br> Useful if you are testing a code which has a lot of custom synchronization, e.g. message passing, which is not annotated with DynamicAnnotations. ||
-||  --ignore-in-dtor=yes|no      || yes || Ignore reports with a Destructor in stack trace. ||
+||  --ignore-in-dtor=yes|no      || yes || Ignore reports with a C++ class Destructor in stack trace.||
 ||        *Interface flags:*     ||     ||      Flags that affect the generated output. ||
 ||  --color                      ||  no ||  Add colors to the output using [http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape codes]. ||
 ||  --show-pc                    || no  || Show pc (program counter) in the stack traces. ||
