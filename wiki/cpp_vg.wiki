@@ -6,6 +6,8 @@ We took valgrind sources and made few changes to make it possible to use C++ and
 
 We added two different implementations of STL: one from g++ distribution, and one from www.stlport.org. We will have to choose one, of course. 
 
+See also ThreadSanitizer for an example of a non-toy Valgrind tool written in C++ using STL. 
+
 = How to try = 
 Checkout: 
 {{{
