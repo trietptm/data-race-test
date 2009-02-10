@@ -4,7 +4,9 @@
 
 =Simple example=
 ==Example code==
-Let's consider the simplest example, test301 from RacecheckUnittest.
+Let's consider the simplest example, 
+[http://www.google.com/codesearch/p?hl=en#Xcie8cMcE6E/trunk/unittest/racecheck_unittest.cc&q=%22namespace%20test301%20{%22%20file:racecheck_unittest.cc%20package:http://data-race-test\.googlecode\.com test301]
+from RacecheckUnittest.
 
 {{{
 Mutex mu1;  // This Mutex guards var.
