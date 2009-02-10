@@ -128,6 +128,11 @@ This stack trace points to the concurrent access.
 
 {{{
 ==30360==   Address 0x633AA0 is 0 bytes inside data symbol "_ZN7test3013varE"
+}}}
+Description of the racey memory location. 
+For heap-allocated objects we will see the allocation context.
+
+{{{
 ==30360==   Locks involved in this report (reporting last lock sites): {L121, L122}
 ==30360==    L121 (0x633A10)
 ==30360==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:602
@@ -143,6 +148,8 @@ This stack trace points to the concurrent access.
 ==30360==     #3  test301::Thread2() racecheck_unittest.cc:5955
 ==30360==     #4  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
 ==30360==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
-==30360== }}}
 }}}
+
+This gives us the information about all locks involved in this report. 
+For each lock !ThreadSanitizer shows the context where this lock was acquired last.
 
