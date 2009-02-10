@@ -59,3 +59,10 @@ The report (printed to stderr) will look like this:
 ==30360==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
 ==30360== }}}
 }}}
+
+You can view this report together with the sources using your favourite editor. 
+Here is an example using ThreadSanitizerAndVim: 
+the window at left shows the !ThreadSanitizer's output, the two windows at right 
+display the two racey accesses.
+
+ http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim-three-windows.png
