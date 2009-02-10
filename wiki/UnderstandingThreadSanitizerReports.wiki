@@ -28,4 +28,6 @@ valgrind --tool=tsan ./racecheck_unittest 301
 }}}
 
 The report (printed to stderr) will look like this: 
+<pre>
 <b> bold </b>
+</pre>
