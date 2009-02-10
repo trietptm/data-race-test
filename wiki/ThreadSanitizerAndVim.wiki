@@ -1,0 +1,1 @@
+#summary Viewing ThreadSanitizer's output in Vim
