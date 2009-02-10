@@ -28,7 +28,7 @@ valgrind --tool=tsan ./racecheck_unittest 301
 }}}
 
 The report (printed to stderr) will look like this: 
-{{{
+<pre>
 ==30277== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
 ==30277== INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
 ==30277== WARNING: Possible data race during write of size 4 at 0x633AA0: {{{
@@ -58,4 +58,4 @@ The report (printed to stderr) will look like this:
 ==30277==     #4  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
 ==30277==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
 ==30277== }}}
-}}}
+</pre>
