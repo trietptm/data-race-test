@@ -21,6 +21,7 @@ See also:
   * ThreadSanitizerAlgorithm
   * ThreadSanitizerIgnores
   * ThreadSanitizerVsOthers
+  * UnderstandingThreadSanitizerReports
   * RacecheckUnittest
   * DynamicAnnotations
   * RaceCheckerClass
