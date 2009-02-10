@@ -1,1 +1,0 @@
-#summary How to understand the reports produced by ThreadSanitizer
