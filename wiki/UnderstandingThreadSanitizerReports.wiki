@@ -94,7 +94,7 @@ It mentions the address of the racey memory, the size of the racey access and wh
 {{{
 ==30360==    T2 (test-thread-2) (locks held: {L122}):
 }}}
-This is the infoamtion about the last observed access which is considered to be racey. 
+This is the information about the last observed access which is considered to be racey. 
   * `T2` is the thread where this access happened.
   * `test-thread-2` is the name of the thread. The threads are named using `ANNOTATE_THREAD_NAME(name)` from DynamicAnnotations.
   * `(locks held: {L122})`: this is the list of all locks held during this access.
