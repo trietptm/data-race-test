@@ -158,4 +158,7 @@ If you implement your own locking primitive, you have to annotate it in order to
 Data race that happens on address mem will not be reported. 
 In contrary, if the race detector does not find a race for that address, a warning message will be printed at the end.
 
+=Naming Threads=
+Use `ANNOTATE_THREAD_NAME(name)` do name a thread.
+
 

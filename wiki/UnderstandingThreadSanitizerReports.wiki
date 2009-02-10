@@ -77,15 +77,35 @@ Each race report mentions two or more threads, e.g. `T1` and `T2`.
 Note that the main thread of the program is called `T0`. Each thread is announced only once. 
 If you use the flag `--announce-threads` you will get the context where this thread hasbeen created.
 
-
-
-{{
+{{{
 ==30360== WARNING: Possible data race during write of size 4 at 0x633AA0: {{{
+}}}
+
+This is the header of the report. 
+It mentiones the address of the racey memory, the size of the racey access and whether it was a read or a write.
+
+
+{{{
 ==30360==    T2 (test-thread-2) (locks held: {L122}):
+}}}
+This is the infoamtion about the last observed access which is considered to be racey. 
+  * `T2` is the thread where this access happened.
+  * `test-thread-2` is the name of the thread. The threads are named using `ANNOTATE_THREAD_NAME(name)` from DynamicAnotations.
+  * `(locks held: {L122})`: this is a list of all locks held during this access. 
+     If some locks are held in reader mode, the reader and writer locks will be shown separately. 
+
+{{{
 ==30360==     #0  test301::Thread2() racecheck_unittest.cc:5956
 ==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
 ==30360==     #2  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
+}}}
+And here is the exact stack trace of the last observed access.
+
+{{{
 ==30360==   Concurrent write(s) happened at (OR AFTER) these points:
+}}}
+
+{{{
 ==30360==    T1 (test-thread-1) (locks held: {L121}):
 ==30360==     #0  test301::Thread1() racecheck_unittest.cc:5951
 ==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
