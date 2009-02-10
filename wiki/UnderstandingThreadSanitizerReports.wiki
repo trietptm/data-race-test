@@ -75,7 +75,7 @@ Let us now describe each section of the report.
 }}}
 Each race report mentions two or more threads, e.g. `T1` and `T2`. 
 Note that the main thread of the program is called `T0`. Each thread is announced only once. 
-If you use the flag `--announce-threads` you will get the context where this thread hasbeen created.
+If you use the flag `--announce-threads` you will get the context where this thread has been created.
 
 {{{
 ==30360== WARNING: Possible data race during write of size 4 at 0x633AA0: {{{
@@ -90,8 +90,8 @@ It mentiones the address of the racey memory, the size of the racey access and w
 }}}
 This is the infoamtion about the last observed access which is considered to be racey. 
   * `T2` is the thread where this access happened.
-  * `test-thread-2` is the name of the thread. The threads are named using `ANNOTATE_THREAD_NAME(name)` from DynamicAnotations.
-  * `(locks held: {L122})`: this is a list of all locks held during this access. 
+  * `test-thread-2` is the name of the thread. The threads are named using `ANNOTATE_THREAD_NAME(name)` from DynamicAnnotations.
+  * `(locks held: {L122})`: this is the list of all locks held during this access.
      If some locks are held in reader mode, the reader and writer locks will be shown separately. 
 
 {{{
@@ -104,12 +104,29 @@ And here is the exact stack trace of the last observed access.
 {{{
 ==30360==   Concurrent write(s) happened at (OR AFTER) these points:
 }}}
+Following are the sections that represent the accesses that are concurrent to the access above.
+These accesses are not necessary concurrent to each other. 
+
 
 {{{
 ==30360==    T1 (test-thread-1) (locks held: {L121}):
+}}}
+Again: the information about the thread and the locks.
+
+{{{
 ==30360==     #0  test301::Thread1() racecheck_unittest.cc:5951
 ==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
 ==30360==     #2  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
+}}}
+This stack trace points to the concurrent access.
+  * With `--keep-history=0` this section will not be shown (fastest). 
+  * With `--keep-history=1` (default) this section will be shown, but the stack trace may be not exact. 
+    The only difference from the actual stack trace is in the line number of the frame #0. 
+    In most cases, however, this line number is exact or within few lines from the actual one.
+  * With `--keep-history=2` this stack trace is exact (slowest).
+
+
+{{{
 ==30360==   Address 0x633AA0 is 0 bytes inside data symbol "_ZN7test3013varE"
 ==30360==   Locks involved in this report (reporting last lock sites): {L121, L122}
 ==30360==    L121 (0x633A10)
