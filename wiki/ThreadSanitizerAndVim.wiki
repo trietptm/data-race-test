@@ -1,1 +1,10 @@
-#summary Viewing ThreadSanitizer's output in Vim
+﻿#summary Viewing ThreadSanitizer's output in Vim
+
+You can do magic things with [http://vim.org Vim]. 
+On of such things is that you can use Vim as a GUI for ThreadSanitizer.
+
+Here is an example: 
+
+ http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim-three-windows.png
+
+TODO(kcc): need to add actual vim scripting... Ping me if you need it.
