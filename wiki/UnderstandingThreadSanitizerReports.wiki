@@ -1,6 +1,5 @@
 ﻿#summary How to understand the reports produced by ThreadSanitizer
 
-=THIS PAGE IS UNDER CONSTRUCTION=
 <wiki:toc max_depth="2" />
 
 =Simple example=
