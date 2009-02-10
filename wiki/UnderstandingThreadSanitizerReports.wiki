@@ -87,7 +87,7 @@ If you use the flag `--announce-threads` you will get the context where this thr
 }}}
 
 This is the header of the report. 
-It mentiones the address of the racey memory, the size of the racey access and whether it was a read or a write.
+It mentions the address of the racey memory, the size of the racey access and whether it was a read or a write.
 
 
 {{{
