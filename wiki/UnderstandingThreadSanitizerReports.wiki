@@ -23,7 +23,7 @@ void Thread2() {  // Runs in thread named 'test-thread-2'.
 }
 }}}
 
-==Running !ThreadSanitizer==
+==Running ThreadSanitizer==
 You can run !ThreadSanitizer like this: 
 {{{
 valgrind --tool=tsan ./racecheck_unittest 301
