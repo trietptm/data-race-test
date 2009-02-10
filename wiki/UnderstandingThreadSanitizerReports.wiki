@@ -126,8 +126,8 @@ Again: the information about the thread and the locks.
 This stack trace points to the concurrent access.
   * With `--keep-history=0` this section will not be shown (fastest). 
   * With `--keep-history=1` (default) this section will be shown, but the stack trace may be not exact. 
-    The only difference from the actual stack trace is in the line number of the frame #0. 
-    In most cases, however, this line number is exact or within few lines from the actual one.
+The only difference from the actual stack trace is in the line number of the frame #0. 
+In most cases, however, this line number is exact or within few lines from the actual one.
   * With `--keep-history=2` this stack trace is exact (slowest).
 
 
