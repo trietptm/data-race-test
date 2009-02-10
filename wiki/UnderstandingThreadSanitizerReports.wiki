@@ -1,11 +1,12 @@
 ﻿#summary How to understand the reports produced by ThreadSanitizer
 
 =THIS PAGE IS UNDER CONSTRUCTION=
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 
 =Simple example=
-
+==Example code==
 Let's consider the simplest example, test301 from RacecheckUnittest.
+
 {{{
 Mutex mu1;  // This Mutex guards var.
 Mutex mu2;  // This Mutex is not related to var.
@@ -22,11 +23,13 @@ void Thread2() {  // Runs in thread named 'test-thread-2'.
 }
 }}}
 
+==Running !ThreadSanitizer==
 You can run !ThreadSanitizer like this: 
 {{{
 valgrind --tool=tsan ./racecheck_unittest 301
 }}}
 
+==The report==
 The report (printed to stderr) will look like this:
 {{{
 ==30360== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
@@ -60,6 +63,7 @@ The report (printed to stderr) will look like this:
 ==30360== }}}
 }}}
 
+==GUI==
 You can view this report together with the sources using your favourite editor. 
 Here is an example using ThreadSanitizerAndVim: 
 the window at left shows the !ThreadSanitizer's output, the two windows at right 
@@ -67,6 +71,7 @@ display the two racey accesses.
 
  http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim-three-windows.png
 
+==Details==
 Let us now describe each section of the report.
 
 {{{
@@ -153,3 +158,11 @@ For heap-allocated objects we will see the allocation context.
 This gives us the information about all locks involved in this report. 
 For each lock !ThreadSanitizer shows the context where this lock was acquired last.
 
+=More complex example=
+For a more complex example see the test 311 from RacecheckUnittest.
+We use `--pure-happens-before=no` since a pure happens-before detector can not detect the race on this test.
+{{{
+valgrind --tool=tsan  --pure-happens-before=no ./racecheck_unittest 311
+}}}
+
+ http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim3.png
