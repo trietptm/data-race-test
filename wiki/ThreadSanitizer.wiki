@@ -1,8 +1,5 @@
 ﻿#summary ThreadSanitizer is an experimental Valgrind-based detector of data races
 
-=THIS PAGE IS UNDER CONSTRUCTION=
-Come back later for a complete documentation, but feel free to ask questions at any time (use the comment box at the bottom of this page). 
-
 <wiki:toc max_depth="1" />
 
 
