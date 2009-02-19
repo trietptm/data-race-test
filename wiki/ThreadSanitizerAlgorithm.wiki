@@ -81,7 +81,7 @@ The state machine updates the state on each event and reports a
 possible data race if needed.
 
 {{{
-# Handles a memory access event (either read or write) 
+# Handle a memory access event (either read or write)
 # that happened in thread 'tid' on address 'addr'.
 def HandleMemoryAccess(is_write, tid, addr):
   (SSwr, SSrd) = GetPerByteState(addr)
@@ -91,13 +91,15 @@ def HandleMemoryAccess(is_write, tid, addr):
     SSwr = UpdateSegmentSet(SSwr, seg, seg)
   else: # handle Read event
     SSrd = UpdateSegmentSet(SSrd, seg, seg)
+  # Update the state.
   SetPerByteState(SSwr, SSrd)
+  # Check if there is a race and report it.
   if (IsRace(SSwr, SSrd)): 
     ReportRace(is_write, tid, seg, addr)
 }}}
 
 {{{
-# Returns a new segment set constructed as follows: 
+# Return a new segment set constructed as follows: 
 # takes all segments from 'seg_set' that do not happen-before or equal to 'seg'
 # and joins with 'init'.
 def UpdateSegmentSet(seg_set, init, seg):
@@ -109,6 +111,7 @@ def UpdateSegmentSet(seg_set, init, seg):
 }}}
 
 {{{
+# Return true if the state {SSwr,SSrd} represents a race.
 def IsRace(SSwr, SSrd): 
   for i = 1 .. SSwr.size(): 
     W1 = SSwr[i]
