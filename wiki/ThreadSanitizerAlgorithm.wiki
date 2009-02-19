@@ -86,10 +86,13 @@ possible data race if needed.
 def HandleMemoryAccess(is_write, tid, addr):
   (SSwr, SSrd) = GetPerByteState(addr)
   seg = GetCurrentSegment(tid)
-  if (is_write): # handle Write event
+  if (is_write): # Write event
+    # Remove 'seg' and those that happen-before 'seg' from SSrd.
     SSrd = UpdateSegmentSet(SSrd, {}, seg)
+    # Remove segments that happen-before 'seg' from SSwr and add 'seg'.
     SSwr = UpdateSegmentSet(SSwr, seg, seg)
-  else: # handle Read event
+  else: # Read event
+    # Just add 'seg' to SSrd.
     SSrd = UpdateSegmentSet(SSrd, seg, seg)
   # Update the state.
   SetPerByteState(SSwr, SSrd)
