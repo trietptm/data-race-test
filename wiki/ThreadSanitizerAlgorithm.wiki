@@ -81,6 +81,7 @@ The state machine updates the state on each event and reports a
 possible data race if needed.
 
 {{{
+# comment
 def HandleMemoryAccess(is_write, tid, addr):
   (SSwr, SSrd) = GetPerByteState(addr)
   seg = GetCurrentSegment(tid)
