@@ -5223,9 +5223,8 @@ void ThreadSanitizerParseFlags(vector<string> &args) {
 
   FindBoolFlag("ignore_stack", true, &args, &G_flags->ignore_stack);
   FindIntFlag("keep_history", 1, &args, &G_flags->keep_history);
-  FindUIntFlag("segment_set_recycle_queue_size", DEBUG_MODE ? 10 : 1000, &args,
+  FindUIntFlag("segment_set_recycle_queue_size", DEBUG_MODE ? 10 : 10000, &args,
                &G_flags->segment_set_recycle_queue_size);
-  CHECK(G_flags->segment_set_recycle_queue_size >= 0);
   FindBoolFlag("fast_mode", true, &args, &G_flags->fast_mode);
   FindBoolFlag("pure_happens_before", false, &args, &G_flags->pure_happens_before);
   FindBoolFlag("show_expected_races", false, &args, 
