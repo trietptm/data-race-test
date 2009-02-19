@@ -97,6 +97,9 @@ def HandleMemoryAccess(is_write, tid, addr):
 }}}
 
 {{{
+# Returns a new segment set constructed as follows: 
+# takes all segments from 'seg_set' that do not happen-before or equal to 'seg'
+# and joins with 'init'.
 def UpdateSegmentSet(seg_set, init, seg):
   new_seg_set = init
   foreach s in seg_set: 
