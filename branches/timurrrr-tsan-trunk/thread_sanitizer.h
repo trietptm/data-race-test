@@ -104,7 +104,7 @@ using std::lexicographical_compare_3way;
   #define DEBUG_MODE (1)
   #define INLINE
 #else
-  #define DCHECK(a)
+  #define DCHECK(a) do { if (0) { if (a) {} } } while(0)
   #define DEBUG_MODE (0)
   #define INLINE  inline  __attribute__ ((always_inline))
 #endif
@@ -244,6 +244,10 @@ extern void ThreadSanitizerHandleRtnCall(int32_t tid, uintptr_t call_pc,
 extern void ThreadSanitizerHandleRtnExit(int32_t tid);
 extern void ThreadSanitizerPrintReport(ThreadSanitizerReport *report);
 extern void ThreadSanitizerPrintUsage();
+
+extern bool g_so_far_only_one_thread;
+extern bool g_has_entered_main;
+extern bool g_has_exited_main;
 
 //--------- Event ------------------------- {{{1
 class Event {
