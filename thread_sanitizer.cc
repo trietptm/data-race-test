@@ -2140,6 +2140,7 @@ class SegmentSet {
 
   template <int n>
   struct SSHash {
+    // TODO(timurrrr): think of a better hash function.
     INLINE uintptr_t operator () (const SegmentSet *ss) const {
       uintptr_t res = ss->GetSID(0).raw() ^ ss->GetSID(1).raw();
       if (n == 2) return res;
@@ -2239,7 +2240,7 @@ SSID SegmentSet::RemoveSegmentFromSS(SSID old_ssid, SID sid_to_remove) {
   DCHECK(sid_to_remove.valid());
 
   if (old_ssid.IsEmpty()) return old_ssid;  // Nothing to remove.
-  if (old_ssid.IsSingleton()) {
+  if (LIKELY(old_ssid.IsSingleton())) {
     SID sid = old_ssid.Singleton();
     if (Segment::HappensBeforeOrSameThread(sid, sid_to_remove)) 
       return SSID(0);  // Empty.
@@ -2255,7 +2256,7 @@ SSID SegmentSet::AddSegmentToSS(SSID old_ssid, SID new_sid) {
   // TODO: add caching
   DCHECK(new_sid.valid());
   SSID res;
-  if (old_ssid.IsSingleton()) {
+  if (LIKELY(old_ssid.IsSingleton())) {
     res = AddSegmentToSingletonSS(old_ssid, new_sid);
   } else if (old_ssid.IsEmpty()) {
     res = SSID(new_sid);
@@ -2280,6 +2281,7 @@ SSID SegmentSet::AddSegmentToSingletonSS(SSID ssid, SID new_sid) {
   TID old_tid = Segment::Get(old_sid)->tid();
   TID new_tid = Segment::Get(new_sid)->tid();
   if (old_tid == new_tid) {  // Same thread.
+    DCHECK(Segment::HappensBefore(old_sid, new_sid);
     return SSID(new_sid.raw());
   }
   if (Segment::HappensBefore(old_sid, new_sid)) {
@@ -2302,7 +2304,8 @@ SSID SegmentSet::RemoveSegmentFromTupleSS(SSID ssid, SID sid_to_remove) {
   
 
   int32_t new_size = 0;
-  SID tmp_sids[kMaxSegmentSetSize];
+  SegmentSet tmp(new_size);
+  SID * tmp_sids = tmp.sids_;
   CHECK(sizeof(int32_t) == sizeof(SID));
 
   for (int i = 0; i < old_size; i++) {
@@ -2314,13 +2317,10 @@ SSID SegmentSet::RemoveSegmentFromTupleSS(SSID ssid, SID sid_to_remove) {
     tmp_sids[new_size++] = sid;
   }
 
+  if (new_size == old_size) return ssid;
   if (new_size == 0) return SSID(0); 
   if (new_size == 1) return SSID(tmp_sids[0]);
-  if (new_size == old_size) return ssid;
 
-  SegmentSet tmp(new_size);
-  for (int i = 0; i < new_size; i++)
-    tmp.sids_[i] = tmp_sids[i];
   if (DEBUG_MODE) tmp.Validate(__LINE__);
 
   SSID res = FindExistingOrAlocateAndCopy(&tmp);
@@ -2361,6 +2361,7 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
 
     if (tid == new_tid) {
       // we have another segment from the same thread => replace it.
+      DCHECK(Segment::HappensBefore(sid, new_sid));
       tmp_sids[new_size++] = new_sid;
       inserted_new_sid = true;
       continue;
@@ -2406,7 +2407,7 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
   CHECK(new_size <= kMaxSegmentSetSize);
   SegmentSet tmp(new_size);
   for (int i = 0; i < new_size; i++)
-    tmp.sids_[i] = tmp_sids[i];
+    tmp.sids_[i] = tmp_sids[i]; // TODO(timurrrr): avoid copying?
   if (DEBUG_MODE) tmp.Validate(__LINE__);
 
   SSID res = FindExistingOrAlocateAndCopy(&tmp);
@@ -4724,12 +4725,12 @@ class Detector {
   // Set *res to the new state.
   // Return true if the new state is race.
   bool INLINE MemoryStateMachine(ShadowValue old_sval, Thread *thr, 
-                                 bool is_w, bool tracing, ShadowValue *res) {
+                                 bool is_w, ShadowValue *res) {
     ShadowValue new_sval(0);
     SID cur_sid = thr->sid();
     DCHECK(cur_sid.valid());
 
-    if (old_sval.IsNew()) {
+    if (UNLIKELY(old_sval.IsNew())) {
       // We see this memory for the first time. 
       DCHECK(cur_sid.valid());
       Segment::Ref(cur_sid, "MSM (new mem)");
@@ -4764,6 +4765,8 @@ class Detector {
 
     new_sval.set(new_rd_ssid, new_wr_ssid);
     *res = new_sval;
+    if (new_sval == old_sval)
+      return false;
 
     if (new_wr_ssid.IsTuple() || 
         (!new_wr_ssid.IsEmpty() && !new_rd_ssid.IsEmpty())) {
@@ -4794,7 +4797,7 @@ class Detector {
 
     ShadowValue *sval_p = cache_line->GetValuePointer(offset);
     ShadowValue old_sval;
-    if (!cache_line->used().Get(offset)) {
+    if (UNLIKELY(!cache_line->used().Get(offset))) {
       cache_line->used().Set(offset);
       cache_line->published().Clear(offset);
       old_sval = ShadowValue(0);
@@ -4810,7 +4813,7 @@ class Detector {
       thr->NewSegmentForWait(signaller_vts);
     }
 
-    bool is_race = MemoryStateMachine(old_sval, thr, is_w, tracing, &new_sval);
+    bool is_race = MemoryStateMachine(old_sval, thr, is_w, &new_sval);
 
     if (UNLIKELY(tracing)) {
       Printf("TRACE: T%d %s[%d] addr=%p sval: %s%s\n", 
