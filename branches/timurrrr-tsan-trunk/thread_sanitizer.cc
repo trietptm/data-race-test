@@ -2162,30 +2162,38 @@ class SegmentSet {
    public:
     SSID GetIdOrZero(SegmentSet *ss) {
       int size = ss->size();
-      CheckSize(size);
-      if (size == 2) return GetIdOrZeroFromMap(map2, ss);
-      if (size == 3) return GetIdOrZeroFromMap(map3, ss);
-      if (size == 4) return GetIdOrZeroFromMap(map4, ss);
-      CHECK(0);
-      return SSID(0);
+      switch(size) {
+        case 2: return GetIdOrZeroFromMap(map2, ss);
+        case 3: return GetIdOrZeroFromMap(map3, ss);
+        case 4: return GetIdOrZeroFromMap(map4, ss);
+        case 0:
+        case 1:
+          return SSID(0);
+        default:
+          CHECK(0);
+      }
     }
 
     void Insert(SegmentSet *ss, SSID id) {
       int size = ss->size();
       CheckSize(size);
-      if (size == 2) map2[ss] = id;  
-      if (size == 3) map3[ss] = id;  
-      if (size == 4) map4[ss] = id;  
-      CHECK(0);
+      switch(size) {
+        case 2: map2[ss] = id; break;
+        case 3: map3[ss] = id; break;
+        case 4: map4[ss] = id; break;
+        default: CHECK(0);
+      }
     }
     
     void Erase(SegmentSet *ss) {
       int size = ss->size();
       CheckSize(size);
-      if (size == 2) CHECK(map2.erase(ss));
-      if (size == 3) CHECK(map3.erase(ss));
-      if (size == 4) CHECK(map4.erase(ss));
-      CHECK(0);
+      switch(size) {
+        case 2: CHECK(map2.erase(ss)); break;
+        case 3: CHECK(map3.erase(ss)); break;
+        case 4: CHECK(map4.erase(ss)); break;
+        default: CHECK(0);
+      }
     }
   
     void Clear() {
@@ -2281,7 +2289,6 @@ SSID SegmentSet::AddSegmentToSingletonSS(SSID ssid, SID new_sid) {
   TID old_tid = Segment::Get(old_sid)->tid();
   TID new_tid = Segment::Get(new_sid)->tid();
   if (old_tid == new_tid) {  // Same thread.
-    DCHECK(Segment::HappensBefore(old_sid, new_sid);
     return SSID(new_sid.raw());
   }
   if (Segment::HappensBefore(old_sid, new_sid)) {
@@ -2321,6 +2328,7 @@ SSID SegmentSet::RemoveSegmentFromTupleSS(SSID ssid, SID sid_to_remove) {
   if (new_size == 0) return SSID(0); 
   if (new_size == 1) return SSID(tmp_sids[0]);
 
+  tmp.size_ = new_size;
   if (DEBUG_MODE) tmp.Validate(__LINE__);
 
   SSID res = FindExistingOrAlocateAndCopy(&tmp);
@@ -2361,7 +2369,6 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
 
     if (tid == new_tid) {
       // we have another segment from the same thread => replace it.
-      DCHECK(Segment::HappensBefore(sid, new_sid));
       tmp_sids[new_size++] = new_sid;
       inserted_new_sid = true;
       continue;
@@ -4726,7 +4733,7 @@ class Detector {
   // Return true if the new state is race.
   bool INLINE MemoryStateMachine(ShadowValue old_sval, Thread *thr, 
                                  bool is_w, ShadowValue *res) {
-    ShadowValue new_sval(0);
+    ShadowValue new_sval;
     SID cur_sid = thr->sid();
     DCHECK(cur_sid.valid());
 
@@ -4800,7 +4807,7 @@ class Detector {
     if (UNLIKELY(!cache_line->used().Get(offset))) {
       cache_line->used().Set(offset);
       cache_line->published().Clear(offset);
-      old_sval = ShadowValue(0);
+      old_sval.Clear();
     } else {
       old_sval = *sval_p;
     }
