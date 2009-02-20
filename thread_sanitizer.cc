@@ -1972,8 +1972,7 @@ class SegmentSet {
     }
 
     // SSIDs may be reused now - need to flush some caches.
-    add_segment_cache_->Flush();
-    remove_segment_cache_->Flush();
+    FlushCaches();
   }
 
   string ToString() const;
@@ -1996,6 +1995,10 @@ class SegmentSet {
 
   static string ToStringWithLocks(SSID ssid);
 
+  static void FlushCaches() {
+    add_segment_cache_->Flush();
+    remove_segment_cache_->Flush();
+  }
 
   static void ForgetAllState() {
     for (size_t i = 0; i < vec_->size(); i++) {
@@ -2005,6 +2008,7 @@ class SegmentSet {
     vec_->clear();
     ready_to_be_reused_->clear();
     ready_to_be_recycled_->clear();
+    FlushCaches();
   }
 
 
@@ -2270,7 +2274,7 @@ class SegmentSet {
   static vector<SSID>         *ready_to_be_reused_;
   static vector<SSID>         *ready_to_be_recycled_;
 
-  typedef PairCache<SSID, SID, SSID, 1009> SsidSidToSidCache;
+  typedef PairCache<SSID, SID, SSID, 1009, 1> SsidSidToSidCache;
   static SsidSidToSidCache    *add_segment_cache_;
   static SsidSidToSidCache    *remove_segment_cache_;
 
@@ -3577,7 +3581,7 @@ struct Thread {
            );
     // We don't want to create a happens-before arc if it will be redundant.
     if (!VTS::HappensBeforeCached(signaller_vts, current_vts)) {
-      VTS *new_vts = VTS::JoinAndTick(current_vts, signaller_vts, tid());
+      VTS *new_vts = VTS::JoinAndTick(current_vts, signaller_vts, TID());
       NewSegment("NewSegmentForWait", new_vts);
     }
     DCHECK(VTS::HappensBeforeCached(signaller_vts, vts()));
