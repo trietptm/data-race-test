@@ -485,8 +485,10 @@ class PairCache {
   }
   void Insert(A a, B b, Ret v) {
     // fill the hash table
-    uint32_t idx  = compute_idx(a, b);
-    htable_[idx].Fill(a, b, v);
+    if (kHtableSize != 0) {
+      uint32_t idx  = compute_idx(a, b);
+      htable_[idx].Fill(a, b, v);
+    }
     
     // fill the array
     Ret dummy;
@@ -503,11 +505,13 @@ class PairCache {
       return true;
     }
     // check the hash table.
-    uint32_t idx  = compute_idx(a, b);
-    Entry & prev_e = htable_[idx];
-    if (prev_e.Match(a, b)) {
-      *v = prev_e.v;
-      return true;
+    if (kHtableSize != 0) {
+      uint32_t idx  = compute_idx(a, b);
+      Entry & prev_e = htable_[idx];
+      if (prev_e.Match(a, b)) {
+        *v = prev_e.v;
+        return true;
+      }
     }
     return false;
   }
@@ -538,7 +542,10 @@ class PairCache {
   }
 
   uint32_t compute_idx(A a, B b) {
-    return (combine2(a, b) % kHtableSize);
+    if (kHtableSize == 0)
+      return 0;
+    else
+      return (combine2(a, b) % max(kHtableSize, 1));
   }
 
   static uint32_t combine2(int a, int b) {
