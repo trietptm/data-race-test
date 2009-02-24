@@ -2308,7 +2308,7 @@ SSID SegmentSet::RemoveSegmentFromSS(SSID old_ssid, SID sid_to_remove) {
     if (Segment::HappensBeforeOrSameThread(sid, sid_to_remove)) 
       res = SSID(0);  // Empty.
     else
-      res =  old_ssid;
+      res = old_ssid;
   } else {
     res = RemoveSegmentFromTupleSS(old_ssid, sid_to_remove);
   }
@@ -2344,7 +2344,7 @@ SSID SegmentSet::AddSegmentToSingletonSS(SSID ssid, SID new_sid) {
   CHECK(ssid.IsSingleton());
   CHECK(ssid.valid());
   SID old_sid(ssid.raw());
-  if (old_sid == new_sid) {  // Same segment. 
+  if (LIKELY(old_sid == new_sid)) {  // Same segment. 
     return ssid;
   }
   CHECK(old_sid.valid());
@@ -2352,7 +2352,7 @@ SSID SegmentSet::AddSegmentToSingletonSS(SSID ssid, SID new_sid) {
   Segment::AssertLive(new_sid, __LINE__);
   TID old_tid = Segment::Get(old_sid)->tid();
   TID new_tid = Segment::Get(new_sid)->tid();
-  if (old_tid == new_tid) {  // Same thread.
+  if (LIKELY(old_tid == new_tid)) {  // Same thread.
     return SSID(new_sid.raw());
   }
   if (Segment::HappensBefore(old_sid, new_sid)) {
