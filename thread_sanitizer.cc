@@ -1709,7 +1709,7 @@ class Segment {
     ScopedMallocCostCenter malloc_cc("Segment::RecycleOneSid()");
     static const size_t kRecyclePeriod = 10000; // TODO: test it!
     Segment *seg = GetInternal(sid);
-    DCHECK(!seg->ref_count_);
+    DCHECK(seg->ref_count_ == 0);
     DCHECK(sid.raw() < n_segments_);
     if (!seg->vts()) return false;  // Already recycled.
     seg->tid_ = TID();
@@ -1937,6 +1937,7 @@ class SegmentSet {
       // Printf("SSRef   : %d ref=%d %s\n", ssid.raw(), sset->ref_count_, where);  
       DCHECK(sset->ref_count_ >= 0);
       sset->ref_count_++;
+      DCHECK(sset->ref_count_ > 0);
     }
   }
 
@@ -2216,9 +2217,6 @@ class SegmentSet {
         case 2: return GetIdOrZeroFromMap(map2, ss);
         case 3: return GetIdOrZeroFromMap(map3, ss);
         case 4: return GetIdOrZeroFromMap(map4, ss);
-        case 0:
-        case 1:
-          return SSID(0);
         default:
           CHECK(0);
       }
@@ -4751,14 +4749,26 @@ class Detector {
     if (G_flags->verbosity >= 2) e_->Print();
   }
 
-  INLINE void RefAndUnrefTwoSegSetsIfDifferent(SSID new_ssid, SSID old_ssid) {
-    if (new_ssid != old_ssid) {
-      if (!new_ssid.IsEmpty()) {
-        SegmentSet::Ref(new_ssid, "RefAndUnrefTwoSegSetsIfDifferent");
-      }
-      if (!old_ssid.IsEmpty()) {
-        SegmentSet::Unref(old_ssid, "RefAndUnrefTwoSegSetsIfDifferent");
-      }
+  INLINE void RefAndUnrefTwoSegSetPairsIfDifferent(SSID new_ssid1,
+                                                   SSID old_ssid1,
+                                                   SSID new_ssid2,
+                                                   SSID old_ssid2) {
+    bool recycle_1 = new_ssid1 != old_ssid1,
+         recycle_2 = new_ssid2 != old_ssid2;
+    if (recycle_1 && !new_ssid1.IsEmpty()) {
+      SegmentSet::Ref(new_ssid1, "RefAndUnrefTwoSegSetPairsIfDifferent");
+    }
+    
+    if (recycle_2 && !new_ssid2.IsEmpty()) {
+      SegmentSet::Ref(new_ssid2, "RefAndUnrefTwoSegSetPairsIfDifferent");
+    }
+
+    if (recycle_1 && !old_ssid1.IsEmpty()) {
+      SegmentSet::Unref(old_ssid1, "RefAndUnrefTwoSegSetPairsIfDifferent");
+    }
+
+    if (recycle_2 && !old_ssid2.IsEmpty()) {
+      SegmentSet::Unref(old_ssid2, "RefAndUnrefTwoSegSetPairsIfDifferent");
     }
   }
 
@@ -4913,9 +4923,9 @@ class Detector {
 
 
     // Ref/Unref segments
-    RefAndUnrefTwoSegSetsIfDifferent(new_sval.rd_ssid(),
-                                     old_sval.rd_ssid());
-    RefAndUnrefTwoSegSetsIfDifferent(new_sval.wr_ssid(),
+    RefAndUnrefTwoSegSetPairsIfDifferent(new_sval.rd_ssid(),
+                                     old_sval.rd_ssid(),
+                                     new_sval.wr_ssid(),
                                      old_sval.wr_ssid());
 
     *sval_p = new_sval;
