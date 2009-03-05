@@ -26,6 +26,9 @@
 // Author: Konstantin Serebryany.
 // Author: Timur Iskhodzhanov.
 
+// You can find the details on this tool at 
+// http://code.google.com/p/data-race-test
+
 #include "thread_sanitizer.h"
 #include <stdarg.h>
 //--------- Constants --------------- {{{1
@@ -2217,8 +2220,7 @@ class SegmentSet {
         case 2: return GetIdOrZeroFromMap(map2, ss);
         case 3: return GetIdOrZeroFromMap(map3, ss);
         case 4: return GetIdOrZeroFromMap(map4, ss);
-        default:
-          CHECK(0);
+        default: CHECK(0);
       }
     }
 
@@ -2867,7 +2869,7 @@ class Cache {
     CacheLine **line_for_this_tag = &storage_[tag];
     CacheLine *old_line = lines_[cli];
     if (*line_for_this_tag == NULL) {
-      // creating a nea cache line
+      // creating a new cache line
       CHECK(storage_.size() == old_storage_size + 1);
       res = CacheLine::CreateNewCacheLine(tag);
       *line_for_this_tag = res;
@@ -3023,7 +3025,7 @@ static void UnpublishMemory(CacheLine *line, Mask mask) {
   CHECK(CheckSanityOfPublishedMemory(line->tag(), __LINE__));
 }
 
-
+// Publish range [a, b) in addr's CacheLine with vts.
 static void PublishRangeInOneLine(uintptr_t addr, uintptr_t a, 
                                   uintptr_t b, VTS *vts) {
   ScopedMallocCostCenter cc("PublishRangeInOneLine");
@@ -3037,6 +3039,7 @@ static void PublishRangeInOneLine(uintptr_t addr, uintptr_t a,
   if (1 || line->published().GetRange(a,b)) {
     Mask mask(0);
     mask.SetRange(a,b);
+    // TODO(timurrrr): add warning for re-publishing.
     UnpublishMemory(line, mask);
   }
 
@@ -3056,22 +3059,21 @@ static void PublishRangeInOneLine(uintptr_t addr, uintptr_t a,
 
 // Publish memory range [a, b).
 static void PublishRange(uintptr_t a, uintptr_t b, VTS *vts) {
-  uintptr_t line1 = 0, line2 = 0;
-  uintptr_t tag = GetCacheLinesForRange(a, b, &line1, &line2);
+  uintptr_t line1_tag = 0, line2_tag = 0;
+  uintptr_t tag = GetCacheLinesForRange(a, b, &line1_tag, &line2_tag);
   if (tag) {
     PublishRangeInOneLine(tag, a - tag, b - tag, vts);
     return;
   }
   uintptr_t a_tag = CacheLine::ComputeTag(a);
   PublishRangeInOneLine(a, a - a_tag, CacheLine::kLineSize, vts);
-  for (uintptr_t tag_i = line1; tag_i < line2; 
+  for (uintptr_t tag_i = line1_tag; tag_i < line2_tag; 
        tag_i += CacheLine::kLineSize) {
     PublishRangeInOneLine(tag_i, 0, CacheLine::kLineSize, 
                           vts->Clone());
   }
-  if (b > line2) {
-    PublishRangeInOneLine(line2, 0, CacheLine::ComputeOffset(b),
-                          vts->Clone());
+  if (b > line2_tag) {
+    PublishRangeInOneLine(line2_tag, 0, b - line2_tag, vts->Clone());
   }
 }
 
@@ -3126,8 +3128,8 @@ void INLINE ClearMemoryStateInOneLine(uintptr_t addr,
 
 // clear memory state for [a,b)
 void INLINE ClearMemoryState(uintptr_t a, uintptr_t b, bool is_new_mem) {
-  DCHECK(b >= a);
-  if (b == a) return;
+  DCHECK(a < b);
+  if (a == b) return;
   uintptr_t line1_tag = 0, line2_tag = 0;
   uintptr_t single_line_tag = GetCacheLinesForRange(a, b, 
                                                     &line1_tag, &line2_tag);
@@ -3146,8 +3148,7 @@ void INLINE ClearMemoryState(uintptr_t a, uintptr_t b, bool is_new_mem) {
   }
 
   if (b > line2_tag) {
-    ClearMemoryStateInOneLine(line2_tag, 0, CacheLine::ComputeOffset(b), 
-                              is_new_mem);
+    ClearMemoryStateInOneLine(line2_tag, 0, b - line2_tag, is_new_mem);
   }
 
   if (DEBUG_MODE && G_flags->debug_level >= 2) {  // check that we've cleared it. Slow! 
@@ -3166,7 +3167,6 @@ struct Thread {
  public:
   Thread(TID tid, TID parent_tid, VTS *vts, StackTrace *creation_context) 
     : is_running_(true),
-      thread_name_(NULL),
       tid_(tid), 
       sid_(0), 
       parent_tid_(parent_tid),
@@ -3236,7 +3236,7 @@ struct Thread {
     char buff[100];
     sprintf(buff, "T%d", tid().raw());
     string res = buff;
-    if (thread_name_) {
+    if (thread_name_.length() > 0) {
       res += " (";
       res += thread_name_;
       res += ")";
@@ -3253,9 +3253,7 @@ struct Thread {
     return 8 * 1024 * 1024;
   }
 
-
   bool is_running() const { return is_running_; }
-
 
   // ignore
   void set_ignore(bool is_w, bool on) {
@@ -3271,12 +3269,6 @@ struct Thread {
     return ignore_context_[is_w];
   }
 
-
-  INLINE void set_sid(SID sid) {
-    DCHECK(sid.valid());
-    sid_ = sid;
-    Segment::Ref(sid, "Thread::set_sid");
-  }
   SID sid() const {
     return sid_;
   }
@@ -3286,6 +3278,7 @@ struct Thread {
     Segment::AssertLive(sid(), __LINE__);
     return Segment::Get(sid());
   }
+
   VTS *vts() const {
     return segment()->vts();
   }
@@ -3301,7 +3294,7 @@ struct Thread {
   }
 
   void set_thread_name(const char *name) {
-    thread_name_ = strdup(name);
+    thread_name_ = string(name);
   }
   
   void HandleThreadEnd() {
@@ -3382,8 +3375,10 @@ struct Thread {
   void HandleLock(uintptr_t lock_addr, bool is_w_lock) {
     Lock *lock = Lock::LookupOrCreate(lock_addr);
     // NOTE: we assume that all locks can be acquired recurively.
-    // No warning about recusrive locking will be issued. 
+    // No warning about recursive locking will be issued. 
     if (is_w_lock) {
+      // Recursive locks are properly handled because LockSet is in fact a
+      // multiset.
       wr_lockset_ = LockSet::Add(wr_lockset_, lock);
       rd_lockset_ = LockSet::Add(rd_lockset_, lock);
       lock->WrLock(CreateStackTrace());
@@ -3476,6 +3471,7 @@ struct Thread {
 
   void HandleWait(uintptr_t cv, uintptr_t mu, bool timed_out) {
     if (mu) {
+      // HandleUnlock is called in HandleWaitBefore().
       HandleLock(mu, true);
     }
 
@@ -3519,7 +3515,9 @@ struct Thread {
     SID new_sid = Segment::AddNewSegment(tid(), new_vts, 
                                          rd_lockset_, wr_lockset_);
     SID old_sid = sid();
-    set_sid(new_sid);
+    sid_ = new_sid;
+    Segment::Ref(new_sid, "Thread::NewSegmentWithoutUnrefingOld");
+
     FillEmbeddedStackTrace(segment()->embedded_stack_trace());
     if (0) 
     Printf("2: %s T%d/S%d old_sid=%d NewSegment: %s\n", call_site, 
@@ -3528,8 +3526,9 @@ struct Thread {
   }
 
   void INLINE NewSegment(const char *call_site, VTS *new_vts) {
-    Segment::Unref(sid(), "Thread::NewSegment");
+    SID old_sid = sid();
     NewSegmentWithoutUnrefingOld(call_site, new_vts);
+    Segment::Unref(old_sid, "Thread::NewSegment");
   }
 
   void NewSegmentForLockingEvent() {
@@ -3622,10 +3621,10 @@ struct Thread {
   }
 
   void HandleRtnCall(uintptr_t call_pc, uintptr_t target_pc) {
-      if (!call_stack_.empty()) {
-        call_stack_.back() = call_pc;
-      }
-      PushCallStack(target_pc);
+    if (!call_stack_.empty()) {
+      call_stack_.back() = call_pc;
+    }
+    PushCallStack(target_pc);
   }
 
   void HandleRtnExit() {
@@ -3752,17 +3751,17 @@ struct Thread {
  private:
 
   bool is_running_;
-  const char *thread_name_;
+  string thread_name_;
 
 
 
   TID    tid_;          ///< This thread's tid.
-  SID    sid_;      ///< Segment ID.
+  SID    sid_;          ///< Current segment ID.
   TID    parent_tid_;   ///< Parent's tid.
   uintptr_t  max_sp_;    
   uintptr_t  min_sp_;    
-  uintptr_t  cur_sp_;      ///< Current sp value.
-  uintptr_t  new_sp_; ///< Value of SP after recent change.
+  uintptr_t  cur_sp_;   ///< Current sp value.
+  uintptr_t  new_sp_;   ///< Value of SP after recent change.
   StackTrace *creation_context_;
   bool      announced_;
 
@@ -3773,6 +3772,8 @@ struct Thread {
   LSID   rd_lockset_;
   LSID   wr_lockset_;
 
+  // The following lock_mu_ and wait_* fields are to simplify
+  // Handle*{Before,After} calls.
   uintptr_t lock_mu_;
 
   uintptr_t wait_cv_;
@@ -4233,7 +4234,7 @@ int ReportStorage::n_reports = 0;
 
 //--------- Event Sampling ---------------- {{{1
 // This class samples (profiles) events.
-// Instance of this class should all be static.
+// Instances of this class should all be static.
 class EventSampler {
  public:
 
@@ -4894,6 +4895,7 @@ class Detector {
     }
 
     bool is_published = cache_line->published().Get(offset);
+    // We check only the first bit for publishing, oh well.
     
     if (UNLIKELY(is_published)) {
       const VTS *signaller_vts = GetPublisherVTS(addr);
@@ -4937,6 +4939,10 @@ class Detector {
   // return true if we can skip the memory access
   // due to fast mode. AddSegmentToSS the creator_tid()
   INLINE bool FastModeCheckAndUpdateCreatorTid(CacheLine *cache_line, TID tid) {
+    // See
+    // http://code.google.com/p/data-race-test/wiki/ThreadSanitizerAlgorithm#Fast_mode
+    // for the details.
+
     if (!G_flags->fast_mode) return false;
     const TID kInvalidTID = TID();
     TID creator_tid = cache_line->creator_tid();
@@ -5674,5 +5680,6 @@ extern void ThreadSanitizerPrintReport(ThreadSanitizerReport *report) {
 // - Optimize the case where a threads signals twice in a row on the same
 //   address.
 // - Fix --ignore-in-dtor if --demangle=no.
+// - Use cpplint (http://code.google.com/p/google-styleguide)
 // end. {{{1
 // vim:shiftwidth=2:softtabstop=2:expandtab:tw=80
