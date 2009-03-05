@@ -475,7 +475,7 @@ class IntPairToBoolCache {
   uint64_t arr_[kSize];
 };
 
-//--------- IntPairToIntCache ------ {{{1
+//--------- PairCache & IntPairToIntCache ------ {{{1
 template <typename A, typename B, typename Ret, int kHtableSize, int kArraySize = 8>
 class PairCache {
  public:
