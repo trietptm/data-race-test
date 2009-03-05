@@ -476,99 +476,72 @@ class IntPairToBoolCache {
 };
 
 //--------- IntPairToIntCache ------ {{{1
-template <typename A, typename B, typename Ret, int kHtableSize, int kArraySize = 8>
-class PairCache {
+template <int kHtableSize, int kArraySize = 8>
+class IntPairToIntCache {
  public:
-  PairCache() {
-    CHECK(sizeof(Entry) == sizeof(A) + sizeof(B) + sizeof(Ret));
+  IntPairToIntCache() {
     Flush();
   }
   void Flush() {
     memset(this, 0, sizeof(*this));
   }
-  void Insert(A a, B b, Ret v) {
+  void Insert(int a, int b, int v) {
     // fill the hash table
-    if (kHtableSize != 0) {
-      uint32_t idx  = compute_idx(a, b);
-      htable_[idx].Fill(a, b, v);
-    }
+    uint32_t idx  = compute_idx(a, b);
+    htable_[idx+0] = a;
+    htable_[idx+1] = b;
+    htable_[idx+2] = v;
     
     // fill the array
-    Ret dummy;
+    int dummy;
     if (kArraySize != 0 && !ArrayLookup(a, b, &dummy)) {
       int pos = array_pos_;
-      array_[pos].Fill(a, b, v);
+      array_[3*pos+0] = a;
+      array_[3*pos+1] = b;
+      array_[3*pos+2] = v;
       array_pos_ = (array_pos_ + 1) % (kArraySize);
     }
   }
-  bool Lookup(A a, B b, Ret *v) {
+  bool Lookup(int a, int b, int *v) {
     // check the array
     if (kArraySize != 0 && ArrayLookup(a, b, v)) {
       G_stats->ls_cache_fast++;
       return true;
     }
     // check the hash table.
-    if (kHtableSize != 0) {
-      uint32_t idx  = compute_idx(a, b);
-      Entry & prev_e = htable_[idx];
-      if (prev_e.Match(a, b)) {
-        *v = prev_e.v;
-        return true;
-      }
+    uint32_t idx  = compute_idx(a, b);
+    int prev_a = htable_[idx+0];
+    int prev_b = htable_[idx+1];
+    if (prev_a == a && prev_b == b) {
+      *v = htable_[idx+2];
+      return true;
     }
     return false;
   }
  private:
-  struct Entry {
-    A a;
-    B b;
-    Ret v;
-    void Fill(A a, B b, Ret v) {
-      this->a = a;
-      this->b = b;
-      this->v = v;
-    }
-    bool Match(A a, B b) const {
-      return this->a == a && this->b == b;
-    }
-  };
 
-  bool ArrayLookup(A a, B b, Ret *v) {
-    for (int i = 0; i < kArraySize; i++) {
-      Entry & entry = array_[i];
-      if (entry.Match(a, b)) {
-        *v = entry.v; 
+  bool ArrayLookup(int a, int b, int *v) {
+    for (int i = 0; i < kArraySize; i++) {  
+      if (a == array_[3*i+0] && b == array_[3*i+1]) {
+        *v = array_[3*i+2]; 
         return true;
       }
     }
     return false;
   }
 
-  uint32_t compute_idx(A a, B b) {
-    if (kHtableSize == 0)
-      return 0;
-    else
-      return (combine2(a, b) % max(kHtableSize, 1));
+  uint32_t compute_idx(int a, int b) {
+    return 3 * (combine2(a, b) % kHtableSize);
   }
-
-  static uint32_t combine2(int a, int b) {
+  uint32_t combine2(int a, int b) {
     return (a << 16) ^ b;
   }
 
-  static uint32_t combine2(SSID a, SID b) {
-    return combine2(a.raw(), b.raw());
-  }
+  int htable_[kHtableSize * 3];
 
-  Entry htable_[kHtableSize];
-
-  Entry array_[kArraySize];
+  int array_[kArraySize * 3];
   int array_pos_;
 };
-
-template<int kHtableSize, int kArraySize = 8>
-class IntPairToIntCache
-  : public PairCache<int, int, int, kHtableSize, kArraySize>
-{ };
 
 //--------- FreeList --------------- {{{1
 class FreeList {
@@ -1712,7 +1685,7 @@ class Segment {
     ScopedMallocCostCenter malloc_cc("Segment::RecycleOneSid()");
     static const size_t kRecyclePeriod = 10000; // TODO: test it!
     Segment *seg = GetInternal(sid);
-    DCHECK(seg->ref_count_ == 0);
+    DCHECK(!seg->ref_count_);
     DCHECK(sid.raw() < n_segments_);
     if (!seg->vts()) return false;  // Already recycled.
     seg->tid_ = TID();
@@ -1924,10 +1897,8 @@ class SegmentSet {
       SID sid = this->GetSID(i);
       Segment::Unref(sid, "SegmentSet::Recycle");
     }
-    ref_count_ = -1;
   
     map_->Erase(this);
-    ready_to_be_reused_->push_back(ssid);
     G_stats->ss_recycle++;
   }
 
@@ -1940,7 +1911,6 @@ class SegmentSet {
       // Printf("SSRef   : %d ref=%d %s\n", ssid.raw(), sset->ref_count_, where);  
       DCHECK(sset->ref_count_ >= 0);
       sset->ref_count_++;
-      DCHECK(sset->ref_count_ > 0);
     }
   }
 
@@ -1959,31 +1929,9 @@ class SegmentSet {
       DCHECK(sset->ref_count_ > 0);
       sset->ref_count_--;
       if (sset->ref_count_ == 0) {
-        ready_to_be_recycled_->push_back(ssid);
-        if (UNLIKELY(ready_to_be_recycled_->size() >
-                     2 * G_flags->segment_set_recycle_queue_size)) {
-          FlushRecycleQueue();
-        }
+        reused_->push_back(ssid);
       }
     }
-  }
-
-  static void FlushRecycleQueue() {
-    while (ready_to_be_recycled_->size() >
-        G_flags->segment_set_recycle_queue_size) {
-      SSID rec_ssid = ready_to_be_recycled_->back();
-      ready_to_be_recycled_->pop_back();
-      int idx = -rec_ssid.raw()-1;
-      SegmentSet *rec_ss = (*vec_)[idx];
-      DCHECK(rec_ss);
-      DCHECK(rec_ss == Get(rec_ssid));
-      if (rec_ss->ref_count_ == 0) {
-        rec_ss->RecycleOneSegmentSet(rec_ssid);
-      }
-    }
-
-    // SSIDs may be reused now - need to flush some caches.
-    FlushCaches();
   }
 
   string ToString() const;
@@ -2006,10 +1954,6 @@ class SegmentSet {
 
   static string ToStringWithLocks(SSID ssid);
 
-  static void FlushCaches() {
-    add_segment_cache_->Flush();
-    remove_segment_cache_->Flush();
-  }
 
   static void ForgetAllState() {
     for (size_t i = 0; i < vec_->size(); i++) {
@@ -2017,9 +1961,7 @@ class SegmentSet {
     }
     map_->Clear();
     vec_->clear();
-    ready_to_be_reused_->clear();
-    ready_to_be_recycled_->clear();
-    FlushCaches();
+    reused_->clear();
   }
 
 
@@ -2069,10 +2011,7 @@ class SegmentSet {
   static void InitClassMembers() {
     map_    = new Map;
     vec_    = new vector<SegmentSet *>; 
-    ready_to_be_recycled_ = new vector<SSID>; 
-    ready_to_be_reused_ = new vector<SSID>; 
-    add_segment_cache_ = new SsidSidToSidCache;
-    remove_segment_cache_ = new SsidSidToSidCache;
+    reused_ = new vector<SSID>; 
   }
 
  private: 
@@ -2091,16 +2030,26 @@ class SegmentSet {
     SSID res_ssid;
     SegmentSet *res_ss = 0;
 
-    if (!ready_to_be_reused_->empty()) {
-      res_ssid = ready_to_be_reused_->back();
-      ready_to_be_reused_->pop_back();
+    while (reused_->size() > G_flags->segment_set_recycle_queue_size) {
+      res_ssid = reused_->back();
+      reused_->pop_back();
       int idx = -res_ssid.raw()-1;
       res_ss = (*vec_)[idx];
       DCHECK(res_ss);
       DCHECK(res_ss == Get(res_ssid));
-      DCHECK(res_ss->ref_count_ == -1);
-      G_stats->ss_reuse++;
-    } else {
+      DCHECK(res_ss->ref_count_ >= 0);
+      if (res_ss->ref_count_ == 0) {
+        // reuse one
+        res_ss->RecycleOneSegmentSet(res_ssid);
+        G_stats->ss_reuse++;
+        break;
+      } else {
+        // this SSID is still in use, try another one or create new
+        res_ss = 0;
+      }
+    }
+
+    if (res_ss == 0) {
       // create a new one
       ScopedMallocCostCenter cc("SegmentSet::CreateNewSegmentSet");
       G_stats->ss_create++;
@@ -2194,7 +2143,6 @@ class SegmentSet {
 
   template <int n>
   struct SSHash {
-    // TODO(timurrrr): think of a better hash function.
     INLINE uintptr_t operator () (const SegmentSet *ss) const {
       uintptr_t res = ss->GetSID(0).raw() ^ ss->GetSID(1).raw();
       if (n == 2) return res;
@@ -2278,12 +2226,8 @@ class SegmentSet {
 
   static Map                  *map_;
   static vector<SegmentSet *> *vec_; // TODO(kcc): use vector<SegmentSet> instead.
-  static vector<SSID>         *ready_to_be_reused_;
-  static vector<SSID>         *ready_to_be_recycled_;
+  static vector<SSID>         *reused_;
 
-  typedef PairCache<SSID, SID, SSID, 1009, 1> SsidSidToSidCache;
-  static SsidSidToSidCache    *add_segment_cache_;
-  static SsidSidToSidCache    *remove_segment_cache_;
 
   SID     sids_[kMaxSegmentSetSize];
   int32_t size_; // TODO(kcc): consider deleting size_ at all.
@@ -2292,10 +2236,7 @@ class SegmentSet {
 
 SegmentSet::Map      *SegmentSet::map_;
 vector<SegmentSet *> *SegmentSet::vec_;
-vector<SSID>         *SegmentSet::ready_to_be_reused_;
-vector<SSID>         *SegmentSet::ready_to_be_recycled_;
-SegmentSet::SsidSidToSidCache    *SegmentSet::add_segment_cache_;
-SegmentSet::SsidSidToSidCache    *SegmentSet::remove_segment_cache_;
+vector<SSID>         *SegmentSet::reused_;
 
 
 
@@ -2303,24 +2244,15 @@ SegmentSet::SsidSidToSidCache    *SegmentSet::remove_segment_cache_;
 SSID SegmentSet::RemoveSegmentFromSS(SSID old_ssid, SID sid_to_remove) {
   DCHECK(old_ssid.IsValidOrEmpty());
   DCHECK(sid_to_remove.valid());
-  SSID res;
-  if (remove_segment_cache_->Lookup(old_ssid, sid_to_remove, &res)) {
-    return res;
-  }
 
-  if (old_ssid.IsEmpty()) {
-    res = old_ssid;  // Nothing to remove.
-  } else if (LIKELY(old_ssid.IsSingleton())) {
+  if (old_ssid.IsEmpty()) return old_ssid;  // Nothing to remove.
+  if (old_ssid.IsSingleton()) {
     SID sid = old_ssid.Singleton();
     if (Segment::HappensBeforeOrSameThread(sid, sid_to_remove)) 
-      res = SSID(0);  // Empty.
-    else
-      res = old_ssid;
-  } else {
-    res = RemoveSegmentFromTupleSS(old_ssid, sid_to_remove);
+      return SSID(0);  // Empty.
+    return old_ssid;
   }
-  remove_segment_cache_->Insert(old_ssid, sid_to_remove, res);
-  return res;
+  return RemoveSegmentFromTupleSS(old_ssid, sid_to_remove);
 }
 
 
@@ -2330,11 +2262,7 @@ SSID SegmentSet::AddSegmentToSS(SSID old_ssid, SID new_sid) {
   // TODO: add caching
   DCHECK(new_sid.valid());
   SSID res;
-  if (add_segment_cache_->Lookup(old_ssid, new_sid, &res)) {
-    SegmentSet::AssertLive(res, __LINE__);
-    return res;
-  }
-  if (LIKELY(old_ssid.IsSingleton())) {
+  if (old_ssid.IsSingleton()) {
     res = AddSegmentToSingletonSS(old_ssid, new_sid);
   } else if (old_ssid.IsEmpty()) {
     res = SSID(new_sid);
@@ -2342,7 +2270,6 @@ SSID SegmentSet::AddSegmentToSS(SSID old_ssid, SID new_sid) {
     res = AddSegmentToTupleSS(old_ssid, new_sid);
   }
   SegmentSet::AssertLive(res, __LINE__);
-  add_segment_cache_->Insert(old_ssid, new_sid, res);
   return res;
 }
 
@@ -2351,7 +2278,7 @@ SSID SegmentSet::AddSegmentToSingletonSS(SSID ssid, SID new_sid) {
   CHECK(ssid.IsSingleton());
   CHECK(ssid.valid());
   SID old_sid(ssid.raw());
-  if (LIKELY(old_sid == new_sid)) {  // Same segment. 
+  if (old_sid == new_sid) {  // Same segment. 
     return ssid;
   }
   CHECK(old_sid.valid());
@@ -2359,7 +2286,7 @@ SSID SegmentSet::AddSegmentToSingletonSS(SSID ssid, SID new_sid) {
   Segment::AssertLive(new_sid, __LINE__);
   TID old_tid = Segment::Get(old_sid)->tid();
   TID new_tid = Segment::Get(new_sid)->tid();
-  if (LIKELY(old_tid == new_tid)) {  // Same thread.
+  if (old_tid == new_tid) {  // Same thread.
     return SSID(new_sid.raw());
   }
   if (Segment::HappensBefore(old_sid, new_sid)) {
@@ -2382,8 +2309,7 @@ SSID SegmentSet::RemoveSegmentFromTupleSS(SSID ssid, SID sid_to_remove) {
   
 
   int32_t new_size = 0;
-  SegmentSet tmp(new_size);
-  SID * tmp_sids = tmp.sids_;
+  SID tmp_sids[kMaxSegmentSetSize];
   CHECK(sizeof(int32_t) == sizeof(SID));
 
   for (int i = 0; i < old_size; i++) {
@@ -2395,11 +2321,13 @@ SSID SegmentSet::RemoveSegmentFromTupleSS(SSID ssid, SID sid_to_remove) {
     tmp_sids[new_size++] = sid;
   }
 
-  if (new_size == old_size) return ssid;
   if (new_size == 0) return SSID(0); 
   if (new_size == 1) return SSID(tmp_sids[0]);
+  if (new_size == old_size) return ssid;
 
-  tmp.size_ = new_size;
+  SegmentSet tmp(new_size);
+  for (int i = 0; i < new_size; i++)
+    tmp.sids_[i] = tmp_sids[i];
   if (DEBUG_MODE) tmp.Validate(__LINE__);
 
   SSID res = FindExistingOrAlocateAndCopy(&tmp);
@@ -2485,7 +2413,7 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
   CHECK(new_size <= kMaxSegmentSetSize);
   SegmentSet tmp(new_size);
   for (int i = 0; i < new_size; i++)
-    tmp.sids_[i] = tmp_sids[i]; // TODO(timurrrr): avoid copying?
+    tmp.sids_[i] = tmp_sids[i];
   if (DEBUG_MODE) tmp.Validate(__LINE__);
 
   SSID res = FindExistingOrAlocateAndCopy(&tmp);
@@ -4750,26 +4678,14 @@ class Detector {
     if (G_flags->verbosity >= 2) e_->Print();
   }
 
-  INLINE void RefAndUnrefTwoSegSetPairsIfDifferent(SSID new_ssid1,
-                                                   SSID old_ssid1,
-                                                   SSID new_ssid2,
-                                                   SSID old_ssid2) {
-    bool recycle_1 = new_ssid1 != old_ssid1,
-         recycle_2 = new_ssid2 != old_ssid2;
-    if (recycle_1 && !new_ssid1.IsEmpty()) {
-      SegmentSet::Ref(new_ssid1, "RefAndUnrefTwoSegSetPairsIfDifferent");
-    }
-    
-    if (recycle_2 && !new_ssid2.IsEmpty()) {
-      SegmentSet::Ref(new_ssid2, "RefAndUnrefTwoSegSetPairsIfDifferent");
-    }
-
-    if (recycle_1 && !old_ssid1.IsEmpty()) {
-      SegmentSet::Unref(old_ssid1, "RefAndUnrefTwoSegSetPairsIfDifferent");
-    }
-
-    if (recycle_2 && !old_ssid2.IsEmpty()) {
-      SegmentSet::Unref(old_ssid2, "RefAndUnrefTwoSegSetPairsIfDifferent");
+  INLINE void RefAndUnrefTwoSegSetsIfDifferent(SSID new_ssid, SSID old_ssid) {
+    if (new_ssid != old_ssid) {
+      if (!new_ssid.IsEmpty()) {
+        SegmentSet::Ref(new_ssid, "RefAndUnrefTwoSegSetsIfDifferent");
+      }
+      if (!old_ssid.IsEmpty()) {
+        SegmentSet::Unref(old_ssid, "RefAndUnrefTwoSegSetsIfDifferent");
+      }
     }
   }
 
@@ -4814,12 +4730,12 @@ class Detector {
   // Set *res to the new state.
   // Return true if the new state is race.
   bool INLINE MemoryStateMachine(ShadowValue old_sval, Thread *thr, 
-                                 bool is_w, ShadowValue *res) {
+                                 bool is_w, bool tracing, ShadowValue *res) {
     ShadowValue new_sval;
     SID cur_sid = thr->sid();
     DCHECK(cur_sid.valid());
 
-    if (UNLIKELY(old_sval.IsNew())) {
+    if (old_sval.IsNew()) {
       // We see this memory for the first time. 
       DCHECK(cur_sid.valid());
       Segment::Ref(cur_sid, "MSM (new mem)");
@@ -4854,8 +4770,6 @@ class Detector {
 
     new_sval.set(new_rd_ssid, new_wr_ssid);
     *res = new_sval;
-    if (new_sval == old_sval)
-      return false;
 
     if (new_wr_ssid.IsTuple() || 
         (!new_wr_ssid.IsEmpty() && !new_rd_ssid.IsEmpty())) {
@@ -4886,7 +4800,7 @@ class Detector {
 
     ShadowValue *sval_p = cache_line->GetValuePointer(offset);
     ShadowValue old_sval;
-    if (UNLIKELY(!cache_line->used().Get(offset))) {
+    if (!cache_line->used().Get(offset)) {
       cache_line->used().Set(offset);
       cache_line->published().Clear(offset);
       old_sval.Clear();
@@ -4903,7 +4817,7 @@ class Detector {
       thr->NewSegmentForWait(signaller_vts);
     }
 
-    bool is_race = MemoryStateMachine(old_sval, thr, is_w, &new_sval);
+    bool is_race = MemoryStateMachine(old_sval, thr, is_w, tracing, &new_sval);
 
     if (UNLIKELY(tracing)) {
       Printf("TRACE: T%d %s[%d] addr=%p sval: %s%s\n", 
@@ -4925,9 +4839,9 @@ class Detector {
 
 
     // Ref/Unref segments
-    RefAndUnrefTwoSegSetPairsIfDifferent(new_sval.rd_ssid(),
-                                     old_sval.rd_ssid(),
-                                     new_sval.wr_ssid(),
+    RefAndUnrefTwoSegSetsIfDifferent(new_sval.rd_ssid(),
+                                     old_sval.rd_ssid());
+    RefAndUnrefTwoSegSetsIfDifferent(new_sval.wr_ssid(),
                                      old_sval.wr_ssid());
 
     *sval_p = new_sval;
