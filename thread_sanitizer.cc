@@ -671,7 +671,7 @@ class StackTrace {
     if (!trace) return;
     DCHECK(g_stack_trace_free_list);
     g_stack_trace_free_list->TakeStackTraceBack(
-        reinterpret_cast<uintptr_t*>trace, trace->capacity());
+        reinterpret_cast<uintptr_t*>(trace), trace->capacity());
   }
 
   size_t size() const { return size_; }
@@ -707,7 +707,7 @@ class StackTrace {
                  indent, static_cast<int>(i),
                  reinterpret_cast<void*>(emb_trace[i]));
       } else {
-        snprintf(buff, kBuffSize, "%s#%-2d ", indent, static_cast<int>i);
+        snprintf(buff, kBuffSize, "%s#%-2d ", indent, static_cast<int>(i));
       }
       res += buff;
 
