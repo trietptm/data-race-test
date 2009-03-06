@@ -1958,6 +1958,13 @@ class SegmentSet {
       DCHECK(sset->ref_count_ > 0);
       sset->ref_count_--;
       if (sset->ref_count_ == 0) {
+        // SSIDs with zeroed ref.counts first go to ready_to_be_recycled_ until
+        // its size reaches 2 * G_flags->segment_set_recycle_queue_size.
+        // Then in FlushRecycleQueue the first
+        // G_flags->segment_set_recycle_queue_size SSID's are checked for
+        // "refcount == 0" and (if true) moved to ready_to_be_reused_.
+        // When a new SSID is about to be created, an SSID from
+        // ready_to_be_reused_ is used (if present).
         ready_to_be_recycled_->push_back(ssid);
         if (UNLIKELY(ready_to_be_recycled_->size() >
                      2 * G_flags->segment_set_recycle_queue_size)) {
@@ -1970,18 +1977,19 @@ class SegmentSet {
   static void FlushRecycleQueue() {
     while (ready_to_be_recycled_->size() >
         G_flags->segment_set_recycle_queue_size) {
-      SSID rec_ssid = ready_to_be_recycled_->back();
-      ready_to_be_recycled_->pop_back();
+      SSID rec_ssid = ready_to_be_recycled_->front();
+      ready_to_be_recycled_->pop_front();
       int idx = -rec_ssid.raw()-1;
       SegmentSet *rec_ss = (*vec_)[idx];
       DCHECK(rec_ss);
       DCHECK(rec_ss == Get(rec_ssid));
+      // We should check that this SSID haven't been referenced again.
       if (rec_ss->ref_count_ == 0) {
         rec_ss->RecycleOneSegmentSet(rec_ssid);
       }
     }
 
-    // SSIDs may be reused now - need to flush some caches.
+    // SSIDs will be reused soon - need to flush some caches.
     FlushCaches();
   }
 
@@ -2068,8 +2076,8 @@ class SegmentSet {
   static void InitClassMembers() {
     map_    = new Map;
     vec_    = new vector<SegmentSet *>; 
-    ready_to_be_recycled_ = new vector<SSID>; 
-    ready_to_be_reused_ = new vector<SSID>; 
+    ready_to_be_recycled_ = new deque<SSID>; 
+    ready_to_be_reused_ = new deque<SSID>; 
     add_segment_cache_ = new SsidSidToSidCache;
     remove_segment_cache_ = new SsidSidToSidCache;
   }
@@ -2091,8 +2099,8 @@ class SegmentSet {
     SegmentSet *res_ss = 0;
 
     if (!ready_to_be_reused_->empty()) {
-      res_ssid = ready_to_be_reused_->back();
-      ready_to_be_reused_->pop_back();
+      res_ssid = ready_to_be_reused_->front();
+      ready_to_be_reused_->pop_front();
       int idx = -res_ssid.raw()-1;
       res_ss = (*vec_)[idx];
       DCHECK(res_ss);
@@ -2277,8 +2285,8 @@ class SegmentSet {
 
   static Map                  *map_;
   static vector<SegmentSet *> *vec_; // TODO(kcc): use vector<SegmentSet> instead.
-  static vector<SSID>         *ready_to_be_reused_;
-  static vector<SSID>         *ready_to_be_recycled_;
+  static deque<SSID>         *ready_to_be_reused_;
+  static deque<SSID>         *ready_to_be_recycled_;
 
   typedef PairCache<SSID, SID, SSID, 1009, 1> SsidSidToSidCache;
   static SsidSidToSidCache    *add_segment_cache_;
@@ -2291,8 +2299,8 @@ class SegmentSet {
 
 SegmentSet::Map      *SegmentSet::map_;
 vector<SegmentSet *> *SegmentSet::vec_;
-vector<SSID>         *SegmentSet::ready_to_be_reused_;
-vector<SSID>         *SegmentSet::ready_to_be_recycled_;
+deque<SSID>         *SegmentSet::ready_to_be_reused_;
+deque<SSID>         *SegmentSet::ready_to_be_recycled_;
 SegmentSet::SsidSidToSidCache    *SegmentSet::add_segment_cache_;
 SegmentSet::SsidSidToSidCache    *SegmentSet::remove_segment_cache_;
 
