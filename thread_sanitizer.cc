@@ -1958,13 +1958,24 @@ class SegmentSet {
       DCHECK(sset->ref_count_ > 0);
       sset->ref_count_--;
       if (sset->ref_count_ == 0) {
-        // SSIDs with zeroed ref.counts first go to ready_to_be_recycled_ until
-        // its size reaches 2 * G_flags->segment_set_recycle_queue_size.
-        // Then in FlushRecycleQueue the first
-        // G_flags->segment_set_recycle_queue_size SSID's are checked for
-        // "refcount == 0" and (if true) moved to ready_to_be_reused_.
-        // When a new SSID is about to be created, an SSID from
-        // ready_to_be_reused_ is used (if present).
+        // We don't delete unused SSID straightaway due to performance reasons
+        // (to avoid flushing caches too often and because SSID may be reused
+        // again soon)
+        //
+        // Instead, we use two queues (deques):
+        //    ready_to_be_recycled_ and ready_to_be_reused_.
+        // The algorithm is following:
+        // 1) When refcount_ becomes zero, we push the SSID into
+        //    ready_to_be_recycled_.
+        // 2) When ready_to_be_recycled_ becomes too large, we call
+        //    FlushRecycleQueue().
+        //    In FlushRecycleQueue(), we pop the first half of
+        //    ready_to_be_recycled_ and for each popped SSID we do
+        //     * if "refcount_ > 0", do nothing (this SSID is in use again)
+        //     * otherwise, we recycle this SSID (delete its VTS, etc) and push
+        //       it into ready_to_be_reused_
+        // 3) When a new SegmentSet is about to be created, we re-use SSID from
+        //    ready_to_be_reused_ (if available)
         ready_to_be_recycled_->push_back(ssid);
         if (UNLIKELY(ready_to_be_recycled_->size() >
                      2 * G_flags->segment_set_recycle_queue_size)) {
