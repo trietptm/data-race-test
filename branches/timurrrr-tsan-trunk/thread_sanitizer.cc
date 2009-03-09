@@ -2964,9 +2964,9 @@ static  Cache *G_cache;
 
 // -------- Published range -------------------- {{{1
 struct PublishInfo {
-  uintptr_t tag;  // Tag of the cache line where the mem is published.
-  Mask      mask; // The bits that are actually published.
-  VTS      *vts;  // The point where this range has been published.
+  uintptr_t tag;   // Tag of the cache line where the mem is published.
+  Mask      mask;  // The bits that are actually published.
+  VTS      *vts;   // The point where this range has been published.
 };
 
 
@@ -3035,10 +3035,12 @@ static void UnpublishMemory(CacheLine *line, Mask mask) {
       PublishInfo &info = it->second;
       DCHECK(info.tag == line->tag());
       if (kDebugPublish)
-        Printf("?UnpublishRange: %p %s\n", line->tag(), info.mask.ToString().c_str());
+        Printf("?UnpublishRange: %p %s\n", line->tag(),
+               info.mask.ToString().c_str());
       info.mask.Subtract(mask);
       if (kDebugPublish)
-        Printf("+UnpublishRange: %p %s\n", line->tag(), info.mask.ToString().c_str());
+        Printf("+UnpublishRange: %p %s\n", line->tag(),
+               info.mask.ToString().c_str());
       G_stats->publish_clear++;
       if (info.mask.Empty()) {
         VTS::Delete(info.vts);
@@ -3062,9 +3064,9 @@ static void PublishRangeInOneLine(uintptr_t addr, uintptr_t a,
   CHECK(CheckSanityOfPublishedMemory(tag, __LINE__));
   CacheLine *line = G_cache->GetLine(tag, __LINE__);
 
-  if (1 || line->published().GetRange(a,b)) {
+  if (1 || line->published().GetRange(a, b)) {
     Mask mask(0);
-    mask.SetRange(a,b);
+    mask.SetRange(a, b);
     // TODO(timurrrr): add warning for re-publishing.
     UnpublishMemory(line, mask);
   }
@@ -3111,7 +3113,7 @@ static void PublishRange(uintptr_t a, uintptr_t b, VTS *vts) {
 static void INLINE UnrefSegmentsInMemoryRange(uintptr_t a, uintptr_t b,
                                                 Mask mask, CacheLine *line) {
   DCHECK(!mask.Empty());
-  for (uintptr_t x = a; x < b; x++) { // slow?
+  for (uintptr_t x = a; x < b; x++) {  // slow?
     if (!mask.Get(x)) continue;
     ShadowValue sval = line->GetValue(x);
     SSID rd_ssid = sval.rd_ssid();
@@ -3177,7 +3179,8 @@ void INLINE ClearMemoryState(uintptr_t a, uintptr_t b, bool is_new_mem) {
     ClearMemoryStateInOneLine(line2_tag, 0, b - line2_tag, is_new_mem);
   }
 
-  if (DEBUG_MODE && G_flags->debug_level >= 2) {  // check that we've cleared it. Slow!
+  if (DEBUG_MODE && G_flags->debug_level >= 2) {
+    // Check that we've cleared it. Slow!
     for (uintptr_t x = a; x < b; x++) {
       uintptr_t off = CacheLine::ComputeOffset(x);
       CacheLine *line = G_cache->GetLine(x, __LINE__);
@@ -3241,7 +3244,6 @@ struct Thread {
     if (tid_ == TID(0)) {
       Report("INFO: T0 is program's main thread\n");
     } else {
-
       if (G_flags->announce_threads) {
         Report("INFO: T%d has been created by T%d at this point: {{{\n%s}}}\n",
                tid_.raw(), parent_tid_.raw(),
@@ -3260,7 +3262,7 @@ struct Thread {
 
   string ThreadName() const {
     char buff[100];
-    sprintf(buff, "T%d", tid().raw());
+    snprintf(buff, sizeof(buff), "T%d", tid().raw());
     string res = buff;
     if (thread_name_.length() > 0) {
       res += " (";
@@ -3270,11 +3272,11 @@ struct Thread {
     return res;
   }
 
-  bool MemoryIsInStack (uintptr_t a) {
+  bool MemoryIsInStack(uintptr_t a) {
     return a >= min_sp_ && a <= max_sp_;
   }
 
-  // TODO: how to compute this??
+  // TODO(kcc): how to compute this??
   static uintptr_t ThreadStackSize() {
     return 8 * 1024 * 1024;
   }
@@ -3329,8 +3331,8 @@ struct Thread {
   }
 
   void HandleThreadJoinBefore(pthread_t join_child_ptid) {
-    CHECK(join_child_ptid_ == 0);
-    CHECK(join_child_ptid != 0);
+    CHECK_EQ(join_child_ptid_, 0);
+    CHECK_NE(join_child_ptid, 0);
     join_child_ptid_ = join_child_ptid;
   }
 
@@ -3340,7 +3342,7 @@ struct Thread {
       Printf("T%d: Joined child : pthread_t=%p size=%ld\n",
              tid().raw(), join_child_ptid_, ptid_to_tid_->size());
     }
-    CHECK(join_child_ptid_ != 0);
+    CHECK_NE(join_child_ptid_, 0);
     CHECK(ptid_to_tid_->count(join_child_ptid_));
     TID child_tid = (*ptid_to_tid_)[join_child_ptid_];
     ptid_to_tid_->erase(join_child_ptid_);
@@ -3368,12 +3370,13 @@ struct Thread {
   }
 
   static TID Add(Thread *thr) {
-    // Printf("Thread::Add %d %d\n", thr->tid().raw(), (int)all_threads_->size());
+    // Printf("Thread::Add %d %d\n", thr->tid().raw(),
+    //        (int)all_threads_->size());
     TID tid = thr->tid();
-    while(tid.raw() > (int32_t)all_threads_->size()) {
+    while (tid.raw() > static_cast<int32_t>(all_threads_->size())) {
       all_threads_->push_back(NULL);
     }
-    if (tid.raw() == (int32_t)all_threads_->size()){
+    if (tid.raw() == static_cast<int32_t>(all_threads_->size())) {
       all_threads_->push_back(thr);
     } else {
       CHECK(tid.raw() < (int32_t)all_threads_->size());
@@ -3512,8 +3515,7 @@ struct Thread {
              timed_out ? "TimedOutWait" : "Wait",
              cv, mu,
              vts()->ToString().c_str(),
-             Segment::ToString(sid()).c_str()
-             );
+             Segment::ToString(sid()).c_str());
     }
   }
 
@@ -3532,11 +3534,10 @@ struct Thread {
       Printf("T%d: Signal: %p:\n    %s %s\n    %s\n", tid_.raw(), cv,
              vts()->ToString().c_str(), Segment::ToString(sid()).c_str(),
              (signaller->vts)->ToString().c_str());
-
   }
 
-
-  void INLINE NewSegmentWithoutUnrefingOld(const char *call_site, VTS *new_vts) {
+  void INLINE NewSegmentWithoutUnrefingOld(const char *call_site,
+                                           VTS *new_vts) {
     DCHECK(new_vts);
     SID new_sid = Segment::AddNewSegment(tid(), new_vts,
                                          rd_lockset_, wr_lockset_);
@@ -3607,8 +3608,7 @@ struct Thread {
     if (0)
     Printf("T%d NewSegmentForWait: \n  %s\n  %s\n", tid().raw(),
            current_vts->ToString().c_str(),
-           signaller_vts->ToString().c_str()
-           );
+           signaller_vts->ToString().c_str());
     // We don't want to create a happens-before arc if it will be redundant.
     if (!VTS::HappensBeforeCached(signaller_vts, current_vts)) {
       VTS *new_vts = VTS::JoinAndTick(current_vts, signaller_vts, TID());
@@ -3736,7 +3736,7 @@ struct Thread {
 
 
   bool NOINLINE CallStackContainsDtor() {
-    // TODO: can check this w/o demangling?
+    // TODO(kcc): can check this w/o demangling?
     for (int i = call_stack_.size() - 1; i >= 0; i--) {
       uintptr_t pc = call_stack_[i];
       string str = PcToRtnNameWithStats(pc, false);
@@ -3781,13 +3781,13 @@ struct Thread {
 
 
 
-  TID    tid_;          ///< This thread's tid.
-  SID    sid_;          ///< Current segment ID.
-  TID    parent_tid_;   ///< Parent's tid.
+  TID    tid_;         // This thread's tid.
+  SID    sid_;         // Current segment ID.
+  TID    parent_tid_;  // Parent's tid.
   uintptr_t  max_sp_;
   uintptr_t  min_sp_;
-  uintptr_t  cur_sp_;   ///< Current sp value.
-  uintptr_t  new_sp_;   ///< Value of SP after recent change.
+  uintptr_t  cur_sp_;  // Current sp value.
+  uintptr_t  new_sp_;  // Value of SP after recent change.
   StackTrace *creation_context_;
   bool      announced_;
 
@@ -3810,7 +3810,7 @@ struct Thread {
 
   uintptr_t barrier_addr_;
 
-  int      ignore_[2]; // 0 for reads, 1 for writes.
+  int ignore_[2];  // 0 for reads, 1 for writes.
   StackTrace *ignore_context_[2];
 
 
@@ -4113,7 +4113,7 @@ class ReportStorage {
     CHECK(report);
     CHECK(report->type == ThreadSanitizerReport::DATA_RACE);
     ThreadSanitizerDataRaceReport *race =
-        (ThreadSanitizerDataRaceReport*)report;
+        reinterpret_cast<ThreadSanitizerDataRaceReport*>(report);
 
     AnnounceThreadsInSegmentSet(race->new_sval.rd_ssid());
     AnnounceThreadsInSegmentSet(race->new_sval.wr_ssid());
@@ -4142,7 +4142,8 @@ class ReportStorage {
 
     if (!G_flags->summary_file.empty()) {
       char buff[100];
-      sprintf(buff, "ThreadSanitizer: %d data race(s) reported\n", n_reports);
+      snprintf(buff, sizeof(buff),
+               "ThreadSanitizer: %d data race(s) reported\n", n_reports);
       // We overwrite the contents of this file with the new summary.
       // We don't do that at the end because even if we crash later
       // we will already have the summary.
@@ -4163,11 +4164,10 @@ class ReportStorage {
     Report("   %s (%s):\n",
            thr->ThreadName().c_str(),
            TwoLockSetsToString(race->last_acces_lsid[false],
-                               race->last_acces_lsid[true]).c_str()
-          );
+                               race->last_acces_lsid[true]).c_str());
 
     Report("%s", race->last_access_stack_trace->ToString().c_str());
-    //Report(" sid=%d; vts=%s\n", thr->sid().raw(),
+    // Report(" sid=%d; vts=%s\n", thr->sid().raw(),
     //       thr->vts()->ToString().c_str());
     if (G_flags->show_states) {
       Report(" old state: %s\n", race->old_sval.ToString().c_str());
@@ -4204,7 +4204,7 @@ class ReportStorage {
            it != all_locks.end(); ++it) {
         LID lid = *it;
         char buff[100];
-        sprintf(buff, "L%d", lid.raw());
+        snprintf(buff, sizeof(buff), "L%d", lid.raw());
         if (it != all_locks.begin())
           all_locks_str += ", ";
         all_locks_str += buff;
@@ -4230,20 +4230,26 @@ class ReportStorage {
     char buff[kBufLen+1];
     HeapInfo heap_info = IsHeapMem(a);
     if (heap_info.ptr) {
-      sprintf(buff, "  %sLocation %p is %ld bytes inside a block starting at %p"
+      snprintf(buff, sizeof(buff),
+             "  %sLocation %p is %ld bytes inside a block starting at %p"
              " of size %ld allocated by T%d from heap:%s\n",
              c_blue,
-             (void*)a, (long)(a - heap_info.ptr), (void*)heap_info.ptr,
-             (long)heap_info.size, heap_info.tid.raw(), c_default);
+             reinterpret_cast<void*>(a),
+             static_cast<intptr_t>(a - heap_info.ptr),
+             reinterpret_cast<void*>(heap_info.ptr),
+             static_cast<intptr_t>(heap_info.size),
+             heap_info.tid.raw(), c_default);
       return string(buff) + heap_info.stack_trace->ToString().c_str();
     }
 
 
     OffT offset;
-    if (VG_(get_datasym_and_offset)(a, (Char*)buff, kBufLen, &offset) ){
+    if (VG_(get_datasym_and_offset)(a, reinterpret_cast<Char*>(buff),
+                                    kBufLen, &offset)) {
       string symbol_descr = buff;
-      sprintf(buff, "  %sAddress %p is %d bytes inside data symbol \"",
-              c_blue, (void*)a, (int)offset);
+      snprintf(buff, sizeof(buff),
+              "  %sAddress %p is %d bytes inside data symbol \"",
+              c_blue, reinterpret_cast<void*>(a), static_cast<int>(offset));
       return buff + symbol_descr + "\"" + c_default + "\n";
     }
     return "";
@@ -4266,7 +4272,7 @@ class EventSampler {
 
   // Sample one event
   void Sample(TID tid, const char *event_name) {
-    CHECK(G_flags->sample_events != 0);
+    CHECK_NE(G_flags->sample_events, 0);
     (counter_)++;
     if ((counter_ & ((1 << G_flags->sample_events) - 1)) != 0)
       return;
@@ -4296,7 +4302,7 @@ class EventSampler {
       Printf("%s: total samples %'d (~%'lld events)\n", name.c_str(),
              total,
              (int64_t)total << G_flags->sample_events);
-      for (map<int,string>::iterator it = reverted_map.begin();
+      for (map<int, string>::iterator it = reverted_map.begin();
            it != reverted_map.end(); ++it) {
         Printf("%s: %d%%%% %s\n", name.c_str(),
                (it->first * 1000) / total, it->second.c_str());
@@ -4389,7 +4395,7 @@ class Detector {
       ForgetAllStateAndStartOver("Thread Sanitizer has run out of segment IDs");
     }
 
-    if(UNLIKELY(G_flags->sample_events)) {
+    if (UNLIKELY(G_flags->sample_events)) {
       static EventSampler sampler;
       sampler.Sample(tid, "SampleSblockEnter");
     }
@@ -4437,11 +4443,11 @@ class Detector {
         }
       }
     }
-    Printf("lines total  : %d\n", (int)G_cache->map_.size());
+    Printf("lines total  : %d\n", static_cast<int>(G_cache->map_.size()));
     Printf("lines live   : %d\n", n_live_lines);
-    Printf("Segs  live   : %d  /  %d\n", (int)sids.size(),
+    Printf("Segs  live   : %d  /  %d\n", static_cast<int>(sids.size()),
            Segment::NumLiveSegments());
-    Printf("SegSets live : %d\n", (int)ssids.size());
+    Printf("SegSets live : %d\n", static_cast<int>(ssids.size()));
     for (int s = 1; s < Segment::NumberOfSegments(); s++) {
       SID sid(s);
       if (Segment::Alive(sid) && sids.count(sid) == 0) {
@@ -4477,7 +4483,7 @@ class Detector {
       Thread::Get(TID(e_->tid()))->SetTopPc(e_->pc());
     }
 
-    switch(type) {
+    switch (type) {
       case THR_CREATE_AFTER   : HandleThreadCreateAfter(); break;
       case THR_START   :
         HandleThreadStart(TID(e_->tid()), TID(e_->info()), e_->pc());
@@ -4520,21 +4526,21 @@ class Detector {
 
       case HB_LOCK     : HandleHBLock();       break;
 
-      case IGNORE_READS_BEG: HandleIgnore(false, true); break;
-      case IGNORE_READS_END: HandleIgnore(false, false); break;
-      case IGNORE_WRITES_BEG: HandleIgnore(true, true); break;
-      case IGNORE_WRITES_END: HandleIgnore(true, false); break;
+      case IGNORE_READS_BEG:  HandleIgnore(false, true);  break;
+      case IGNORE_READS_END:  HandleIgnore(false, false); break;
+      case IGNORE_WRITES_BEG: HandleIgnore(true, true);   break;
+      case IGNORE_WRITES_END: HandleIgnore(true, false);  break;
 
       case SET_THREAD_NAME:
         cur_thread_->set_thread_name((const char*)e_->a());
         break;
 
-      case PUBLISH_RANGE : HandlePublishRange();   break;
+      case PUBLISH_RANGE : HandlePublishRange(); break;
 
-      case TRACE_MEM   : HandleTraceMem();        break;
+      case TRACE_MEM   : HandleTraceMem();   break;
+      case STACK_TRACE : HandleStackTrace(); break;
+      case NOOP        : CHECK(0);           break;  // can't happen.
       case VERBOSITY   : e_->Print(); G_flags->verbosity = e_->info(); break;
-      case STACK_TRACE : HandleStackTrace();   break;
-      case NOOP        : CHECK(0);            break; // can't happen.
       default                 : break;
     }
 
@@ -4596,7 +4602,7 @@ class Detector {
     PublishRange(mem, mem + size, cur_thread_->segment()->vts()->Clone());
 
     cur_thread_->NewSegmentForSignal();
-    //Printf("Publish: [%p, %p)\n", mem, mem+size);
+    // Printf("Publish: [%p, %p)\n", mem, mem+size);
   }
 
   void HandleIgnore(bool is_w, bool on) {
@@ -4610,7 +4616,7 @@ class Detector {
   void HandleExpectRace() {
     ExpectedRace expected_race;
     expected_race.count = 0;
-    expected_race.is_benign = (bool)e_->info();
+    expected_race.is_benign = static_cast<bool>(e_->info());
     expected_race.description = (const char*)e_->pc();
     expected_race.pc = cur_thread_->GetCallstackEntry(1);
     (*G_expected_races_map)[e_->a()] = expected_race;
@@ -4620,7 +4626,6 @@ class Detector {
              expected_race.description);
       cur_thread_->ReportStackTrace(e_->pc());
     }
-
   }
 
   void HandleStackTrace() {
@@ -4658,7 +4663,7 @@ class Detector {
       ClearMemoryStateOnStackNewMem(a, b);
     else
       ClearMemoryStateOnStackDieMem(a, b);
-    if(G_flags->sample_events) {
+    if (G_flags->sample_events) {
       static EventSampler sampler;
       sampler.Sample(tid, "SampleStackChange");
     }
@@ -4721,7 +4726,7 @@ class Detector {
     if (G_flags->verbosity >= 3) {
       e_->Print();
     }
-    // TODO: do something smarter with atomics.
+    // TODO(kcc): do something smarter with atomics.
     if (is_acquire) {
 //      cur_thread_->HandleLock(kTheBusLock, true);
       cur_thread_->set_bus_lock_is_set(true);
@@ -4999,8 +5004,6 @@ class Detector {
   INLINE void HandleMemoryAccessInternal(TID tid,
                                          uintptr_t addr, uintptr_t size,
                                          bool is_w) {
-
-
     if (UNLIKELY(G_flags->sample_events > 0)) {
       const char *type =
           (cur_thread_->ignore(true) || cur_thread_->ignore(false))
@@ -5073,8 +5076,7 @@ class Detector {
       Printf("T%d MALLOC: %p %p %s %s\n",
              tid.raw(), size, a,
              Segment::ToString(cur_thread_->sid()).c_str(),
-             cur_thread_->segment()->vts()->ToString().c_str()
-             );
+             cur_thread_->segment()->vts()->ToString().c_str());
       // cur_thread_->ReportStackTrace(e_->pc());
     }
 
@@ -5103,7 +5105,7 @@ class Detector {
       e_->Print();
     //  cur_thread_->ReportStackTrace(e_->pc());
     }
-    if(!G_heap_map->count(a))
+    if (!G_heap_map->count(a))
       return;
     // update G_heap_map
     // CHECK(G_heap_map->count(a));
@@ -5138,24 +5140,23 @@ class Detector {
 
       if (G_flags->verbosity >= 2) {
         Printf("T%d:  THR_START   : %s %s\n", child_tid.raw(),
-               //Segment::ToString(sid).c_str(),
+               // Segment::ToString(sid).c_str(),
                parent->vts()->ToString().c_str(),
-               vts->ToString().c_str()
-              );
+               vts->ToString().c_str());
         if (G_flags->verbosity >= 2 && creation_context)
           Printf("%s", creation_context->ToString().c_str());
       }
-
     }
 
-    Thread *new_thread = new Thread(child_tid, parent_tid, vts, creation_context);
+    Thread *new_thread = new Thread(child_tid, parent_tid,
+                                    vts, creation_context);
     cur_thread_ = Thread::Get(child_tid);
     CHECK(new_thread == cur_thread_);
   }
 
 
   void HandleThreadCreateAfter() {
-    Thread::SetThreadPthreadT(TID(e_->tid()),(pthread_t)e_->a());
+    Thread::SetThreadPthreadT(TID(e_->tid()), (pthread_t)e_->a());
   }
 
   // THR_END
@@ -5173,8 +5174,7 @@ class Detector {
       if (G_flags->verbosity >= 2) {
         Printf("T%d:  THR_END     : %s %s\n", tid.raw(),
                Segment::ToString(child->sid()).c_str(),
-               child->vts()->ToString().c_str()
-               );
+               child->vts()->ToString().c_str());
       }
     }
     Thread *thr = Thread::Get(tid);
@@ -5232,8 +5232,6 @@ const char *usage_str =
 "Usage:\n"
 "  %s [options] program_to_test [program's options]\n"
 "See %s for details\n";
-;
-
 
 void ThreadSanitizerPrintUsage() {
   Printf(usage_str, TSAN_PROGRAM_NAME, TSAN_URL);
@@ -5279,6 +5277,7 @@ static void FindBoolFlag(const char *name, bool default_val,
       string &str = *it;
       string flag_value;
       if (!FlagNameMatch(str, name, &flag_value)) continue;
+
       if (flag_value == "")            *retval = true;
       else if (flag_value == "1")     *retval = true;
       else if (flag_value == "true")  *retval = true;
@@ -5286,7 +5285,9 @@ static void FindBoolFlag(const char *name, bool default_val,
       else if (flag_value == "0")     *retval = false;
       else if (flag_value == "false") *retval = false;
       else if (flag_value == "no")    *retval = false;
-      else ReportUnknownFlagAndExit(str);
+      else
+        ReportUnknownFlagAndExit(str);
+
       if (G_flags->verbosity >= 1) {
         Printf("%40s => %s\n", name, *retval ? "true" : "false");
       }
@@ -5296,7 +5297,7 @@ static void FindBoolFlag(const char *name, bool default_val,
       cont = true;
       args->erase(it);
     }
-  } while(cont);
+  } while (cont);
 }
 
 static void FindIntFlag(const char *name, intptr_t default_val,
@@ -5325,14 +5326,14 @@ static void FindIntFlag(const char *name, intptr_t default_val,
       cont = true;
       args->erase(it);
     }
-  } while(cont);
+  } while (cont);
 }
 
 static void FindUIntFlag(const char *name, intptr_t default_val,
                  vector<string> *args, uintptr_t *retval) {
   intptr_t signed_int;
   FindIntFlag(name, default_val, args, &signed_int);
-  CHECK(signed_int >= 0);
+  CHECK_GE(signed_int, 0);
   *retval = signed_int;
 }
 
@@ -5356,71 +5357,76 @@ void FindStringFlag(const char *name, vector<string> *args,
       cont = true;
       args->erase(it);
     }
-  } while(cont);
+  } while (cont);
 }
 
-void ThreadSanitizerParseFlags(vector<string> &args) {
+void ThreadSanitizerParseFlags(vector<string> *args) {
   // Check this first.
-  FindIntFlag("v", 0, &args, &G_flags->verbosity);
+  FindIntFlag("v", 0, args, &G_flags->verbosity);
 
-  FindBoolFlag("ignore_stack", true, &args, &G_flags->ignore_stack);
-  FindIntFlag("keep_history", 1, &args, &G_flags->keep_history);
-  FindUIntFlag("segment_set_recycle_queue_size", DEBUG_MODE ? 10 : 10000, &args,
+  FindBoolFlag("ignore_stack", true, args, &G_flags->ignore_stack);
+  FindIntFlag("keep_history", 1, args, &G_flags->keep_history);
+  FindUIntFlag("segment_set_recycle_queue_size", DEBUG_MODE ? 10 : 10000, args,
                &G_flags->segment_set_recycle_queue_size);
-  FindBoolFlag("fast_mode", true, &args, &G_flags->fast_mode);
-  FindBoolFlag("pure_happens_before", false, &args, &G_flags->pure_happens_before);
-  FindBoolFlag("show_expected_races", false, &args,
+  FindBoolFlag("fast_mode", true, args, &G_flags->fast_mode);
+  FindBoolFlag("pure_happens_before", false, args,
+               &G_flags->pure_happens_before);
+  FindBoolFlag("show_expected_races", false, args,
                &G_flags->show_expected_races);
-  FindBoolFlag("demangle", true, &args, &G_flags->demangle);
+  FindBoolFlag("demangle", true, args, &G_flags->demangle);
 
-  FindBoolFlag("announce_threads", false, &args, &G_flags->announce_threads);
-  FindBoolFlag("full_output", false, &args, &G_flags->full_output);
-  FindBoolFlag("show_states", false, &args, &G_flags->show_states);
-  FindBoolFlag("show_proc_self_status", false, &args, &G_flags->show_proc_self_status);
-  FindBoolFlag("show_valgrind_context", false, &args, &G_flags->show_valgrind_context);
-  FindBoolFlag("show_pc", false, &args, &G_flags->show_pc);
-  FindBoolFlag("ignore_in_dtor", true, &args, &G_flags->ignore_in_dtor);
-  FindBoolFlag("exit_after_main", false, &args, &G_flags->exit_after_main);
+  FindBoolFlag("announce_threads", false, args, &G_flags->announce_threads);
+  FindBoolFlag("full_output", false, args, &G_flags->full_output);
+  FindBoolFlag("show_states", false, args, &G_flags->show_states);
+  FindBoolFlag("show_proc_self_status", false, args,
+               &G_flags->show_proc_self_status);
+  FindBoolFlag("show_valgrind_context", false, args,
+               &G_flags->show_valgrind_context);
+  FindBoolFlag("show_pc", false, args, &G_flags->show_pc);
+  FindBoolFlag("ignore_in_dtor", true, args, &G_flags->ignore_in_dtor);
+  FindBoolFlag("exit_after_main", false, args, &G_flags->exit_after_main);
 
-  FindBoolFlag("show_stats", false, &args, &G_flags->show_stats);
-  FindBoolFlag("color", false, &args, &G_flags->color);
-  FindBoolFlag("html", false, &args, &G_flags->html);
+  FindBoolFlag("show_stats", false, args, &G_flags->show_stats);
+  FindBoolFlag("color", false, args, &G_flags->color);
+  FindBoolFlag("html", false, args, &G_flags->html);
 
-  FindIntFlag("dry_run", 0, &args, &G_flags->dry_run);
-  FindBoolFlag("report_races", true, &args, &G_flags->report_races);
-  FindBoolFlag("compress_cache_lines", false, &args, &G_flags->compress_cache_lines);
-  FindBoolFlag("unlock_on_mutex_destroy", true, &args, &G_flags->unlock_on_mutex_destroy);
+  FindIntFlag("dry_run", 0, args, &G_flags->dry_run);
+  FindBoolFlag("report_races", true, args, &G_flags->report_races);
+  FindBoolFlag("compress_cache_lines", false, args,
+               &G_flags->compress_cache_lines);
+  FindBoolFlag("unlock_on_mutex_destroy", true, args,
+               &G_flags->unlock_on_mutex_destroy);
 
-  FindIntFlag("sample_events", 0, &args, &G_flags->sample_events);
-  FindIntFlag("sample_events_depth", 2, &args, &G_flags->sample_events_depth);
+  FindIntFlag("sample_events", 0, args, &G_flags->sample_events);
+  FindIntFlag("sample_events_depth", 2, args, &G_flags->sample_events_depth);
 
-  FindIntFlag("debug_level", 1, &args, &G_flags->debug_level);
-  FindIntFlag("trace_level", 0, &args, &G_flags->trace_level);
+  FindIntFlag("debug_level", 1, args, &G_flags->debug_level);
+  FindIntFlag("trace_level", 0, args, &G_flags->trace_level);
 
 
-  FindStringFlag("file_prefix_to_cut", &args, &G_flags->file_prefix_to_cut);
-  FindStringFlag("ignore", &args, &G_flags->ignore);
+  FindStringFlag("file_prefix_to_cut", args, &G_flags->file_prefix_to_cut);
+  FindStringFlag("ignore", args, &G_flags->ignore);
 
-  FindBoolFlag("detect_thread_create", false, &args, &G_flags->detect_thread_create);
+  FindBoolFlag("detect_thread_create", false, args,
+               &G_flags->detect_thread_create);
 
-  FindIntFlag("trace_addr", 0, &args, (intptr_t*)&G_flags->trace_addr);
+  FindIntFlag("trace_addr", 0, args,
+              reinterpret_cast<intptr_t*>(&G_flags->trace_addr));
 
   vector<string> summary_file_tmp;
-  FindStringFlag("summary_file", &args, &summary_file_tmp);
+  FindStringFlag("summary_file", args, &summary_file_tmp);
   if (summary_file_tmp.size() > 0) {
     G_flags->summary_file = summary_file_tmp.back();
   }
 
-
-  FindIntFlag("max_sid", kMaxSID, &args, &G_flags->max_sid);
+  FindIntFlag("max_sid", kMaxSID, args, &G_flags->max_sid);
   kMaxSID = G_flags->max_sid;
   if (kMaxSID <= 100000) {
     Printf("Error: max-sid should be at least 100000. Exiting\n");
     exit(1);
   }
 
-
-  FindIntFlag("num_callers_in_history", kSizeOfHistoryStackTrace, &args,
+  FindIntFlag("num_callers_in_history", kSizeOfHistoryStackTrace, args,
               &G_flags->num_callers_in_history);
   kSizeOfHistoryStackTrace = G_flags->num_callers_in_history;
   if (G_flags->keep_history == 0) {
@@ -5428,7 +5434,7 @@ void ThreadSanitizerParseFlags(vector<string> &args) {
   }
 
 
-//  FindIntFlag("num_callers", 15, &args, &G_flags->num_callers);
+//  FindIntFlag("num_callers", 15, args, &G_flags->num_callers);
   // we get num-callers from valgrind flags.
   G_flags->num_callers = VG_(clo_backtrace_size);
 
@@ -5448,8 +5454,8 @@ void ThreadSanitizerParseFlags(vector<string> &args) {
   }
 
 
-  if (!args.empty()) {
-    ReportUnknownFlagAndExit(args.front());
+  if (!args->empty()) {
+    ReportUnknownFlagAndExit(args->front());
   }
 }
 
@@ -5457,22 +5463,23 @@ void ThreadSanitizerParseFlags(vector<string> &args) {
 
 
 // This function is taken from valgrind's m_libcbase.c (thanks GPL!).
-static bool FastRecursiveStringMatch (const char* pat, const char* str, int *depth) {
-  CHECK((*depth) < 10000);
+static bool FastRecursiveStringMatch(const char* pat, const char* str,
+                                     int *depth) {
+  CHECK_LT((*depth), 10000);
   (*depth)++;
   for (;;) {
     switch (*pat) {
       case '\0':(*depth)--;
-                return (*str=='\0');
+                return (*str == '\0');
       case '*': do {
-                  if (FastRecursiveStringMatch(pat+1,str, depth)) {
+                  if (FastRecursiveStringMatch(pat+1, str, depth)) {
                     (*depth)--;
                     return True;
                   }
                 } while (*str++);
                   (*depth)--;
                   return False;
-      case '?': if (*str++=='\0') {
+      case '?': if (*str++ == '\0') {
                   (*depth)--;
                   return False;
                 }
@@ -5514,7 +5521,7 @@ void SplitStringIntoLinesAndRemoveBlanksAndComments(
       continue;
     }
     if (ch == ' ' || ch == '\t') continue;
-    if (ch == '#' ) {
+    if (ch == '#') {
       in_comment = true;
       continue;
     }
@@ -5593,7 +5600,7 @@ bool ThreadSanitizerWantToInstrumentSblock(uintptr_t pc) {
 extern void ThreadSanitizerInit() {
   ScopedMallocCostCenter cc("ThreadSanitizerInit");
   g_so_far_only_one_thread = true;
-  CHECK(sizeof(ShadowValue) == 8);
+  CHECK_EQ(sizeof(ShadowValue), 8);
   CHECK(G_flags);
   G_stats        = new Stats;
   G_detector     = new Detector;
@@ -5640,7 +5647,6 @@ extern void ThreadSanitizerInit() {
     c_default = "\033[0m";
   }
 
-
   if (G_flags->verbosity >= 1) {
     Report("INFO: Started pid %d\n",  getpid());
   }
@@ -5660,18 +5666,14 @@ void INLINE ThreadSanitizerHandleMemoryAccess(int32_t tid,
   G_detector->HandleMemoryAccess(tid, addr, size, is_w);
 }
 
-
 void INLINE ThreadSanitizerHandleStackMemChange(int32_t tid, uintptr_t addr,
                                                 uintptr_t size, bool is_new) {
-
   G_detector->HandleStackMemChange(tid, addr, size, is_new);
 }
-
 
 void INLINE ThreadSanitizerEnterSblock(int32_t tid, uintptr_t pc) {
   G_detector->HandleSblockEnter(TID(tid), pc);
 }
-
 
 void INLINE ThreadSanitizerHandleRtnCall(int32_t tid, uintptr_t call_pc,
                                          uintptr_t target_pc) {
