@@ -51,6 +51,7 @@
 #define CHECK_GT(X, Y) tl_assert(X > Y)
 #define CHECK_GE(X, Y) tl_assert(X >= Y)
 #define CHECK_NE(X, Y) tl_assert(X != Y)
+#define CHECK_EQ(X, Y) tl_assert(X == Y)
 #define sprintf(arg1, arg2...) VG_(sprintf)((Char*)arg1, (HChar*)arg2)
 #define vsnprintf(a1, a2, a3, a4) VG_(vsnprintf)((Char*)a1, a2, a3, a4)
 #define getpid VG_(getpid)

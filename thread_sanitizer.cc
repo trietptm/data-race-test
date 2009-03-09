@@ -2144,7 +2144,7 @@ class SegmentSet {
     return res_ssid;
   }
 
-  static NOINLINE SSID FindExistingOrAlocateAndCopy (SegmentSet *ss) {
+  static NOINLINE SSID FindExistingOrAlocateAndCopy(SegmentSet *ss) {
     if (DEBUG_MODE) {
       int size = ss->size();
       if (size == 2) G_stats->ss_size_2++;
@@ -2189,7 +2189,8 @@ class SegmentSet {
   // static data members
   template <int n>
   struct Less {
-    INLINE bool operator () (const SegmentSet *ss1, const SegmentSet *ss2) const {
+    INLINE bool operator() (const SegmentSet *ss1,
+                            const SegmentSet *ss2) const {
       DCHECK(ss1->size() == n);
       DCHECK(ss2->size() == n);
       for (int i = 0; i < n; i++) {
@@ -2204,7 +2205,8 @@ class SegmentSet {
 
   template <int n>
   struct SSEq {
-    INLINE bool operator () (const SegmentSet *ss1, const SegmentSet *ss2) const {
+    INLINE bool operator() (const SegmentSet *ss1,
+                            const SegmentSet *ss2) const {
       DCHECK(ss1->size() == n);
       DCHECK(ss2->size() == n);
       if (n > 3 && ss1->GetSID(3) != ss2->GetSID(3)) return false;
@@ -2217,7 +2219,7 @@ class SegmentSet {
   template <int n>
   struct SSHash {
     // TODO(timurrrr): think of a better hash function.
-    INLINE uintptr_t operator () (const SegmentSet *ss) const {
+    INLINE uintptr_t operator() (const SegmentSet *ss) const {
       uintptr_t res = ss->GetSID(0).raw() ^ ss->GetSID(1).raw();
       if (n == 2) return res;
       if (n == 3) return res ^ ss->GetSID(2).raw();
@@ -2227,9 +2229,9 @@ class SegmentSet {
   };
 
   template <class MapType>
-  static SSID GetIdOrZeroFromMap(MapType &map, SegmentSet *ss) {
-    typename MapType::iterator it = map.find(ss);
-    if (it == map.end())
+  static SSID GetIdOrZeroFromMap(MapType *map, const SegmentSet *ss) {
+    typename MapType::iterator it = map->find(ss);
+    if (it == map->end())
       return SSID(0);
     return it->second;
   }
@@ -2238,10 +2240,10 @@ class SegmentSet {
    public:
     SSID GetIdOrZero(SegmentSet *ss) {
       int size = ss->size();
-      switch(size) {
-        case 2: return GetIdOrZeroFromMap(map2, ss);
-        case 3: return GetIdOrZeroFromMap(map3, ss);
-        case 4: return GetIdOrZeroFromMap(map4, ss);
+      switch (size) {
+        case 2: return GetIdOrZeroFromMap(&map2, ss);
+        case 3: return GetIdOrZeroFromMap(&map3, ss);
+        case 4: return GetIdOrZeroFromMap(&map4, ss);
         default: CHECK(0);
       }
     }
@@ -2249,7 +2251,7 @@ class SegmentSet {
     void Insert(SegmentSet *ss, SSID id) {
       int size = ss->size();
       CheckSize(size);
-      switch(size) {
+      switch (size) {
         case 2: map2[ss] = id; break;
         case 3: map3[ss] = id; break;
         case 4: map4[ss] = id; break;
@@ -2260,7 +2262,7 @@ class SegmentSet {
     void Erase(SegmentSet *ss) {
       int size = ss->size();
       CheckSize(size);
-      switch(size) {
+      switch (size) {
         case 2: CHECK(map2.erase(ss)); break;
         case 3: CHECK(map3.erase(ss)); break;
         case 4: CHECK(map4.erase(ss)); break;
@@ -2299,7 +2301,8 @@ class SegmentSet {
 //  typedef map<SegmentSet*, SSID, Less> Map;
 
   static Map                  *map_;
-  static vector<SegmentSet *> *vec_; // TODO(kcc): use vector<SegmentSet> instead.
+  // TODO(kcc): use vector<SegmentSet> instead.
+  static vector<SegmentSet *> *vec_;
   static deque<SSID>         *ready_to_be_reused_;
   static deque<SSID>         *ready_to_be_recycled_;
 
@@ -2308,7 +2311,7 @@ class SegmentSet {
   static SsidSidToSidCache    *remove_segment_cache_;
 
   SID     sids_[kMaxSegmentSetSize];
-  int32_t size_; // TODO(kcc): consider deleting size_ at all.
+  int32_t size_;  // TODO(kcc): consider deleting size_ at all.
   int32_t ref_count_;
 };
 
@@ -2349,7 +2352,6 @@ SSID SegmentSet::RemoveSegmentFromSS(SSID old_ssid, SID sid_to_remove) {
 // static
 // TODO(timurrrr): describe this, see ThreadSanitizerAlgorithm names.
 SSID SegmentSet::AddSegmentToSS(SSID old_ssid, SID new_sid) {
-  // TODO: add caching
   DCHECK(new_sid.valid());
   SSID res;
   if (add_segment_cache_->Lookup(old_ssid, new_sid, &res)) {
@@ -2483,7 +2485,7 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
     tmp_sids[new_size++] = new_sid;
   }
 
-  CHECK(new_size > 0);
+  CHECK_GT(new_size, 0);
   if (new_size == 1) {
     return SSID(new_sid.raw());  // Singleton.
   }
@@ -2507,7 +2509,7 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
   CHECK(new_size <= kMaxSegmentSetSize);
   SegmentSet tmp(new_size);
   for (int i = 0; i < new_size; i++)
-    tmp.sids_[i] = tmp_sids[i]; // TODO(timurrrr): avoid copying?
+    tmp.sids_[i] = tmp_sids[i];  // TODO(timurrrr): avoid copying?
   if (DEBUG_MODE) tmp.Validate(__LINE__);
 
   SSID res = FindExistingOrAlocateAndCopy(&tmp);
@@ -2520,7 +2522,7 @@ SSID SegmentSet::AddSegmentToTupleSS(SSID ssid, SID new_sid) {
 void NOINLINE SegmentSet::Validate(int line) const {
   // This is expensive!
   for (int i = 0; i < size(); i++) {
-    for (int j = i + 1; j < size(); j++){
+    for (int j = i + 1; j < size(); j++) {
       SID sid1 = GetSID(i);
       SID sid2 = GetSID(j);
       CHECK(sid1.valid());
@@ -2530,12 +2532,12 @@ void NOINLINE SegmentSet::Validate(int line) const {
       bool hb1 = Segment::HappensBefore(sid1, sid2);
       bool hb2 = Segment::HappensBefore(sid2, sid1);
       if (hb1 || hb2) {
-        Printf("BAD at line %d: %d %d %s %s\n   %s\n   %s\n", line, (int)hb1, (int)hb2,
+        Printf("BAD at line %d: %d %d %s %s\n   %s\n   %s\n",
+               line, static_cast<int>(hb1), static_cast<int>(hb2),
                Segment::ToString(sid1).c_str(),
                Segment::ToString(sid2).c_str(),
                Segment::Get(sid1)->vts()->ToString().c_str(),
-               Segment::Get(sid2)->vts()->ToString().c_str()
-              );
+               Segment::Get(sid2)->vts()->ToString().c_str());
       }
       CHECK(!Segment::HappensBefore(GetSID(i), GetSID(j)));
       CHECK(!Segment::HappensBefore(GetSID(j), GetSID(i)));
@@ -2570,13 +2572,15 @@ string SegmentSet::ToString() const {
 
 // static
 void SegmentSet::Test() {
-  LSID ls(0); // dummy
+  LSID ls(0);  // dummy
   SID sid1 = Segment::AddNewSegment(TID(0), VTS::Parse("[0:2;]"), ls, ls);
   SID sid2 = Segment::AddNewSegment(TID(1), VTS::Parse("[0:1; 1:1]"), ls, ls);
   SID sid3 = Segment::AddNewSegment(TID(2), VTS::Parse("[0:1; 2:1]"), ls, ls);
   SID sid4 = Segment::AddNewSegment(TID(3), VTS::Parse("[0:1; 3:1]"), ls, ls);
-  SID sid5 = Segment::AddNewSegment(TID(4), VTS::Parse("[0:3; 2:2; 3:2;]"), ls, ls);
-  SID sid6 = Segment::AddNewSegment(TID(4), VTS::Parse("[0:3; 1:2; 2:2; 3:2;]"), ls, ls);
+  SID sid5 = Segment::AddNewSegment(TID(4), VTS::Parse("[0:3; 2:2; 3:2;]"),
+                                    ls, ls);
+  SID sid6 = Segment::AddNewSegment(TID(4), VTS::Parse("[0:3; 1:2; 2:2; 3:2;]"),
+                                    ls, ls);
 
 
   // SS1:{T0/S1, T2/S3}
@@ -2606,8 +2610,8 @@ void SegmentSet::Test() {
   SSID ssid6 = SegmentSet::AddSegmentToTupleSS(d4->ComputeSSID(), sid6);
   CHECK(ssid6.IsSingleton());
   Printf("%s\n", ToString(ssid6).c_str());
-  CHECK(sid6.raw() == 6);
-  CHECK(ssid6.raw() == 6);
+  CHECK_EQ(sid6.raw(), 6);
+  CHECK_EQ(ssid6.raw(), 6);
 }
 
 // -------- Shadow Value ------------ {{{1
@@ -2646,10 +2650,9 @@ class ShadowValue {
     if (IsNew()) {
       return "{New}";
     }
-    sprintf(buff, "Reads: %s; Writes: %s",
+    snprintf(buff, sizeof(buff), "Reads: %s; Writes: %s",
             SegmentSet::ToStringWithLocks(rd_ssid()).c_str(),
-            SegmentSet::ToStringWithLocks(wr_ssid()).c_str()
-           );
+            SegmentSet::ToStringWithLocks(wr_ssid()).c_str());
     return buff;
   }
 
@@ -2745,7 +2748,7 @@ class CacheLine : public CacheLineUncompressed {
   // TODO(timurrrr): add a comment on how this actually works.
   bool SameValueStored(uintptr_t addr, uintptr_t size) {
     uintptr_t off = ComputeOffset(addr);
-    if (off & (size - 1)) return false; // Not aligned.
+    if (off & (size - 1)) return false;  // Not aligned.
     DCHECK(off + size <= kLineSize);
     DCHECK(size == 2 || size == 4 || size == 8);
     if (used_.GetRange(off + 1, off + size) == 0)
@@ -2764,8 +2767,7 @@ class CacheLine : public CacheLineUncompressed {
   }
 
  private:
-
-  CacheLine(uint64_t tag) {
+  explicit CacheLine(uint64_t tag) {
     tag_ = tag;
     is_compressed_ = false;
   }
@@ -2779,7 +2781,7 @@ class CacheLine : public CacheLineUncompressed {
 FreeList *CacheLine::free_list_;
 
 
-//static
+// static
 CacheLine *CacheLine::Compress(CacheLine *line) {
   if (!G_flags->compress_cache_lines) {
     return line;
@@ -2807,7 +2809,7 @@ CacheLine *CacheLine::Uncompress(CacheLine *line) {
 //   [line1_tag, line2_tag)
 //   [line2_tag, b)
 uintptr_t GetCacheLinesForRange(uintptr_t a, uintptr_t b,
-                                     uintptr_t *line1_tag, uintptr_t *line2_tag) {
+                                uintptr_t *line1_tag, uintptr_t *line2_tag) {
   uintptr_t a_tag = CacheLine::ComputeTag(a);
   uintptr_t next_tag = CacheLine::ComputeNextTag(a);
   if (b < next_tag) {
@@ -2865,7 +2867,7 @@ class Cache {
       set<int64_t> s;
       for (int i = 0; i < 64; i++) {
         if (line->used().Get(i)) {
-          int64_t sval = *(int64_t*)line->GetValuePointer(i);
+          int64_t sval = *reinterpret_cast<int64_t*>(line->GetValuePointer(i));
           s.insert(sval);
         }
       }
@@ -2936,7 +2938,8 @@ class Cache {
       set<int64_t> s;
       for (int i = 0; i < 64; i++) {
         if (old_line->used().Get(i)) {
-          int64_t sval = *(int64_t*)old_line->GetValuePointer(i);
+          int64_t sval = *reinterpret_cast<int64_t*>(
+                            old_line->GetValuePointer(i));
           // Printf("%p ", sval);
           s.insert(sval);
         }
@@ -2952,7 +2955,8 @@ class Cache {
   CacheLine *lines_[kNumLines];
 
   // tag => CacheLine
-  typedef map<uintptr_t, CacheLine*> Map;  // TODO: is hash_map better than map?
+  // TODO(kcc): is hash_map better than map?
+  typedef map<uintptr_t, CacheLine*> Map;
   Map storage_;
 };
 
@@ -2960,15 +2964,15 @@ static  Cache *G_cache;
 
 // -------- Published range -------------------- {{{1
 struct PublishInfo {
-  uintptr_t tag;    ///< Tag of the cache line where the mem is published.
-  Mask      mask;  ///< The bits that are actually published.
-  VTS      *vts;    ///< The point where this range has been published.
+  uintptr_t tag;  // Tag of the cache line where the mem is published.
+  Mask      mask; // The bits that are actually published.
+  VTS      *vts;  // The point where this range has been published.
 };
 
 
 typedef multimap<uintptr_t, PublishInfo> PublishInfoMap;
 
-/// Maps 'mem+size' to the PublishInfoMap{mem, size, vts}.
+// Maps 'mem+size' to the PublishInfoMap{mem, size, vts}.
 static PublishInfoMap *g_publish_info_map;
 
 const int kDebugPublish = 0;
