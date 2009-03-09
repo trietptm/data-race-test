@@ -4235,9 +4235,9 @@ class ReportStorage {
              " of size %ld allocated by T%d from heap:%s\n",
              c_blue,
              reinterpret_cast<void*>(a),
-             static_cast<intptr_t>(a - heap_info.ptr),
+             static_cast<long>(a - heap_info.ptr),
              reinterpret_cast<void*>(heap_info.ptr),
-             static_cast<intptr_t>(heap_info.size),
+             static_cast<long>(heap_info.size),
              heap_info.tid.raw(), c_default);
       return string(buff) + heap_info.stack_trace->ToString().c_str();
     }
