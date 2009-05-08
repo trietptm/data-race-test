@@ -2,6 +2,12 @@
 
 The !RaceChecker class helps confirming data races, e.g. those detected by Helgrind or ThreadSanitizer. 
 
+If !RaceChecker detected a race it is a 100% proof of a race.
+If it did not detect a race it proves nothing.
+
+See [http://code.google.com/p/data-race-test/source/browse/trunk/race_checker/race_checker.h race_checker.h] and 
+[http://code.google.com/p/data-race-test/source/browse/trunk/race_checker all race checker files] for details.
+
 Example: 
 {{{
 int foo = 0;  // The racey address.
@@ -64,6 +70,3 @@ Race found between these points
 }}}
 
 
-
-See [http://code.google.com/p/data-race-test/source/browse/trunk/race_checker/race_checker.h race_checker.h] and 
-[http://code.google.com/p/data-race-test/source/browse/trunk/race_checker all race checker files] for details.
