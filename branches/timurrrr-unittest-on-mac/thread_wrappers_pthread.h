@@ -292,6 +292,8 @@ class CondVar {
 #define NEEDS_SEPERATE_RW_LOCK
 class RWLock {
  public:
+  RWLock() { CHECK(0 == pthread_rwlock_init(&mu_, NULL)); }
+  ~RWLock() { CHECK(0 == pthread_rwlock_destroy(&mu_)); }
   void Lock() { CHECK(0 == pthread_rwlock_wrlock(&mu_)); }
   void ReaderLock() { CHECK(0 == pthread_rwlock_rdlock(&mu_)); }
   void Unlock() { CHECK(0 == pthread_rwlock_unlock(&mu_)); }
