@@ -30,11 +30,11 @@ have to download valgrind and !ThreadSanitizer separately. You will also have to
 apply a small patch to valgrind. Just paste the following script into your terminal window.
 
 {{{
-# Get valgrind trunk revision 9520 (the one we used so far).
+# Get valgrind revision which we used so far.
 # This will create directory 'valgrind'.
-svn checkout -r 9520 svn://svn.valgrind.org/valgrind/tags/VALGRIND_3_4_1 valgrind
-# Get ThreadSanitizer trunk revision 961. Will create directory 'tsan'.
-svn checkout -r 961  http://data-race-test.googlecode.com/svn/trunk/tsan tsan
+svn checkout -r 9843 svn://svn.valgrind.org/valgrind/trunk valgrind
+# Get ThreadSanitizer. Will create directory 'tsan'.
+svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
 # Create symlinks of tsan files (and some dummy files) in valgrind directory
 cd valgrind
 mkdir tsan
