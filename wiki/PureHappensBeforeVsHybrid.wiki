@@ -50,11 +50,11 @@ A. We suggest to use the Hybrid mode whenever possible. It is faster, finds more
 Q. Are there races detectable by the pure happens-before mode and not detectable by Hybrid. 
 A. Yes. The default mode may miss some real races that happens-before mode will find. But if you want to find as many races as possible, use Hybrid with disabled fast mode. 
 
-Q. Does the pure happens-before mode have false positives? 
+Q. Does the pure happens-before mode have false positives? <BR>
 A. Only if you have custom lock-free synchronization.
 
-Q. Can we selectively apply the pure happens-before mode to one Mutex? 
+Q. Can we selectively apply the pure happens-before mode to one Mutex? <BR>
 A. Yes, use `ANNOTATE_MUTEX_IS_USED_AS_COND_VAR` from DynamicAnnotations.
 
-Q. What is the technical difference between these two modes? 
+Q. What is the technical difference between these two modes? <BR>
 A. In the pure happens-before mode ThreadSanitizer treats `Mutex::Lock()` as `Wait` and `Mutex::Unlock()` as `Signal` and thus creates a happens-before arc between an `Unlock()` and the following `Lock()`. In the example above, the happens-before arc will be created between `mu.Unlock()` in Thread1 and `mu.Lock()` in Thread2. 
