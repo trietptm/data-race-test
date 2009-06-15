@@ -45,19 +45,16 @@ This is why the pure happens-before mode is less predicatble.
 If there is no race (`flag_init_value = false`), ThreadSanitizer will be silent. 
 
 Q. How do I choose between these two modes? 
-A. We suggest to use the Hybrid mode whenever possible. It is faster, finds more real races and is more predicatble. 
-    But if the Hybrid mode gives too many reports and you have no time to master the Dynamic Annotations, try the pure happens-before mode. 
+A. We suggest to use the Hybrid mode whenever possible. It is faster, finds more real races and is more predicatble. But if the Hybrid mode gives too many reports and you have no time to master the Dynamic Annotations, try the pure happens-before mode. 
 
 Q. Are there races detectable by the pure happens-before mode and not detectable by Hybrid. 
 A. Yes. The default mode may miss some real races that happens-before mode will find. But if you want to find as many races as possible, use Hybrid with disabled fast mode. 
 
 Q. Does the pure happens-before mode have false positives? 
-A. Only if you have custom lock-free synchronization (e.g. you use primitives from base::subtle:: directly). 
-    Several standard lock-free utilities (like Notification or RefCountDec) are ThreadSanitizer-friendly. 
+A. Only if you have custom lock-free synchronization.
 
 Q. Can we selectively apply the pure happens-before mode to one Mutex? 
-A. Yes, use ANNOTATE_MUTEX_IS_USED_AS_COND_VAR from Dynamic Annotations.
+A. Yes, use `ANNOTATE_MUTEX_IS_USED_AS_COND_VAR` from DynamicAnnotations.
 
 Q. What is the technical difference between these two modes? 
-A. In the pure happens-before mode ThreadSanitizer treats Mutex::Lock() as Wait and Mutex::Unlock() as Signal and thus creates a happens-before arc between an Unlock() and the following Lock(). 
-In the example above, the happens-before arc will be created between mu.Unlock() in Thread1 and mu.Lock() in Thread2. 
+A. In the pure happens-before mode ThreadSanitizer treats `Mutex::Lock()` as `Wait` and `Mutex::Unlock()` as `Signal` and thus creates a happens-before arc between an `Unlock()` and the following `Lock()`. In the example above, the happens-before arc will be created between `mu.Unlock()` in Thread1 and `mu.Lock()` in Thread2. 
