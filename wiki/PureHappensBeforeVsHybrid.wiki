@@ -44,7 +44,7 @@ If the race is real (`flag_init_value = true`), the race may or may not be repor
 This is why the pure happens-before mode is less predicatble. 
 If there is no race (`flag_init_value = false`), ThreadSanitizer will be silent. 
 
-Q. How do I choose between these two modes? 
+Q. How do I choose between these two modes? <BR>
 A. We suggest to use the Hybrid mode whenever possible. It is faster, finds more real races and is more predicatble. But if the Hybrid mode gives too many reports and you have no time to master the Dynamic Annotations, try the pure happens-before mode. 
 
 Q. Are there races detectable by the pure happens-before mode and not detectable by Hybrid. 
