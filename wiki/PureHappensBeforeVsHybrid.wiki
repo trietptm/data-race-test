@@ -37,23 +37,27 @@ If it is false, the code is perfectly synchronized; if it is true, the code has 
 But ThreadSanitizer has no way to distinguish between these two cases. 
 
 In the Hybrid mode, ThreadSanitizer will always report a data race on such code. 
-If this code is correct, you may help ThreadSanitizer to avoid this report by using Dynamic Annotations. 
+If this code is correct, you may help ThreadSanitizer to avoid this report by using DynamicAnnotations. 
 
 In the pure happens-before mode, ThreadSanitizer will behave differently. 
-If the race is real (flag_init_value = true), the race may or may not be reported (depends on timing). 
+If the race is real (`flag_init_value = true`), the race may or may not be reported (depends on timing). 
 This is why the pure happens-before mode is less predicatble. 
-If there is no race (flag_init_value = false), ThreadSanitizer will be silent. 
+If there is no race (`flag_init_value = false`), ThreadSanitizer will be silent. 
 
 Q. How do I choose between these two modes? 
 A. We suggest to use the Hybrid mode whenever possible. It is faster, finds more real races and is more predicatble. 
     But if the Hybrid mode gives too many reports and you have no time to master the Dynamic Annotations, try the pure happens-before mode. 
+
 Q. Are there races detectable by the pure happens-before mode and not detectable by Hybrid. 
-Q. Yes. The default mode may miss some real races that happens-before mode will find. But if you want to find as many races as possible, use Hybrid with disabled fast mode. 
+A. Yes. The default mode may miss some real races that happens-before mode will find. But if you want to find as many races as possible, use Hybrid with disabled fast mode. 
+
 Q. Does the pure happens-before mode have false positives? 
 A. Only if you have custom lock-free synchronization (e.g. you use primitives from base::subtle:: directly). 
     Several standard lock-free utilities (like Notification or RefCountDec) are ThreadSanitizer-friendly. 
+
 Q. Can we selectively apply the pure happens-before mode to one Mutex? 
 A. Yes, use ANNOTATE_MUTEX_IS_USED_AS_COND_VAR from Dynamic Annotations.
+
 Q. What is the technical difference between these two modes? 
 A. In the pure happens-before mode ThreadSanitizer treats Mutex::Lock() as Wait and Mutex::Unlock() as Signal and thus creates a happens-before arc between an Unlock() and the following Lock(). 
 In the example above, the happens-before arc will be created between mu.Unlock() in Thread1 and mu.Lock() in Thread2. 
