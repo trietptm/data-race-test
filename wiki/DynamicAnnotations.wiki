@@ -1,6 +1,5 @@
 ﻿#summary Dynamic Annotations are used to annotate custom synchronization utilities
 
-=THIS PAGE IS UNDER CONSTRUCTION=
 <wiki:toc max_depth="2" />
 = Introduction =
 
@@ -20,8 +19,6 @@ and link with
 You can find examples of the annotations in RacecheckUnittest.
 
 *TODO*: add more examples. 
-
-*TODO*: rewrite examples using vanilla PTHREAD syntax.
 
 =Custom memory allocation= 
 Use `ANNOTATE_NEW_MEMORY(mem, size)` inside custom memory allocators. 
@@ -74,7 +71,7 @@ If a message queue is implemented w/o a lock, an annotations may be required eve
 // Putter 
 void MyCoolMessageQueue::Put(Type *e) {
   MutexLock lock(&mu_);
-  ANNOTATE_CONDVAR_SIGNAL(e);   //<<<< SIGNAL right before doing Put().
+  ANNOTATE_HAPPENS_BEFORE(e);   //<<<< SIGNAL right before doing Put().
   PutElementIntoMyQueue(e);
 }
 
@@ -82,14 +79,14 @@ void MyCoolMessageQueue::Put(Type *e) {
 Type *MyCoolMessageQueue::Get() {
   MutexLock lock(&mu_);
   Type *e = GetElementFromMyQueue(e);
-  ANNOTATE_CONDVAR_WAIT(e);     //<<<<< WAIT right after Get()
+  ANNOTATE_HAPPENS_AFTER(e);     //<<<<< WAIT right after Get()
   return e;
 }
 }}}
 ==Free lists==
 Free lists are usually implemented in the same manner as message queues. So, see above.
 ==FIFO queues==
-A FIFO message queue (as any other message queue) could be annotated using `ANNOTATE_CONDVAR_SIGNAL` / `ANNOTATE_CONDVAR_WAIT`.
+A FIFO message queue (as any other message queue) could be annotated using `ANNOTATE_HAPPENS_BEFORE` / `ANNOTATE_HAPPENS_AFTER`.
 But the specific `ANNOTATE_PCQ_*` annotations are a bit more race-detector-friendly. 
 The main difference is that if we put a same element into the queue several times, the `SIGNAL` / `WAIT` annotations will make race detectors too conservative 
 (i.e. will create too many wrong happens-before arcs).
@@ -106,10 +103,10 @@ Reference counting using lock. Need to annotate to avoid false positives in Hybr
 void Unref() {
   MU.Lock();
   bool do_delete = (--ref_ == 0);
-  ANNOTATE_CONDVAR_SIGNAL(&ref_);
+  ANNOTATE_HAPPENS_BEFORE(&ref_);
   MU.Unlock();
   if (do_delete) {
-    ANNOTATE_CONDVAR_WAIT(&ref_);
+    ANNOTATE_HAPPENS_AFTER(&ref_);
     delete this;
   } 
 }
@@ -118,10 +115,10 @@ void Unref() {
 In case of lock-less reference counting, the annotation is required even for pure happens-before detectors. 
 {{{
 void Unref() {
-  ANNOTATE_CONDVAR_SIGNAL(&refcount_);
+  ANNOTATE_HAPPENS_BEFORE(&refcount_);
   if (!AtomicDecrementByOne(&refcount_)) {
     // refcount_ is now 0
-    ANNOTATE_CONDVAR_WAIT(&refcount_);
+    ANNOTATE_HAPPENS_AFTER(&refcount_);
     delete this;
   }
 }
@@ -160,5 +157,3 @@ In contrary, if the race detector does not find a race for that address, a warni
 
 =Naming Threads=
 Use `ANNOTATE_THREAD_NAME(name)` do name a thread.
-
-
