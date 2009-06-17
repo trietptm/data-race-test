@@ -88,7 +88,7 @@ Free lists are usually implemented in the same manner as message queues. So, see
 ==FIFO queues==
 A FIFO message queue (as any other message queue) could be annotated using `ANNOTATE_HAPPENS_BEFORE` / `ANNOTATE_HAPPENS_AFTER`.
 But the specific `ANNOTATE_PCQ_*` annotations are a bit more race-detector-friendly. 
-The main difference is that if we put a same element into the queue several times, the `SIGNAL` / `WAIT` annotations will make race detectors too conservative 
+The main difference is that if we put a same element into the queue several times, the `HAPPENS_BEFORE` / `HAPPENS_AFTER` annotations will make race detectors too conservative 
 (i.e. will create too many wrong happens-before arcs).
   * `ANNOTATE_PCQ_CREATE(pcq)`
   * `ANNOTATE_PCQ_DESTROY(pcq)`
