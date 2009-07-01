@@ -4774,6 +4774,7 @@ void Run() {
 }
 #ifndef __APPLE__
 // Tsan for Mac OS is missing the unlink() syscall handler.
+// TODO(glider): add the syscall handler to Valgrind.
 REGISTER_TEST(Run, 98)
 #endif
 }  // namespace test98
