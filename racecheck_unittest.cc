@@ -4394,7 +4394,6 @@ void Run() {
   MyThreadArray t(Publisher, Reader, Reader, Reader);
   t.Start();
   t.Join();
-  printf("\t*GLOB=%d\n", *GLOB);
   free(GLOB);
 }
 REGISTER_TEST(Run, 90)
@@ -4443,7 +4442,6 @@ void Run() {
   MyThreadArray t(Publisher, Accessor, Accessor, Accessor);
   t.Start();
   t.Join();
-  printf("\t*GLOB=%d\n", *GLOB);
   free(GLOB);
 }
 REGISTER_TEST(Run, 91)
