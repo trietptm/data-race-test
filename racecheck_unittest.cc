@@ -6731,8 +6731,13 @@ REGISTER_TEST2(Run, 145, EXCLUDE_FROM_ALL);
 
 // test146: TP. Unit test for RWLock::TryLock and RWLock::ReaderTryLock. {{{1
 namespace test146 {
-int     GLOB1 = 0,
-        GLOB2 = 0;
+int     GLOB1 = 0;
+char    padding1[64];
+int     GLOB2 = 0;
+char    padding2[64];
+int     GLOB3 = 0;
+char    padding3[64];
+int     GLOB4 = 0;
 RWLock  MU;
 
 void Worker1() {
@@ -6740,6 +6745,8 @@ void Worker1() {
   usleep(500000);
   GLOB1 = 1;
   GLOB2 = 1;
+  GLOB3 = 1;
+  GLOB4 = 1;
   MU.Unlock();
 }
 
@@ -6749,34 +6756,45 @@ void Worker2() {
     GLOB1 = 2;
   usleep(1000000);
   if (MU.TryLock()) {
-    GLOB1 = 3;
+    GLOB2 = 2;
     MU.Unlock();
+  } else {
+    CHECK(0);
   }
 }
 
 void Worker3() {
   if (MU.ReaderTryLock()) CHECK(0);
   else
-    printf("\treading GLOB2: %d\n", GLOB2);
+    printf("\treading GLOB3: %d\n", GLOB3);
   usleep(1000000);
   if (MU.ReaderTryLock()) {
-    printf("\treading GLOB2: %d\n", GLOB2);
+    printf("\treading GLOB4: %d\n", GLOB4);
     MU.Unlock();
+  } else {
+    CHECK(0);
   }
 }
 
 void Run() {
   FAST_MODE_INIT(&GLOB1);
   FAST_MODE_INIT(&GLOB2);
+  FAST_MODE_INIT(&GLOB3);
+  FAST_MODE_INIT(&GLOB4);
   ANNOTATE_EXPECT_RACE_FOR_TSAN(&GLOB1, "test146. TP: a data race on GLOB1.");
-  ANNOTATE_EXPECT_RACE_FOR_TSAN(&GLOB2, "test146. TP: a data race on GLOB2.");
+  ANNOTATE_EXPECT_RACE_FOR_TSAN(&GLOB3, "test146. TP: a data race on GLOB3.");
   ANNOTATE_TRACE_MEMORY(&GLOB1);
   ANNOTATE_TRACE_MEMORY(&GLOB2);
+  ANNOTATE_TRACE_MEMORY(&GLOB3);
+  ANNOTATE_TRACE_MEMORY(&GLOB4);
   printf("test146: positive\n");
   MyThreadArray t(Worker1, Worker2, Worker3);
   t.Start();
   t.Join();
   printf("\tGLOB1=%d\n", GLOB1);
+  printf("\tGLOB2=%d\n", GLOB2);
+  printf("\tGLOB3=%d\n", GLOB3);
+  printf("\tGLOB4=%d\n", GLOB4);
 }
 REGISTER_TEST(Run, 146);
 } // namespace test146

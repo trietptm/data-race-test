@@ -309,16 +309,16 @@ class RWLock {
   bool TryLock() {
     int res = pthread_rwlock_trywrlock(&mu_);
     if (res != 0) {
-      CHECK (EBUSY == res);
+      CHECK(EBUSY == res);
     }
-    return (bool) !res;
+    return (res == 0);
   }
   bool ReaderTryLock() {
     int res = pthread_rwlock_tryrdlock(&mu_);
     if (res != 0) {
-      CHECK (EBUSY == res);
+      CHECK(EBUSY == res);
     }
-    return (bool) !res;
+    return (res == 0);
   }
  private:
   pthread_cond_t dummy; // Damn, this requires some redesign...
