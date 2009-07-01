@@ -4774,9 +4774,8 @@ void Run() {
   unlink(in_name);
   unlink(out_name);
 }
-// TODO(glider): comment
 #ifndef _APPLE_
-/* Tsan for Mac os is missing 
+// Tsan for Mac OS is missing the unlink() syscall handler.
 REGISTER_TEST(Run, 98)
 #endif
 }  // namespace test98
@@ -5468,9 +5467,6 @@ REGISTER_TEST(Run, 114)
 
 // test115: TN. sem_open. {{{1
 namespace    test115 {
-/* This test is disabled for Darwin because of the tricky implementation of
- * sem_open on that platform: subsequent attempts to open an existing semafore
- * create new ones. */
 int tid = 0;
 Mutex mu;
 const char *kSemName = "drt-test-sem";
@@ -5525,6 +5521,9 @@ void Run() {
   sem_unlink(kSemName);
 }
 #ifndef _APPLE_
+/* This test is disabled for Darwin because of the tricky implementation of
+ * sem_open on that platform: subsequent attempts to open an existing semafore
+ * create new ones. */
 REGISTER_TEST(Run, 115)
 #endif
 }  // namespace test115
