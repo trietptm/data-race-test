@@ -86,7 +86,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 
-#ifndef _APPLE_
+#ifndef __APPLE__
 #include <malloc.h>
 #endif
 
@@ -4772,7 +4772,7 @@ void Run() {
   unlink(in_name);
   unlink(out_name);
 }
-#ifndef _APPLE_
+#ifndef __APPLE__
 // Tsan for Mac OS is missing the unlink() syscall handler.
 REGISTER_TEST(Run, 98)
 #endif
@@ -5518,7 +5518,7 @@ void Run() {
   // clean up
   sem_unlink(kSemName);
 }
-#ifndef _APPLE_
+#ifndef __APPLE__
 /* This test is disabled for Darwin because of the tricky implementation of
  * sem_open on that platform: subsequent attempts to open an existing semafore
  * create new ones. */
