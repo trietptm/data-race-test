@@ -6729,6 +6729,73 @@ void Run() {
 REGISTER_TEST2(Run, 145, EXCLUDE_FROM_ALL);
 }  // namespace test145
 
+// test146: TP. Regression test for RWLock::TryLock. {{{1
+namespace test146 {
+int     GLOB = 0;
+RWLock  MU;
+
+void Worker1() {
+  MU.Lock();
+  GLOB = 1;
+  usleep(500000);
+  MU.Unlock();
+}
+
+void Worker2() {
+  usleep(100000);
+  bool not_locked = MU.TryLock();
+  printf("\tnot_locked: %d\n", not_locked);
+  GLOB = 2;
+  if (!not_locked) MU.Unlock();
+}
+
+void Run() {
+  FAST_MODE_INIT(&GLOB);
+  ANNOTATE_EXPECT_RACE_FOR_TSAN(&GLOB, "test146. TP.");
+  ANNOTATE_TRACE_MEMORY(&GLOB);
+  printf("test146: positive\n");
+  MyThreadArray t(Worker1, Worker2);
+  t.Start();
+  t.Join();
+  printf("\tGLOB=%d\n", GLOB);
+}
+REGISTER_TEST(Run, 146);
+} // namespace test146
+
+// test147: TP. Regression test for RWLock::TryLock. {{{1
+namespace test147 {
+int     GLOB = 0;
+RWLock  MU;
+
+void Worker1() {
+  MU.Lock();
+  GLOB = 1;
+  usleep(500000);
+  MU.Unlock();
+}
+
+void Worker2() {
+  usleep(100000);
+  bool not_locked = MU.ReaderTryLock();
+  printf("\tnot_locked: %d\n", not_locked);
+  printf("\treading GLOB:%d\n", GLOB);
+  if (!not_locked) MU.Unlock();
+}
+
+void Run() {
+  FAST_MODE_INIT(&GLOB);
+  ANNOTATE_EXPECT_RACE_FOR_TSAN(&GLOB, "test147. TP.");
+  ANNOTATE_TRACE_MEMORY(&GLOB);
+  printf("test147: positive\n");
+  MyThreadArray t(Worker1, Worker2);
+  t.Start();
+  t.Join();
+  printf("\tGLOB=%d\n", GLOB);
+}
+REGISTER_TEST(Run, 147);
+} // namespace test147
+
+
 // test300: {{{1
 namespace test300 {
 int     GLOB = 0;
