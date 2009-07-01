@@ -6762,7 +6762,7 @@ void Run() {
 REGISTER_TEST(Run, 146);
 } // namespace test146
 
-// test147: TP. Regression test for RWLock::TryLock. {{{1
+// test147: TP. Regression test for RWLock::ReaderTryLock. {{{1
 namespace test147 {
 int     GLOB = 0;
 RWLock  MU;
