@@ -23,7 +23,7 @@ See also:
   * DynamicAnnotations
   * RaceCheckerClass
 
-Contacts: data-race-test@googlegroups.com
+Contacts: *data-race-test@googlegroups.com*
 
 =Building !ThreadSanitizer=
 !ThreadSanitizer is not a part of the official valgrind distribution, so you will 
