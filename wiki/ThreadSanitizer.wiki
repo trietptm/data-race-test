@@ -39,6 +39,7 @@ cd ../..
 # Get ThreadSanitizer. Will create directory 'tsan'.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
 # Create symlinks of tsan files (and some dummy files) in valgrind directory
+cd valgrind
 mkdir tsan
 cd tsan
 ln -s ../../tsan/[A-Za-z]* .
