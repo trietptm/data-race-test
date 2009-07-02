@@ -33,8 +33,8 @@ apply a small patch to valgrind. Just paste the following script into your termi
 # Get valgrind revision which we used so far.
 # This will create directory 'valgrind'.
 svn checkout -r 9843 svn://svn.valgrind.org/valgrind/trunk valgrind
-cd valgrind
-cd VEX && svn update -r 1888
+cd valgrind/VEX
+svn update -r 1888
 cd ../..
 # Get ThreadSanitizer. Will create directory 'tsan'.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
