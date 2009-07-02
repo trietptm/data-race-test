@@ -37,6 +37,7 @@ svn checkout -r 9843 svn://svn.valgrind.org/valgrind/trunk valgrind
 svn checkout http://data-race-test.googlecode.com/svn/trunk/tsan tsan
 # Create symlinks of tsan files (and some dummy files) in valgrind directory
 cd valgrind
+cd VEX && svn update -r 1888 && cd ..
 mkdir tsan
 cd tsan
 ln -s ../../tsan/[A-Za-z]* .
