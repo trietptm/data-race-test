@@ -73,7 +73,7 @@ cd ../
 valgrind: mmap(0x400000, 241664) failed in UME with error 22 (Invalid argument).
 valgrind: this can be caused by executables with very large text, data or bss segments.
 }}}
-Before reporting such an error please make sure you don't use gold.
+Please make sure you don't use gold before building ThreadSanitizer.
 
 =Using !ThreadSanitizer=
 Just like any other valgrind-based tool: 
