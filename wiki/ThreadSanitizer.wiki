@@ -68,12 +68,12 @@ cd ../
 # Done!
 }}}
 
-*Note:* as far as we know, *!ThreadSanitizer* crashes if linked with [http://en.wikipedia.org/wiki/Gold_(linker) gold]:
+*Note:* valgrind crashes if linked using [http://en.wikipedia.org/wiki/Gold_(linker) gold] (see [https://bugs.kde.org/show_bug.cgi?id=193413 bug])
 {{{
 valgrind: mmap(0x400000, 241664) failed in UME with error 22 (Invalid argument).
 valgrind: this can be caused by executables with very large text, data or bss segments.
 }}}
-Please make sure you don't use gold before building ThreadSanitizer.
+Please make sure you don't use gold as a linker before building ThreadSanitizer.
 
 =Using !ThreadSanitizer=
 Just like any other valgrind-based tool: 
