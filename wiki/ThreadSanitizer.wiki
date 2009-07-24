@@ -32,17 +32,22 @@ have to download valgrind and !ThreadSanitizer separately. You will also have to
 apply a small patch to valgrind. Just paste the following script into your terminal window.
 
 {{{
-# Get valgrind and VEX revisions which we used so far.
+# Select valgrind and VEX revisions which we used so far.
 VALGRIND_REV=10454
 VEX_REV=1908
+TSAN_REV=1096
+
 # This will create directory 'valgrind'.
-svn checkout -r $VALGRIND_REV svn://svn.valgrind.org/valgrind/trunk valgrind
-cd valgrind/VEX
-svn update -r $VEX_REV
-cd ..
-# Get ThreadSanitizer. Will create directory 'tsan'. and patch valgrind
-wget http://data-race-test.googlecode.com/svn/trunk/install_tsan.sh
-sh install_tsan.sh
+svn co -r $VALGRIND_REV svn://svn.valgrind.org/valgrind/trunk valgrind
+cd valgrind
+svn up -r $VEX_REV      VEX/
+
+# Get ThreadSanitizer. This will create directory 'tsan' and patch valgrind
+svn co -r $TSAN_REV     https://data-race-test.googlecode.com/svn/trunk/tsan tsan
+mkdir tsan/{docs,tests}
+touch tsan/{docs,tests}/Makefile.am # Valgrind needs them.
+patch -p 0 < tsan/valgrind.patch
+patch -p 0 -d VEX < tsan/vex.patch
 # Build the whole thing.
 ./autogen.sh && ./configure --prefix=`pwd`/inst && make -j 8 && make install
 
