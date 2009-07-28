@@ -1,0 +1,53 @@
+#summary A Description of some most popular data races
+
+= Non-atomic variable used for synchronization =
+
+===Example===
+Consider the following code:
+{{{
+bool done = true;
+
+void Thread1() {
+  while (!done) {
+    do_something_useful_in_a_loop_1();
+  } 
+  do_thread1_cleanup();
+}
+
+void Thread2() {
+  do_something_useful_2();
+  done = true;
+  do_thread2_cleanup();
+}
+}}}
+
+The synchronization between these two threads is done using "done" boolean variable.
+However, it is a wrong way to synchronize two threads.
+
+===Description===
+On x86, the biggest issue is the compile-time optimizations.<br/>
+  * Part of the code of do_something_useful_2() can be moved below "done = true" by the compiler.
+  * Part of the code of do_thread2_cleanup() can be moved above "done = true" by the compiler.
+  * If do_something_useful_in_a_loop_1() doesn't modify "done", the compiler may re-write Thread1 the following way:
+{{{
+  if (!done) {
+    while(true) {
+      do_something_useful_in_a_loop_1();
+    } 
+  }
+  do_thread1_cleanup();
+}}}
+  so Thread1 will never exit.
+
+On architectures other than x86, the cache effects or out-of-order instruction execution may lead to even bigger problems.
+
+===Detectability===
+To our knowledge, almost every data race detector would detect such a data race.<br/>
+Also, most dynamic race detectors will report data races on the memory accesses that were intended to be synchronized during development<br/>
+(i.e. between do_something_useful_2() and do_thread1_cleanup())
+
+===Fixing===
+Fixing such a data race requires introducing compiler/memory barrier on x86/other architectures, respectively.<br/>
+It is highly recommended to wrap such a synchronization into a separate class (i.e. ExitNotification) and make it race detector-friendly (e.g. [http://code.google.com/p/data-race-test/wiki/DynamicAnnotations annotate]).
+
+=TODO: more=
