@@ -1,4 +1,4 @@
-#summary A Description of some most popular data races
+#summary Description of some most popular data races
 
 = Non-atomic variable used for synchronization =
 
