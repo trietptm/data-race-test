@@ -43,7 +43,7 @@ cd valgrind
 svn up -r $VEX_REV      VEX/
 
 # Get ThreadSanitizer. This will create directory 'tsan' and patch valgrind
-svn co -r $TSAN_REV     https://data-race-test.googlecode.com/svn/trunk/tsan tsan
+svn co -r $TSAN_REV     http://data-race-test.googlecode.com/svn/trunk/tsan tsan
 mkdir tsan/{docs,tests}
 touch tsan/{docs,tests}/Makefile.am # Valgrind needs them.
 patch -p 0 < tsan/valgrind.patch
