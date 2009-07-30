@@ -2,7 +2,7 @@
 
 *UNDER CONSTRUCTION!*
 
-Besides regular valgrind suppressions, 
+Besides [http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress regular valgrind suppressions], 
 ThreadSanitizer supports yet another machinery for suppressing reports. It is complementary to valgrind suppressions.
 Maybe someday similar mechanism will become a part of valgrind core.
 
@@ -33,4 +33,3 @@ Ignore file is also used to suppress warnings from libpthread and ld.so
 Second, the ignore file allows to *speed up tsan by a large factor* (sometimes, several times). 
 By using `--sample-events=<N>` you can collect the hotspots of the program 
 (those that slowdown tsan the most) and put them into the ignore file. 
-
