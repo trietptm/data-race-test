@@ -33,9 +33,9 @@ apply a small patch to valgrind. Just paste the following script into your termi
 
 {{{
 # Select valgrind and VEX revisions which we used so far.
-VALGRIND_REV=10454
-VEX_REV=1908
-TSAN_REV=1096
+VALGRIND_REV=10656
+VEX_REV=1912
+TSAN_REV=1106
 
 # This will create directory 'valgrind'.
 svn co -r $VALGRIND_REV svn://svn.valgrind.org/valgrind/trunk valgrind
@@ -47,7 +47,6 @@ svn co -r $TSAN_REV     http://data-race-test.googlecode.com/svn/trunk/tsan tsan
 mkdir tsan/{docs,tests}
 touch tsan/{docs,tests}/Makefile.am # Valgrind needs them.
 patch -p 0 < tsan/valgrind.patch
-patch -p 0 -d VEX < tsan/vex.patch
 # Build the whole thing.
 ./autogen.sh && ./configure --prefix=`pwd`/inst && make -j 8 && make install
 
