@@ -50,4 +50,55 @@ Also, most dynamic race detectors will report data races on the memory accesses 
 Fixing such a data race requires introducing compiler/memory barrier on x86/other architectures, respectively.<br/>
 It is highly recommended to wrap such a synchronization into a separate class (i.e. ExitNotification) and make it race detector-friendly (e.g. [http://code.google.com/p/data-race-test/wiki/DynamicAnnotations annotate]).
 
-=TODO: more=
+= Publishing objects without synchronization =
+===Example===
+{{{
+class Type {
+ public:
+  Type() {
+    data_ = 7777;
+  }
+  void DoSomething() {
+    assert(data_ == 7777);
+  }
+ private:
+  int data_;
+};
+
+Type* obj = NULL;
+
+void Thread1() {
+  obj = new Type();
+}
+
+void Thread2() {
+  while(obj == NULL)
+    yield();
+  obj->DoSomething();
+}
+}}}
+
+`Thread2` assumes that once `obj != NULL` holds, the object is constructed and ready to use.
+
+===Description===
+This code is very fragile. Its behaviour depends on the compiler and hardware implementation.
+
+For example, `obj = new Type();` line may be compiled/optimized like this:
+{{{
+obj = malloc(sizeof(Type));
+// obj != NULL !!!
+obj->data_ = 7777;  // inlining happened
+}}}
+so Thread2 may exit the while loop before `obj` is constructed.
+
+With real compilers the things are a bit more difficult.
+
+On architectures other than x86, the cache effects or out-of-order instruction execution may lead to even bigger problems. 
+
+===Detectability===
+The data race is likely to be reported the same way your data race detection tool reports data races on basic types.
+
+Also, most data race detectors will report data races on the data of `Type` accessed in `DoSomething`.
+
+===Fixing===
+Add synchronization using mutex and/or condvar.
