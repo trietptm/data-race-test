@@ -1,0 +1,29 @@
+#summary Links related to race detection
+
+= Please HELP!!! =
+
+Reader, we need your help!
+We want to collect an exhaustive and well annotated list of links to all materials related to race detection. 
+
+
+  * Intel Thread Checker
+    * TODO: download site, link to a paper, comments
+  * Sun Thread Analyzer
+    * TODO: download site, link to a paper, comments
+  * Helgrind
+    * TODO: download site, paper, comments
+  * DRD
+    * TODO: download site, paper, comments
+  * MTRAT
+    * TODO: download site, comments
+  * Lamport's paper
+    * TODO: link to a paper
+  * Eraser
+    * TODO: link to a paper, comments
+  * ThreadSanitizer: valgrind-based race detector. Supports both hybrid and pure happens-before modes. 
+  
+*TODO* add all links we already have somewhere. 
+
+*TODO* find new interesting links.
+
+    
