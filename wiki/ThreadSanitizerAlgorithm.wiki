@@ -60,7 +60,7 @@ We will write `(S1 <= S2)` instead of `(S1 < S2 or S1 == S2)`.
 
 *Segment Set*: a set of segments such that none of the segments in the set happens-before another segment.
 
-*Concurrent*: two memory access events are *concurrent* if non of them happens-before another one and the intresection of the lock sets of these events is empty.
+*Concurrent*: two memory access events are *concurrent* if non of them happens-before another one and the intersection of the lock sets of these events is empty.
 
 *Data Race*: a situation where there are two concurrent memory access events
 with the same address and at least one of the events is `Write`.
