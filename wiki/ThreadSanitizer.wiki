@@ -23,6 +23,7 @@ See also:
   * RacecheckUnittest
   * DynamicAnnotations
   * RaceCheckerClass
+  * RaceDetectionLinks: links to other materials related to race detection
 
 Contacts: *data-race-test@googlegroups.com*
 
