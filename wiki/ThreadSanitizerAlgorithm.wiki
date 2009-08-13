@@ -90,10 +90,10 @@ def HandleMemoryAccess(is_write, tid, addr):
     # Remove 'seg' and those that happen-before 'seg' from SSrd.
     SSrd = UpdateSegmentSet(SSrd, {}, seg)
     # Remove segments that happen-before 'seg' from SSwr and add 'seg'.
-    SSwr = UpdateSegmentSet(SSwr, seg, seg)
+    SSwr = UpdateSegmentSet(SSwr, {seg}, seg)
   else: # Read event
     # Just add 'seg' to SSrd.
-    SSrd = UpdateSegmentSet(SSrd, seg, seg)
+    SSrd = UpdateSegmentSet(SSrd, {seg}, seg)
   # Update the state.
   SetPerByteState(SSwr, SSrd)
   # Check if there is a race and report it.
@@ -129,7 +129,7 @@ def IsRace(SSwr, SSrd):
       LS3 = R.LockSet()
       if (not (W1 <= R) and IntersectionIsEmpty(LS1, LS3)):
         return True
-  return false
+  return False
 }}}
 
 =Reporting races=
