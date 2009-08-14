@@ -11,8 +11,8 @@ We want to collect an exhaustive and well annotated list of links to all materia
     * Supports annotations (*TODO*: find a link to help/manual!)
     * Supports both compile-time and run-time instrumentation
     * A couple of papers are available:
-      # [http://portal.acm.org/citation.cfm?id=1147416 U. Banerjee, B. Bliss, Z. Ma, and P. Petersen. A theory of data race detection]
-      # [http://software.intel.com/file/6311 U. Banerjee, B. Bliss, Z. Ma, and P. Petersen. Unraveling Data Race Detection in the Intel® Thread Checker]
+      # [http://portal.acm.org/citation.cfm?id=1147416 U. Banerjee, B. Bliss, Z. Ma, and P. Petersen - A theory of data race detection]
+      # [http://software.intel.com/file/6311 U. Banerjee, B. Bliss, Z. Ma, and P. Petersen - Unraveling Data Race Detection in the Intel® Thread Checker]
     * [http://software.intel.com/en-us/intel-thread-checker/ Product homepage]
     * Available for download the Linux version for noncommercial use
   * Sun Thread Analyzer
@@ -33,12 +33,21 @@ We want to collect an exhaustive and well annotated list of links to all materia
     * Open sourced as a part of Valgrind ([http://valgrind.org/downloads/ download], [http://valgrind.org/docs/manual/drd-manual.html manual])
     * TODO: paper (any available?), comments
   * MTRAT
+    * Race detector for Java
     * TODO: download site, comments
   * Lamport's paper
+    * [http://portal.acm.org/citation.cfm?id=359563 L. Lamport, Time, clocks, and the ordering of events in a distributed system]
     * TODO: link to a paper
   * Eraser
-    * TODO: link to a paper, comments
+    * Lockset-based race detector
+    * [http://portal.acm.org/citation.cfm?id=265927 S. Savage , M. Burrows , G. Nelson , P. Sobalvarro, T. Anderson - Eraser: a dynamic data race detector for multithreaded programs]
+    * TODO: comments
   * ThreadSanitizer: valgrind-based race detector. Supports both hybrid and pure happens-before modes. 
+    * Supports both hybrid and pure happens-before modes, available on Linux and Mac
+    * Support annotations
+    * Based on Valgrind run-time instrumentation framework
+    * Open sourced ([http://code.google.com/p/data-race-test/wiki/ThreadSanitizer download instructions, manual])
+    * TODO: paper (when available), comments
   
 *TODO* add all links we already have somewhere. 
 
