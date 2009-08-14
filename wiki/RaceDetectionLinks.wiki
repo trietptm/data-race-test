@@ -8,13 +8,18 @@ We want to collect an exhaustive and well annotated list of links to all materia
 
   * Intel Thread Checker
     * Pure happens-before race detector, available on both Windows and Linux
+    * Supports annotations (*TODO*: find a link to help/manual!)
+    * Supports both compile-time and run-time instrumentation
     * A couple of papers are available:
       # [http://portal.acm.org/citation.cfm?id=1147416 U. Banerjee, B. Bliss, Z. Ma, and P. Petersen. A theory of data race detection]
       # [http://software.intel.com/file/6311 U. Banerjee, B. Bliss, Z. Ma, and P. Petersen. Unraveling Data Race Detection in the Intel® Thread Checker]
     * [http://software.intel.com/en-us/intel-thread-checker/ Product homepage]
     * Available for download the Linux version for noncommercial use
   * Sun Thread Analyzer
-    * TODO: download site, link to a paper, comments
+    * Hyrbid race detector, available on Solaris, SuSE Linux Enterprise Server 9 and the Red Hat Enterprise Linux 4
+    * Supports annotations ([http://developers.sun.com/sunstudio/downloads/tha/tha_using.html#User%20APIs documentation])
+    * Requires compile-time instrumentation
+    * TODO: download site, link to paper (any available?), comments
   * Helgrind
     * TODO: download site, paper, comments
   * DRD
