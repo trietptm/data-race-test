@@ -1,0 +1,10 @@
+#A draft of the XML document emitted by ThreadSanitizer with the appropriate flags.
+
+= Relevant flags =
+
+TODO: consult V manual
+
+
+= XML nodes =
+
+TODO: add content here
