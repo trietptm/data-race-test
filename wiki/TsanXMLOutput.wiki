@@ -10,74 +10,16 @@
 || `--xml-user-comment=<str>` ||            || Embed an extra user comment string at the start of the XML output ||
 
 
-= XML tags in Memcheck =
-== Emitted by Coregrind ==
-|| Tag               || Emitted by || Comment ||
-|| `<arg>`   || coregrind || ||
-|| `<args>`    || coregrind || ||
-|| `<argv>` || coregrind || Inside `<args>` ||
-|| `<exe>` || coregrind || Executable name, inside `<argv>` ||
-|| `<logfilequalifier>` || coregrind || ||
-|| `<pid>` || coregrind || PID, inside `<valgrindoutput>` ||
-|| `<ppid>` || coregrind || PPID, inside `<valgrindoutput>` ||
-|| `<preamble>` || coregrind || inside `<valgrindoutput>`||
-|| `<protocoltool>` || coregrind || Name of tool (e.g. memcheck), inside `<valgrindoutput` ||
-|| `<protocolversion>` || coregrind || Inside `<valgrindoutput>` ||
-|| <tool> || coregrind || tool name, inside `<valgrindoutput>` ||
-|| `<usercomment>` || coregrind || XML comment, inside `<valgrindoutput>` ||
-|| `<valgrindoutput>` || coregrind || Top XML tag ||
-|| `<vargv>` || coregrind || inside `<args>` ||
-
-|| Tag               || Emitted by || Comment ||
-|| `<auxwhat>` ||
-|| <command> ||
-|| <computeroutput> ||
-|| <count> ||
-|| <dir> ||
-|| `<error>` || || tool error, inside `<valgrindoutput>` ||
-|| <errorcounts> ||
-|| <file> ||
-|| <filename> || || file name containing `<fn>`, inside `<frame>` ||
-|| <fn> || || function name, inside `<frame>` ||
-|| <formalpara> ||
-|| `<frame>` || || stack frame, inside `<stack>` ||
-|| <function> ||
-|| <hexnumber> ||
-|| <iostream> ||
-|| `<ip>` || || Instruction pointer, inside `<frame>` ||
-|| <itemizedlist> ||
-|| <itercount> ||
-|| `<kind>` || tools || error kind, inside `<error>`
-|| `<leakedblocks>` || memcheck || ||
-|| `<leakedbytes>` || memcheck || ||
-|| `<line>` || coregrind, tools || inside `<frame>`, `<preamble>` ||
-|| <listitem> ||
-|| <literal> ||
-|| <new> ||
-|| <obj> ||
-|| <option> ||
-|| <orderedlist> ||
-|| <pair> ||
-|| <para> ||
-|| <pid> ||
-|| <platform> ||
-|| <programlisting> ||
-|| `<stack>` || || call stack, inside `<error>` ||
-|| <state> ||
-|| <status> ||
-|| <subtitle> ||
-|| <suppcounts> ||
-|| <sz> ||
-|| `<term>` ||
-|| `<text>` ||
-|| <tid> ||
-|| <time> ||
-|| <title> ||
-|| <unique> ||
-|| <value> ||  ||  ||
-|| <var> ||  ||  ||
-|| <varname> ||
-|| <what> ||
-|| <xauxwhat> || || ||
-|| <xwhat> || || ||
-|| <year> ||
+= XML tags Emitted by Helgrind and (should be in) ThreadSanitizer =
+|| Helgrind || Tsan || Comment
+|| `<announcethread>` || `<announcethread>` || ||
+|| `<auxwhat>` || || ||
+|| `<hthreadid>` || `<tsthreadid>` || ||
+|| `<isrootthread>` || || ||
+|| `<kind>` || || ||
+|| `<platform>` || || ||
+|| `<text>` || || ||
+|| `<tool>` || || ||
+|| `<what>` || || ||
+|| `<xauxwhat>` || || ||
+|| `<xwhat>` || || ||
