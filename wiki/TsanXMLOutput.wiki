@@ -3,12 +3,79 @@
 = Relevant flags =
 
 || Flag                   || Default value  || Comment                                   ||
-||  --xml=<yes|no>        ||     no         || turns on the XML facility                 ||
-|| --xml-fd=<number>      ||  -1 (disabled) || send XML output to `fd`, need `xml=yes`   ||
-|| --xml-file=<file>      ||                || send XML output to a file, need `xml=yes` ||
-|| --xml-socket=<ip:port> ||                || send XML output to a socket               ||
-|| --xml-user-comment=<str> ||              || Embed an extra user comment string at the start of the XML output ||
+|| `--xml=<yes|no>`       ||   `no`         || turns on the XML facility                 ||
+|| `--xml-fd=<number>`    || `-1 (disabled)` || send XML output to `fd`, need `xml=yes`  ||
+|| `--xml-file=<file>`    ||                || send XML output to a file, need `xml=yes` ||
+|| `--xml-socket=<ip:port>` ||              || send XML output to a socket               ||
+|| `--xml-user-comment=<str>` ||            || Embed an extra user comment string at the start of the XML output ||
 
-= XML nodes =
+= XML tags in Memcheck =
+== Emitted by Coregrind ==
+|| Tag               || Emitted by || Comment ||
+|| `<arg>`   || coregrind || ||
+|| `<args>`    || coregrind || ||
+|| `<argv>` || coregrind || Inside `<args>` ||
+|| `<exe>` || coregrind || Executable name, inside `<argv>` ||
+|| `<logfilequalifier>` || coregrind || ||
+|| `<pid>` || coregrind || PID, inside `<valgrindoutput>` ||
+|| `<ppid>` || coregrind || PPID `<valgrindoutput>` ||
+|| `<preamble>` || coregrind || ||
+|| `<protocoltool>` || coregrind || Name of tool (e.g. memcheck) ||
+|| `<protocolversion>` || coregrind || Inside `<valgrindoutput>` ||
+|| `<usercomment>` || coregrind || XML comment ||
+|| `<valgrindoutput>` || coregrind || Top XML tag ||
+|| `<vargv> || coregrind ||  ||
 
-TODO: add content here
+|| Tag               || Emitted by || Comment ||
+|| <auxwhat> ||
+|| <command> ||
+|| <computeroutput> ||
+|| <count> ||
+|| <dir> ||
+|| <error> ||
+|| <errorcounts> ||
+|| <file> ||
+|| <filename> ||
+|| <fn> ||
+|| <formalpara> ||
+|| <frame> ||
+|| <function> ||
+|| <hexnumber> ||
+|| <iostream> ||
+|| <ip> ||
+|| <itemizedlist> ||
+|| <itercount> ||
+|| <kind> ||
+|| <leakedblocks> ||
+|| <leakedbytes> ||
+|| <line> || coregrind? || inside <frame>, <preamble> ||
+|| <listitem> ||
+|| <literal> ||
+|| <new> ||
+|| <obj> ||
+|| <option> ||
+|| <orderedlist> ||
+|| <pair> ||
+|| <para> ||
+|| <pid> ||
+|| <platform> ||
+|| <programlisting> ||
+|| <stack> ||
+|| <state> ||
+|| <status> ||
+|| <subtitle> ||
+|| <suppcounts> ||
+|| <sz> ||
+|| <term> ||
+|| <text> ||
+|| <tid> ||
+|| <time> ||
+|| <title> ||
+|| <tool> ||
+|| <unique> ||
+|| <value> ||  ||  ||
+|| <var> ||  ||  ||
+|| <varname> ||
+|| <what> ||
+|| <xwhat> ||
+|| <year> ||
