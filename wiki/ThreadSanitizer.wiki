@@ -27,6 +27,18 @@ See also:
 
 Contacts: *data-race-test@googlegroups.com*
 
+=Binaries=
+*Experimental*
+
+We have a pre-built ThreadSanitizer binary for Linux/x86_64, tested only on Ubuntu 8.04.
+The binary is a shell script that extracts itself into /tmp/valgrind.XXXXXX and executes ThreadSanitizer.
+{{{
+wget wget http://data-race-test.googlecode.com/svn/trunk/tsan_binary/tsan-self-contained.sh
+chmod +x ./tsan-self-contained.sh
+./tsan-self-contained.sh  ls /dev/null
+}}}
+If you don't want to use this binary, you will have to build ThreadSanitizer yourself.
+
 =Building !ThreadSanitizer=
 !ThreadSanitizer is not a part of the official valgrind distribution, so you will 
 have to download valgrind and !ThreadSanitizer separately. You will also have to 
