@@ -36,7 +36,9 @@ ThreadSanitizer is known to work on:
 =Binaries=
 *Experimental*
 
-We have a pre-built ThreadSanitizer binary for Linux/x86_64, tested only on Ubuntu 8.04.
+We have pre-built ThreadSanitizer binaries for
+  * Linux/x86_64, tested only on Ubuntu 8.04.
+  * MacOS X 10.5
 The binary is a shell script that extracts itself into /tmp/valgrind.XXXXXX and executes ThreadSanitizer.
 {{{
 # Linux x86_64: 
