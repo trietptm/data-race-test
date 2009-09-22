@@ -91,7 +91,7 @@ Optional: build a self-contained binary.
 {{{
 wget http://data-race-test.googlecode.com/svn/trunk/tsan_binary/mk-self-contained-tsan.sh && \
    chmod +x mk-self-contained-tsan.sh && \
-   ./mk-self-contained-tsan.sh ./valgrind/inst && 
+   ./mk-self-contained-tsan.sh ./valgrind/inst
 
 }}}
 
