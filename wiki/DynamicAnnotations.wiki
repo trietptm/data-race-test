@@ -128,12 +128,12 @@ void Unref() {
 TODO
 
 =Pure happens-before Mutex=
-If you annotate a mutex =mu= with =ANNOTATE_MUTEX_IS_USED_AS_CONDVAR(&mu)=, 
+If you annotate a mutex `mu` with `ANNOTATE_MUTEX_IS_USED_AS_CONDVAR(&mu)`, 
 the Hybrid detector will treat this particular mutex as in pure happens-before mode. 
 
 
 =Benign races=
-Use `ANNOTATE_BENIGN_RACE(addr, "Description of this race")` to annotate an expected bening race.
+Use `ANNOTATE_BENIGN_RACE(addr, "Description of this race")` to annotate an expected benign race.
 =Racey reads=
 It is often the case that we want to protect updates of some value, but can tolerate unsynchronized reads of that value.
 For this kind of benign race we have special annotations:
