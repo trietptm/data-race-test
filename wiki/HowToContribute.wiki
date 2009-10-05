@@ -3,5 +3,5 @@
   * If you are not listed as 'Project committers', please write to *data-race-test(#)googlegroups.com*.
   * Checkout the code: `svn checkout https://data-race-test.googlecode.com/svn/trunk/ data-race-test --username your-user-name`.
   * Edit the code.
-  * Send a code review to *data-race-test(#)googlegroups.com* using [http://codereview.appspot.com/static/upload.py Reitveld].
+  * Send a code review to *data-race-test(#)googlegroups.com* using [http://codereview.appspot.com/static/upload.py Reitveld's upload.py].
   * Once you've got LGTM (looks good to me) from someone, `svn commit`.
