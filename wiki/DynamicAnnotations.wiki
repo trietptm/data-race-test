@@ -12,7 +12,8 @@ Dynamic annotations could be used to pass various kinds of information to dynami
 such as Memcheck, Helgrind or !ThreadSanitizer. 
 
 In order to use the dynamic annotations in your program you need to include 
-[http://code.google.com/p/data-race-test/source/browse/trunk/dynamic_annotations/dynamic_annotations.h dynamic_annotations.h]
+[http://code.google.com/p/data-race-test/source/browse/trunk/dynamic_annotations/dynamic_annotations.h dynamic_annotations.h],
+define cpp macro `DYNAMIC_ANNOTATIONS_ENABLED=1`
 and link with
 [http://code.google.com/p/data-race-test/source/browse/trunk/dynamic_annotations/dynamic_annotations.cc dynamic_annotations.cc].
 
