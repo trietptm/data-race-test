@@ -25,7 +25,7 @@ See also:
   * RaceCheckerClass
   * RaceDetectionLinks: links to other materials related to race detection
 
-Contacts: *data-race-test@googlegroups.com*
+Contacts: *data-race-test(#)googlegroups.com*
 
 =Supported platforms=
 ThreadSanitizer is known to work on: 
