@@ -116,13 +116,13 @@ def UpdateSegmentSet(seg_set, init, seg):
 {{{
 # Return true if the state {SSwr,SSrd} represents a race.
 def IsRace(SSwr, SSrd): 
-  for i = 1 .. SSwr.size(): 
+  for i in range(1, SSwr.size()):
     W1 = SSwr[i]
     LS1 = W1.LockSet()
-    for j = i + 1 .. SSwr.size(): 
+    for j in range(i + 1, SSwr.size()):
       W2 = SSwr[j]
       LS2 = W2.LockSet()
-      Assert(not (W1 <= W2) and not (W2 <= W1))
+      assert (not (W1 <= W2) and not (W2 <= W1))
       if (IntersectionIsEmpty(LS1, LS2)): 
         return True
     foreach R in SSrd: 
