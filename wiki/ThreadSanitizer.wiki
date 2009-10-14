@@ -31,7 +31,7 @@ Contacts: *data-race-test(#)googlegroups.com*
 ThreadSanitizer is known to work on: 
   * Linux x86_64 (supports both 32- and 64-bit binaries)
   * Linux i386
-  * Darwin i386 aka MacOS X 10.5. This port is slightly less mature.
+  * Darwin i386 aka MacOS X 10.5. This port is slightly less mature (see ThreadSanitizerOnMacOSX)
 
 =Binaries=
 *Experimental*
