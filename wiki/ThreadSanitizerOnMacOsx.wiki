@@ -20,27 +20,21 @@ necessary Valgrind, VEX and Tsan SVN revisions are r10454, r1908 and r1101
 correspondingly.
 
 The broken test case should hang with the following report:
+{{{
 --24317:0:aspacem  sync_check_mapping_callback: segment mismatch: V's seg:
---24317:0:aspacem  NSegment{    , start=0xb0082000, end=0xbf7fffff,
-smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0, hasW=0,
-hasX=0, hasT=0, mark=0, name="(none)"}
+--24317:0:aspacem  NSegment{    , start=0xb0082000, end=0xbf7fffff, smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0, hasW=0, hasX=0, hasT=0, mark=0, name="(none)"}
 --24317:0:aspacem  sync_check_mapping_callback: segment mismatch: kernel's seg:
---24317:0:aspacem  start=0xb0082000 end=0xb0082fff prot=0 dev=0 ino=0
-offset=0 name="(none)"
+--24317:0:aspacem  start=0xb0082000 end=0xb0082fff prot=0 dev=0 ino=0 offset=0 name="(none)"
 --24317:0:aspacem  sync_check_mapping_callback: segment mismatch: V's seg:
---24317:0:aspacem  NSegment{    , start=0xb0082000, end=0xbf7fffff,
-smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0, hasW=0,
-hasX=0, hasT=0, mark=0, name="(none)"}
+--24317:0:aspacem  NSegment{    , start=0xb0082000, end=0xbf7fffff, smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0, hasW=0, hasX=0, hasT=0, mark=0, name="(none)"}
 --24317:0:aspacem  sync_check_mapping_callback: segment mismatch: kernel's seg:
---24317:0:aspacem  start=0xb0083000 end=0xb0103fff prot=3 dev=0 ino=0
-offset=4096 name="(none)"
+--24317:0:aspacem  start=0xb0083000 end=0xb0103fff prot=3 dev=0 ino=0 offset=4096 name="(none)"
 --24317:0:aspacem  sync_check_mapping_callback: segment mismatch: V's seg:
---24317:0:aspacem  NSegment{    , start=0xb0082000, end=0xbf7fffff,
-smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0, hasW=0,
-hasX=0, hasT=0, mark=0, name="(none)"}
+--24317:0:aspacem  NSegment{    , start=0xb0082000, end=0xbf7fffff, smode=SmFixed, dev=0, ino=0, offset=0, fnIdx=-1, hasR=0, hasW=0, hasX=0, hasT=0, mark=0, name="(none)"}
 ...
+}}}
 
 If it does, the test case should be added to
-the appropriate *.gtest-tsan_mac.txt file and"
+the appropriate `*`.gtest-tsan_mac.txt file and the bug issue at
 http://code.google.com/p/data-race-test/issues/detail?id=11 should be
 updated.
