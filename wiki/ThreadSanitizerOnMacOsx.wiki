@@ -7,7 +7,7 @@ ThreadSanitizer and racecheck_unittest.cc have been ported to Mac OS and work th
 
 = Known issues =
 The main difference is that Valgrind has some issues handling the
-memory management on Mac OS, which lead to ThreadSanitizer's hangs on
+memory management on Mac OS (see https://bugs.kde.org/show_bug.cgi?id=192634), which lead to ThreadSanitizer's hangs on
 several Chromium tests. As of August, 2009, they are not reported by
 Valgrind tools, but the problem is still there.
 
