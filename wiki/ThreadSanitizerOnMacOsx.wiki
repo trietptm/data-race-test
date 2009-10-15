@@ -16,7 +16,7 @@ buildbot, such tests usually time out), you should try ThreadSanitizer
 built on top of the older Valgrind with this test case. The build
 instruction is available at
 http://code.google.com/p/data-race-test/wiki/ThreadSanitizer, the
-necessary Valgrind, VEX and Tsan SVN revisions are r10454, r1908 and r1101
+necessary Valgrind, VEX and Tsan SVN revisions are `r10454`, `r1908` and r1101
 correspondingly.
 
 The broken test case should hang with the following report:
