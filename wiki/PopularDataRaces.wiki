@@ -108,7 +108,7 @@ Add synchronization using mutex and/or condvar.
 = Data race on virtual functions table pointer (vfptr) =
 
 ===Example===
-Suppose we have a `Thread` class with `Start()` and `Join()` and `Run()` methods (like in Java).
+Suppose we have a `Thread` class with `Start()`, `Join()` and `Run()` methods (like in Java).
 
 Consider the following code:
 {{{
@@ -154,15 +154,16 @@ public:
 There is a data race on `vfptr` in this example.
 
 ===Description===
-The C++ standard doesn't specify the exact places where initialization of `vfptr` takes place.
+Let's consider an instance of `MyClass`.<br/>
+The C++ standard doesn't specify the exact places where `vfptr` is set.
+`gcc` sets `vfptr` to the value of `vfptr` of the current class when entering a constructor/destructor. <br/>
+`vfptr` will point to `ParentClass vfptr` at code points `(1)` and `(2)`. <br/>
+`vfptr` will point to `MyClass vfptr` only between entering MyClass constructor `(3)` and leaving MyClass destructor `(4)`.<br/>
 
-Let's consider an instance of MyClass.<br/>
-The compiler may set its `vfptr` to `ParentClass vfptr` at code points `(1)` and `(2)`. Its `vfptr` will point to the `MyClass vfptr` only between entering MyClass constructor `(3)` and leaving MyClass destructor `(4)`.<br/>
-For example, `gcc` behaves like this: it sets `vfptr` the value of the current class when entering each constructor/destructor.
+As a result, calling `SomeMethod()` from a thread started/joined by `ParentClass` may result in calling *either* `ParentClass:SomeMethod()` *or* `MyClass::SomeMethod`. 
+Also, this may case a pure-virtual call if `ParentClass::SomeMethod()` is defined as pure-virtual.
 
-As a result, calling `SomeMethod()` from a thread started/joined by `ParentClass` may result in calling *either* `ParentClass:SomeMethod()` *or* `MyClass::SomeMethod`. Also, this may case a pure-virtual call if `ParentClass::SomeMethod()` is defined as pure-virtual.
-
-A similar data race can happen if you use other means of synchronization (Mutex, CondVar, etc) in the class constructor/destructor.
+A similar data race can happen if you use other means of synchronization (Mutex, !CondVar, etc) in the class constructor/destructor.
 
 ===Fixing===
 Consider not using any synchronization in constructors/destructors. Use `Start()` and `Join()` methods instead.
