@@ -158,7 +158,7 @@ Let's consider an instance of `MyClass`.<br/>
 The C++ standard doesn't specify the exact places where `vfptr` is set.
 `gcc` sets `vfptr` to the value of `vfptr` of the current class when entering a constructor/destructor. <br/>
 `vfptr` will point to `ParentClass vfptr` at code points `(1)` and `(2)`. <br/>
-`vfptr` will point to `MyClass vfptr` only between entering MyClass constructor `(3)` and leaving MyClass destructor `(4)`.<br/>
+`vfptr` will point to `MyClass vfptr` only between entering `MyClass`  constructor `(3)` and leaving `MyClass` destructor `(4)`.<br/>
 
 As a result, calling `SomeMethod()` from a thread started/joined by `ParentClass` may result in calling *either* `ParentClass:SomeMethod()` *or* `MyClass::SomeMethod`. 
 Also, this may case a pure-virtual call if `ParentClass::SomeMethod()` is defined as pure-virtual.
@@ -166,7 +166,7 @@ Also, this may case a pure-virtual call if `ParentClass::SomeMethod()` is define
 A similar data race can happen if you use other means of synchronization (Mutex, !CondVar, etc) in the class constructor/destructor.
 
 ===Fixing===
-Consider not using any synchronization in constructors/destructors. Use `Start()` and `Join()` methods instead.
+Consider not using any synchronization in constructors/destructors if the class has virtual methods. Use `Start()` and `Join()` methods instead.
 
 The data race is benign if you don't subclass the class which does synchronization (e.g. thread creation and joining) in constructor/destructor.<br/>
 In this case, consider [http://www.google.com/search?q=sealed+C%2B%2B sealing] your class and annotating the race as benign in the constructor (e.g. `ANNOTATE_BENIGN_RACE(this, "Benign race on vfptr")`).
