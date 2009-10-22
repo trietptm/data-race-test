@@ -1,5 +1,7 @@
 #summary Description of some most popular data races
 
+<wiki:toc max_depth="1" />
+
 = Non-atomic variable used for synchronization =
 
 ===Example===
