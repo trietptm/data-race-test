@@ -269,7 +269,7 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `READ(tid, pc, id, size)`
     * `WRITE(tid, pc, id, size)`
   * Control flow events: 
-    * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.  ThreadSanitizer uses them to maintain the call stack for each thread. These events should match, otherwise the tool we get confused.
+    * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.  ThreadSanitizer uses them to maintain the call stack for each thread. These events should match, otherwise the tool will get confused.
     * `SBLOCK_ENTER(tid, pc)` -- entry to a superblock. Optional.  Used to generate nearly-precise information about previous accesses.
   * Memory allocation events: 
     * `MALLOC(tid, pc, id, size)` -- allocated memory `[id, id+size)`.
@@ -296,6 +296,4 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `TRACE_MEM(tid, pc, id)`
     * few more...
   * Events from atomic instructions are currently ignored.
-
-
 
