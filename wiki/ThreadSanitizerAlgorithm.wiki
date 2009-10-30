@@ -269,15 +269,12 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `READ(tid, pc, id, size)`
     * `WRITE(tid, pc, id, size)`
   * Control flow events: 
-    * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.
-       ThreadSanitizer uses them to maintain the call stack for each thread. 
-    * `SBLOCK_ENTER(tid, pc)` -- entry to a superblock. Optional.
-       Used to general nearly-precise information about previous accesses.
+    * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.  ThreadSanitizer uses them to maintain the call stack for each thread. 
+    * `SBLOCK_ENTER(tid, pc)` -- entry to a superblock. Optional.  Used to general nearly-precise information about previous accesses.
   * Memory allocation events: 
     * `MALLOC(tid, pc, id, size)`
     * `FREE(tid, pc, id)`
-    * `STACK_INCREASE(tid, pc, id, size)` and `STACK_DECREASE(tid, pc, id, size)` -- the stack has changed.
-       Only used if the stack memory is tracked, i.e. optional not for Java.
+    * `STACK_INCREASE(tid, pc, id, size)` and `STACK_DECREASE(tid, pc, id, size)` -- the stack has changed. Only used if the stack memory is tracked, i.e. optional not for Java.
   * Thread events: 
     * `THR_CREATE(tid, pc, child_tid)`
     * `THR_START(tid, pc, parent_tid)`
@@ -289,8 +286,7 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `WR_LOCK(tid, pc, id)`
     * `RD_LOCK(tid, pc, id)` 
     * `UNLOCK(tid, pc, id)`
-  * Events from other synchronization utilities (e.g. conditional variable or semaphore). 
-    `id` is the address of the sync object.
+  * Events from other synchronization utilities (e.g. conditional variable or semaphore). `id` is the address of the sync object.
     * `SIGNAL(tid, pc, id)`
     * `WAIT(tid, pc, id)`
   * Events from DynamiAnnotations. Optional
