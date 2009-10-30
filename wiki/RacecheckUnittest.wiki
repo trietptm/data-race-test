@@ -2,3 +2,11 @@
 
 The file [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/racecheck_unittest.cc racecheck_unittest.cc] 
 contains various unit tests for a data race detector. The tests are named test01, test02, and so on. For details see the source. 
+
+
+To get and compile the unittests: 
+{{{{
+svn checkout -r $TSAN_REV http://data-race-test.googlecode.com/svn/trunk/unittest tsan_test
+cd tsan_test/
+make
+}}}
