@@ -11,3 +11,11 @@ svn checkout http://data-race-test.googlecode.com/svn/trunk/unittest tsan_test
 cd tsan_test/
 make
 }}}
+
+Run: 
+{{{
+# Run one test: 
+./racecheck_unittest  311
+# Run the regression test suite: 
+./racecheck_unittest
+}}}
