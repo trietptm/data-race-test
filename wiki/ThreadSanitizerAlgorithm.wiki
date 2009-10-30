@@ -269,17 +269,17 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `READ(tid, pc, id, size)`
     * `WRITE(tid, pc, id, size)`
   * Control flow events: 
-    * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.  ThreadSanitizer uses them to maintain the call stack for each thread. 
+    * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.  ThreadSanitizer uses them to maintain the call stack for each thread. These events should match, otherwise the tool we get confused.
     * `SBLOCK_ENTER(tid, pc)` -- entry to a superblock. Optional.  Used to generate nearly-precise information about previous accesses.
   * Memory allocation events: 
-    * `MALLOC(tid, pc, id, size)`
-    * `FREE(tid, pc, id)`
-    * `STACK_INCREASE(tid, pc, id, size)` and `STACK_DECREASE(tid, pc, id, size)` -- the stack has changed. Only used if the stack memory is tracked, i.e. optional not for Java.
+    * `MALLOC(tid, pc, id, size)` -- allocated memory `[id, id+size)`.
+    * `FREE(tid, pc, id)` -- freeing memory at `id` (which was previsouly allocated with `MALLOC`).
+    * `STACK_INCREASE(tid, pc, id, size)` and `STACK_DECREASE(tid, pc, id, size)` -- the stack has changed. Only used if the stack memory is tracked, i.e. optional for Java.
   * Thread events: 
-    * `THR_CREATE(tid, pc, child_tid)`
-    * `THR_START(tid, pc, parent_tid)`
-    * `THR_END(tid, pc)`
-    * `THR_JOIN(tid, pc, child_tid)`
+    * `THR_CREATE(tid, pc, child_tid)` -- the current thread `tid` has created a child thread `child_tid`.
+    * `THR_START(tid, pc, parent_tid)` -- this current thread `tid` has started; its parent ir `parent_tid`.
+    * `THR_END(tid, pc)` -- the current thread has ended.
+    * `THR_JOIN(tid, pc, child_tid)` -- the current thread `tid` has joined thread `child_tid`.
   * Events from a reader-writer lock. `id` is the address of the lock.
     * `LOCK_CREATE(tid, pc, id)`
     * `LOCK_DESTROY(tid, pc, id)`
