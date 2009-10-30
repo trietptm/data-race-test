@@ -270,7 +270,7 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `WRITE(tid, pc, id, size)`
   * Control flow events: 
     * `RTN_CALL(tid, pc)` and `RTN_EXIT(tid, pc)` -- routine call and exit events.  ThreadSanitizer uses them to maintain the call stack for each thread. 
-    * `SBLOCK_ENTER(tid, pc)` -- entry to a superblock. Optional.  Used to general nearly-precise information about previous accesses.
+    * `SBLOCK_ENTER(tid, pc)` -- entry to a superblock. Optional.  Used to generate nearly-precise information about previous accesses.
   * Memory allocation events: 
     * `MALLOC(tid, pc, id, size)`
     * `FREE(tid, pc, id)`
@@ -289,7 +289,7 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
   * Events from other synchronization utilities (e.g. conditional variable or semaphore). `id` is the address of the sync object.
     * `SIGNAL(tid, pc, id)`
     * `WAIT(tid, pc, id)`
-  * Events from DynamiAnnotations. Optional
+  * Events from DynamicAnnotations. Optional
     * `PURE_HAPPENS_BEFORE_MUTEX(tid, pc, id)`, 
     * `IGNORE_WRITES_BEGIN(tid, pc)`, `IGNORE_WRITES_END(tid, pc)`, `IGNORE_READS_BEGIN(tid, pc)`, `IGNORE_READ_END(tid, pc)`
     * `SET_THREAD_NAME(tid, pc, name)` -- set the thread name (`name` is `const char*`).
