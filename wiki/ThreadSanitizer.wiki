@@ -1,4 +1,4 @@
-﻿#summary ThreadSanitizer is an experimental Valgrind-based detector of data races
+﻿#summary ThreadSanitizer is a Valgrind-based detector of data races
 #labels Featured
 
 <wiki:toc max_depth="1" />
@@ -6,7 +6,7 @@
 
 = Introduction =
 
-*!ThreadSanitizer* (aka *tsan*) is an experimental data race detector based on [http://www.valgrind.org Valgrind]. <BR>
+*!ThreadSanitizer* (aka *tsan*) is a data race detector based on [http://www.valgrind.org Valgrind]. <BR>
 !ThreadSanitizer is similar to [http://valgrind.org/docs/manual/hg-manual.html Helgrind] in many ways, but it also has several 
 [ThreadSanitizerVsOthers differences]. <BR>
 The instrumentation code is partially taken from Helgrind; 
