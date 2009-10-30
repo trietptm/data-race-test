@@ -21,7 +21,7 @@ We will write `Event-Type(Tid,Addr)` or `Event-Type(Addr)` if `Tid` is obvious f
 A lock `L` is *wr-held* by a thread `T` at a given point of time if the number of events
 `Wrlock(T,L)` observed so far is greater than the number of events `Wrunlock(T,L)`. <BR>
 A lock `L` is *rd-held* by thread `T` if it is wr-held by `T` or if the
-number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L)`.
+number of events `Rdlock(T,L)` is greater than the number of events `Rdunlock(T,L)`.
 
 *Lock Set*: (`LS`) a set of locks. <BR>
 *Writer Lock Set* (`LSwr`): the set of all wr-held locks of a given thread. <BR>
@@ -35,7 +35,7 @@ number of events `Rdlock(T,L)` is greter than the number of events `Rdunlock(T,L
 
 *Happens-before*: a partial order on the set of events. <BR>
 Given two events `X=TypeX(Tx,Ax)` and `Y=TypeY(Ty,Ay)` 
-the event `X` *happens-before* or *preceedes* the event `Y` (in short, `X < Y`) if `X` has been observed before `Y` and at least one of the following statements is true:
+the event `X` *happens-before* or *precedes* the event `Y` (in short, `X < Y`) if `X` has been observed before `Y` and at least one of the following statements is true:
   * `Tx = Ty`
   * `{X,Y}` is a happens-before arc.
   * There exist two events `E1` and `E2`, such that `X <= E1 < E2 <= Y` (i.e. happens-before is transitive).
@@ -164,7 +164,7 @@ the tool will create new segment each time the code enters a new super block.
 As the result, the concurrent accesses will always have *almost* precise stack trace. 
 
 In practice, this means that in 50% cases the stack trace is precise and in other 49.9% cases 
-the printed stack is *nearly precise* (i.e. the top frame differes by few lines, the other frames are precise).
+the printed stack is *nearly precise* (i.e. the top frame differs by few lines, the other frames are precise).
 
 
 
@@ -234,7 +234,7 @@ such code friendly to Hybrid detectors.
 
 =Fast mode=
 ThreadSanitizer (similarly to Helgrind) groups memory locations in *cache lines*. <BR>
-The primary purpose of cache lines is to implent fast `GetPerByteState()` function. <BR>
+The primary purpose of cache lines is to implement fast `GetPerByteState()` function. <BR>
 
 Another use of cache lines is the *fast mode*.
 
@@ -296,4 +296,3 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
     * `TRACE_MEM(tid, pc, id)`
     * few more...
   * Events from atomic instructions are currently ignored.
-
