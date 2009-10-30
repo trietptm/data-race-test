@@ -6,6 +6,7 @@ contains various unit tests for a data race detector. The tests are named test01
 
 To get and compile the unittests: 
 {{{
+svn checkout http://data-race-test.googlecode.com/svn/trunk/dynamic_annotations
 svn checkout http://data-race-test.googlecode.com/svn/trunk/unittest tsan_test
 cd tsan_test/
 make
