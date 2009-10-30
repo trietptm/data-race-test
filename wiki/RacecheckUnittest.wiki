@@ -1,5 +1,8 @@
 ﻿#summary Unit tests for data race detector.
 
+
+=C++=
+
 The file [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/racecheck_unittest.cc racecheck_unittest.cc] 
 contains various unit tests for a data race detector. The tests are named test01, test02, and so on. For details see the source. 
 
@@ -18,4 +21,13 @@ Run:
 ./racecheck_unittest  311
 # Run the regression test suite: 
 ./racecheck_unittest
+}}}
+
+=Java= 
+So far we have a very small set of tests for a Java race detector. 
+{{{
+svn checkout http://data-race-test.googlecode.com/svn/trunk/jtsan
+cd jtsan
+make
+make run
 }}}
