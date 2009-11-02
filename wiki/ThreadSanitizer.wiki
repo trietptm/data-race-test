@@ -77,6 +77,7 @@ patch -p 0 < tsan/valgrind.patch
 # Get and compile the unittests
 cd ../
 svn checkout -r $TSAN_REV http://data-race-test.googlecode.com/svn/trunk/unittest tsan_test
+svn checkout -r $TSAN_REV http://data-race-test.googlecode.com/svn/trunk/dynamic_annotations
 cd tsan_test/
 make
 # Check if the ThreadSanitizer works: 
