@@ -59,7 +59,7 @@ apply a small patch to valgrind. Just paste the following script into your termi
 # Select valgrind and VEX revisions which we used so far.
 VALGRIND_REV=10886
 VEX_REV=1920
-TSAN_REV=1203
+TSAN_REV=1206
 
 # This will create directory 'valgrind'.
 svn co -r $VALGRIND_REV svn://svn.valgrind.org/valgrind/trunk valgrind
