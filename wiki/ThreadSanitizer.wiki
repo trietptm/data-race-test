@@ -24,6 +24,7 @@ See also:
   * DynamicAnnotations
   * RaceCheckerClass
   * RaceDetectionLinks: links to other materials related to race detection
+  * PopularDataRaces
 
 Contacts: *data-race-test(#)googlegroups.com*
 
