@@ -129,7 +129,7 @@ void Unref() {
 TODO
 
 =Pure happens-before Mutex=
-If you annotate a mutex `mu` with `ANNOTATE_MUTEX_IS_USED_AS_CONDVAR(&mu)`, 
+If you annotate a mutex `mu` with `ANNOTATE_PURE_HAPPENS_BEFORE_MUTEX(&mu)`,
 the Hybrid detector will treat this particular mutex as in pure happens-before mode. 
 
 

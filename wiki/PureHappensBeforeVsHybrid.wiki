@@ -1,4 +1,4 @@
-#summary Comparison of pure happens-before and hybrid modes
+﻿#summary Comparison of pure happens-before and hybrid modes
 
 ThreadSanitizer has two major modes of operation: 
   * Hybrid (the default one) 
@@ -52,7 +52,7 @@ Q. Does the pure happens-before mode have false positives? <BR>
 A. Only if you have custom lock-free synchronization.
 
 Q. Can we selectively apply the pure happens-before mode to one Mutex? <BR>
-A. Yes, use `ANNOTATE_MUTEX_IS_USED_AS_COND_VAR` from DynamicAnnotations.
+A. Yes, use `ANNOTATE_PURE_HAPPENS_BEFORE_MUTEX` from DynamicAnnotations.
 
 Q. What is the technical difference between these two modes? <BR>
 A. In the pure happens-before mode ThreadSanitizer treats `Mutex::Lock()` as `Wait` and `Mutex::Unlock()` as `Signal` and thus creates a happens-before arc between an `Unlock()` and the following `Lock()`. In the example above, the happens-before arc will be created between `mu.Unlock()` in Thread1 and `mu.Lock()` in Thread2. 
