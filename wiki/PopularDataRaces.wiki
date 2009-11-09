@@ -88,24 +88,18 @@ To fix such race you need to use compiler and/or memory barriers (if you are not
 It is highly recommended to wrap such a synchronization into a separate class (i.e. ExitNotification) and make it race detector-friendly (i.e. [http://code.google.com/p/data-race-test/wiki/DynamicAnnotations annotate]).
 
 = Publishing objects without synchronization =
-===Example===
-{{{
-class Type {
- public:
-  Type() {
-    data_ = 7777;
-  }
-  void DoSomething() {
-    assert(data_ == 7777);
-  }
- private:
-  int data_;
-};
+One thread initializes an object pointer (which was initially null)
+with a new value, another thread spins until the object pointer becomes non-null.
+Without proper synchronization, the compiler may do very surprising
+transformations with such code which will lead to (occasional) failures.
+In addition to that, on some architectures this race may cause failures due
+to cache-related effects.
 
-Type* obj = NULL;
+{{{
+MyType* obj = NULL;
 
 void Thread1() {
-  obj = new Type();
+  obj = new MyType();
 }
 
 void Thread2() {
@@ -115,30 +109,26 @@ void Thread2() {
 }
 }}}
 
-`Thread2` assumes that once `obj != NULL` holds, the object is constructed and ready to use.
 
-===Description===
-This code is very fragile. Its behaviour depends on the compiler and hardware implementation.
+=Initializing objects without synchronization=
 
-For example, `obj = new Type();` line may be compiled/optimized like this:
+This may lead e.g. to memory leaks (the object was constructed twice).
 {{{
-obj = malloc(sizeof(Type));
-// obj != NULL !!!
-obj->data_ = 7777;  // inlining happened
+static MyObj *obj = NULL;
+
+void InitObj() { 
+  if (!obj) 
+    obj = new MyObj(); 
+}
+
+void Thread1() {
+  InitObj();
+}
+
+void Thread2() {
+  InitObj();
+}
 }}}
-so Thread2 may exit the while loop before `obj` is constructed.
-
-With real compilers the things are a bit more difficult.
-
-On architectures other than x86, the cache effects or out-of-order instruction execution may lead to even bigger problems. 
-
-===Detectability===
-The data race is likely to be reported the same way your data race detection tool reports data races on basic types.
-
-Also, most data race detectors will report data races on the data of `Type` accessed in `DoSomething`.
-
-===Fixing===
-Add synchronization using mutex and/or condvar.
 
 = Data race on virtual functions table pointer (vfptr) =
 
