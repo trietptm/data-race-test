@@ -20,7 +20,25 @@ void Thread2() {  // Runs in another thread.
 
 }}}
 
-But sometimes such races are extremely harmful.
+But sometimes such races are extremely harmful (e.g. if `var` is counting your money :).
+
+
+=Race on a complex object=
+
+Another popular race happens when two threads access a non-thread-safe complex object
+(e.g. an STL container) without synchronization. These are almost always dangerous.
+
+{{{
+std::map<int,int> m;
+
+void Thread1() {
+  m[123] = 1;
+}
+
+void Thread1() {
+  m[345] = 0;
+}
+}}}
 
 
 = Non-atomic variable used for synchronization =
