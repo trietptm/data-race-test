@@ -1,6 +1,27 @@
-#summary Description of some most popular data races
+﻿#summary Description of some most popular data races
 
 <wiki:toc max_depth="1" />
+
+= Simple race = 
+
+A simplest possible data race is the most frequent one: two threads are accessing a variable of a
+built-in type without any synchronization.
+Quite frequently, such races are benign (the code counts some statistics which is allowed to be imprecise).
+
+{{{
+int var;
+
+void Thread1() {  // Runs in one thread.
+  var++;
+}
+void Thread2() {  // Runs in another thread.
+  var++;
+}
+
+}}}
+
+But sometimes such races are extremely harmful.
+
 
 = Non-atomic variable used for synchronization =
 
