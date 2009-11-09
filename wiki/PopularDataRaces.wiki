@@ -35,15 +35,14 @@ void Thread1() {
   m[123] = 1;
 }
 
-void Thread1() {
+void Thread2() {
   m[345] = 0;
 }
 }}}
 
 
-= Non-atomic variable used for synchronization =
+= Notification =
 
-===Example===
 Consider the following code:
 {{{
 bool done = true;
@@ -62,14 +61,13 @@ void Thread2() {
 }
 }}}
 
-The synchronization between these two threads is done using "done" boolean variable.
-However, it is a wrong way to synchronize two threads.
+The synchronization between these two threads is done using a boolean variable `done`.
+This is a wrong way to synchronize two threads.
 
-===Description===
 On x86, the biggest issue is the compile-time optimizations.<br/>
   * Part of the code of do_something_useful_2() can be moved below "done = true" by the compiler.
   * Part of the code of do_thread2_cleanup() can be moved above "done = true" by the compiler.
-  * If do_something_useful_in_a_loop_1() doesn't modify "done", the compiler may re-write Thread1 the following way:
+  * If do_something_useful_in_a_loop_1() doesn't modify "done", the compiler may re-write Thread1 in the following way:
 {{{
   if (!done) {
     while(true) {
@@ -78,18 +76,16 @@ On x86, the biggest issue is the compile-time optimizations.<br/>
   }
   do_thread1_cleanup();
 }}}
-  so Thread1 will never exit.
+so Thread1 will never exit.
 
-On architectures other than x86, the cache effects or out-of-order instruction execution may lead to even bigger problems.
+On architectures other than x86, the cache effects or out-of-order instruction execution may lead to other subtle problems.
 
-===Detectability===
-To our knowledge, almost every data race detector would detect such a data race.<br/>
-Also, most dynamic race detectors will report data races on the memory accesses that were intended to be synchronized during development<br/>
+Most race detector will detect such race.<br/>
+Also, most dynamic race detectors will report data races on the memory accesses that were intended to be synchronized with this bool<br/>
 (i.e. between do_something_useful_2() and do_thread1_cleanup())
 
-===Fixing===
-Fixing such a data race requires introducing compiler/memory barrier on x86/other architectures, respectively.<br/>
-It is highly recommended to wrap such a synchronization into a separate class (i.e. ExitNotification) and make it race detector-friendly (e.g. [http://code.google.com/p/data-race-test/wiki/DynamicAnnotations annotate]).
+To fix such race you need to use compiler and/or memory barriers (if you are not an expert -- simply use locks).<br/>
+It is highly recommended to wrap such a synchronization into a separate class (i.e. ExitNotification) and make it race detector-friendly (i.e. [http://code.google.com/p/data-race-test/wiki/DynamicAnnotations annotate]).
 
 = Publishing objects without synchronization =
 ===Example===
