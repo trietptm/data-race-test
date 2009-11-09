@@ -130,6 +130,39 @@ void Thread2() {
 }
 }}}
 
+=Reader Lock during a write=
+
+Updates happening under a reader lock.
+{{{
+void Thread1() {
+  mu.ReaderLock();
+  var++;
+  mu.ReaderUnlock();
+}
+
+void Thread1() {
+  mu.ReaderLock();
+  var++;
+  mu.ReaderUnlock();
+}
+}}}
+
+
+
+= Race on bit field=
+The code below looks correct from the first glance.
+But if `x` is `struct { int a:4, b:4; }`, we have a bug.
+{{{
+void Thread1() {
+  x.a++;
+}
+
+void Thread2() {
+  x.b++;
+}
+}}}
+
+
 = Data race on virtual functions table pointer (vfptr) =
 
 ===Example===
