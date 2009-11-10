@@ -35,11 +35,11 @@ class RefCountedObject {
  ...
  public:
   void Ref() {
-	ref_++;  // Bug! 
+    ref_++;  // Bug! 
   }
   void Unref() {
-	if (--ref_ == 0)  // Bug! Need to use atomic decrement!
-	  delete this;
+    if (--ref_ == 0)  // Bug! Need to use atomic decrement!
+      delete this;
   }
  private:
   int ref_;
