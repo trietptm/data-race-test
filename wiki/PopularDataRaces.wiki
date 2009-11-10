@@ -22,6 +22,30 @@ void Thread2() {  // Runs in another thread.
 
 But sometimes such races are extremely harmful (e.g. if `var` is counting your money :).
 
+==Thread-hostile reference counting==
+A variation of race on integer. 
+Very harmful. 
+May lead to occasional memory leaks or double deletes.
+
+See http://crbug.com/15577 for a real life example.
+{{{
+// Ref() and Unref() may be called from several threads.
+// Last Unref() destroys the object.
+class RefCountedObject {
+ ...
+ public:
+  void Ref() {
+	ref_++;  // Bug! 
+  }
+  void Unref() {
+	if (--ref_ == 0)  // Bug! Need to use atomic decrement!
+	  delete this;
+  }
+ private:
+  int ref_;
+};
+}}}
+
 
 =Race on a complex object=
 
