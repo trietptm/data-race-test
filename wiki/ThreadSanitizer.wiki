@@ -25,6 +25,7 @@ See also:
   * RaceCheckerClass
   * RaceDetectionLinks: links to other materials related to race detection
   * PopularDataRaces
+  * ThreadSanitizerOffline: offline race detector
 
 Contacts: *data-race-test(#)googlegroups.com*
 
