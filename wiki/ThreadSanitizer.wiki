@@ -26,7 +26,7 @@ See also:
   * RaceDetectionLinks: links to other materials related to race detection
   * PopularDataRaces
   * ThreadSanitizerOffline: offline race detector
-  * ThreadSanitizerPIN: [www.pintool.org PIN]-based variant
+  * [ThreadSanitizerPIN]: [http://www.pintool.org PIN]-based variant
 
 Contacts: *data-race-test(#)googlegroups.com*
 
