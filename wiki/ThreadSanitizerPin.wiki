@@ -1,6 +1,6 @@
 #summary Variant of ThreadSanitizer based on PIN
 
-[www.pintool.org PIN] is a well known binary translation system. 
+[http://www.pintool.org PIN] is a well known binary translation system. 
 We implemented a variant of ThreadSanitizer based on PIN.
 
 *This is a prototype; not (yet) fully functional!*
