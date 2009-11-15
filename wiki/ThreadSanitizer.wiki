@@ -135,3 +135,6 @@ valgrind [valgrind options] --tool=tsan [tsan options] your/program [program opt
 !ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and the [RacecheckUnittest source code] in the second window: 
 
  http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim3.png
+
+= Misc = 
+!ThreadSanitizer is spelled without a space, i.e. not "Thread Sanitizer". :) 
