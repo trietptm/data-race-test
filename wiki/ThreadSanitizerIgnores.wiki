@@ -14,8 +14,20 @@ obj:*/libpthread-*.so
 obj:*/ld-*.so
 # all functions in this source file will be ignored
 src:*file_with_some_tricky_code.cc
+
 # These functions will be ignored as well
 fun:*_ZN4base6subtle*
+# These functions will be ignored together with other functions they call
+fun_r:random_r
+
+# These functions will be instrumented BUT no new segments will be
+# created in their superblocks with --keep-history=1.
+# As a result, it improves performance at the cost of the precision of the
+# "concurrent accesses" stacktraces in the race reports.
+# This can be very useful if you have a large number of tiny functions
+# which do a lot of calculations but don't do anything threaded.
+fun_hist:*v8*internal*
+fun_hist:*unicode_conversion*
 }}}
 
 Such file lists the functions (either by object file name, source file name or directly by function name) that will not be instrumented by tsan.
@@ -30,6 +42,6 @@ which is not always possible with regular suppressions.
 The reports may show the stack that belong to reads, thus you will have to write many suppressions). 
 Ignore file is also used to suppress warnings from libpthread and ld.so 
 
-Second, the ignore file allows to *speed up tsan by a large factor* (sometimes, several times). 
+Second, the ignore file allows to *speed up tsan by a large factor* (several times in some cases). 
 By using `--sample-events=<N>` you can collect the hotspots of the program 
 (those that slowdown tsan the most) and put them into the ignore file. 
