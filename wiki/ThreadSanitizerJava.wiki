@@ -13,7 +13,7 @@ Race detection would consist of two parts:
 == Definitions ==
   * *TID* (thread id) -- a 32-bit integer identifying a thread. The TID of the first (main) thread is 0, the TID of the 2-nd thread is 1 and so on. TIDs are not reused. 
   * *PC* -- a 64-bit integer which identifies a position in the Java byte code. There should be an external mechanism to match a PC to `{ClassName, RoutineName, FileName, FileLineNumber}`. 
-  * *ID* -- a uniq 64-bit ID identifying an object in memory. TODO(kcc): add more details and options. 
+  * *ID* -- a 64-bit integer identifying an object in memory. TODO(kcc): there are several ways to general such IDs, list them. 
 
 
 == Event syntax == 
