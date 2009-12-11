@@ -47,7 +47,7 @@ We want to collect an exhaustive and well annotated list of links to all materia
     * Support annotations
     * Based on Valgrind run-time instrumentation framework
     * Open sourced ([http://code.google.com/p/data-race-test/wiki/ThreadSanitizer download instructions, manual])
-    * TODO: paper (when available), comments
+    * Paper presented at [http://www.dyninst.org/wbia09/ WBIA'09]: pintool.org/wbia09.pdf, pages 62-71.
   
 *TODO* add all links we already have somewhere. 
 
