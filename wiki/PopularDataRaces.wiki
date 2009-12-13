@@ -164,7 +164,7 @@ void Thread1() {
   mu.ReaderUnlock();
 }
 
-void Thread1() {
+void Thread2() {
   mu.ReaderLock();
   var++;
   mu.ReaderUnlock();
@@ -277,7 +277,7 @@ void Thread1() {
   obj->Done();
 }
 
-void Thread1() {
+void Thread2() {
   delete obj;
 }
 }}}
