@@ -1,7 +1,7 @@
 ﻿#summary ThreadSanitizer is a Valgrind-based detector of data races
 #labels Featured
 
-*NEW* ThreadSanitizer paper was presented at [http://www.dyninst.org/wbia09/ WBIA'09]: http://pintool.org/wbia09.pdf, pages 62-71.
+*NEW*: ThreadSanitizer paper was presented at [http://www.dyninst.org/wbia09/ WBIA'09]: http://pintool.org/wbia09.pdf, pages 62-71.
 
 <wiki:toc max_depth="1" />
 
