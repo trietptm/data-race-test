@@ -1,0 +1,7 @@
+#summary ThreadSanitizer Suppressions
+
+ThreadSanitizer supports suppression mechanism, which extends [http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress regular valgrind suppressions]
+
+TODO(eugenis): add details.
+
+See also ThreadSanitizerIgnores
