@@ -19,6 +19,7 @@ The source code is published under GPLv2+.
 
 See also: 
   * ThreadSanitizerAlgorithm
+  * ThreadSanitizerSuppressions
   * ThreadSanitizerIgnores
   * ThreadSanitizerVsOthers
   * UnderstandingThreadSanitizerReports
