@@ -2,7 +2,7 @@
 
 *UNDER CONSTRUCTION!*
 
-Besides [http://valgrind.org/docs/manual/manual-core.html#manual-core.suppress regular valgrind suppressions], 
+Besides ThreadSanitizerSuppressions, 
 ThreadSanitizer supports yet another machinery for suppressing reports. It is complementary to valgrind suppressions.
 Maybe someday similar mechanism will become a part of valgrind core.
 
