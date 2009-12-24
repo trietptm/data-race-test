@@ -62,9 +62,9 @@ apply a small patch to valgrind.
 Just run the [http://data-race-test.googlecode.com/svn/trunk/tsan/get_and_build_tsan.sh  ./get_and_build_tsan.sh script] in your terminal window.
 
 {{{
-wget http://data-race-test.googlecode.com/svn/trunk/tsan/get_and_build_tsan.sh 
-chmod +x ./get_and_build_tsan.sh
-./get_and_build_tsan.sh
+wget http://data-race-test.googlecode.com/svn/trunk/tsan/get_and_build_tsan.sh  && \
+  chmod +x ./get_and_build_tsan.sh && \
+  ./get_and_build_tsan.sh
 }}}
 
 Optional: build a self-contained binary. 
