@@ -20,9 +20,9 @@ svn co   http://data-race-test.googlecode.com/svn/trunk/dynamic_annotations
 (cd unittest && make)
 # Build ThreadSanitizerPIN
 cd tsan/pin
-make deb
+make l64d
 # Try it! 
-$PIN_ROOT/pin -t `pwd`/ts_pin_deb.so -short_name -- ../../unittest/racecheck_unittest 301
+./pin_tsan.sh  ../../unittest/racecheck_unittest 301
 # Done! 
 }}} 
 
