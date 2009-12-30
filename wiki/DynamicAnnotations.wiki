@@ -15,7 +15,7 @@ In order to use the dynamic annotations in your program you need to include
 [http://code.google.com/p/data-race-test/source/browse/trunk/dynamic_annotations/dynamic_annotations.h dynamic_annotations.h],
 define cpp macro `DYNAMIC_ANNOTATIONS_ENABLED=1`
 and link with
-[http://code.google.com/p/data-race-test/source/browse/trunk/dynamic_annotations/dynamic_annotations.cc dynamic_annotations.cc].
+[http://code.google.com/p/data-race-test/source/browse/trunk/dynamic_annotations/dynamic_annotations.c dynamic_annotations.c].
 
 You can find examples of the annotations in RacecheckUnittest.
 
