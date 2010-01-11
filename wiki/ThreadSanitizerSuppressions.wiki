@@ -4,7 +4,7 @@ ThreadSanitizer supports suppression mechanism, which extends [http://valgrind.o
 
 Our extensions:
  * Multiple stack traces for one suppression rule are supported. Each stack trace must be enclosed by curly braces. As always, { and } should be on lines of their own.
- * Demangled C++ function names are supported. They must be prefixed with "cxx:".
+ * Demangled C++ function names are supported.
 
 Example of new syntax:
 {{{
@@ -15,7 +15,7 @@ Example of new syntax:
     fun:mangled_function_name_wildcard
     obj:object_name_wildcard
     ...
-    cxx:demangled_function_name_wildcard
+    fun:demangled_function_name_wildcard
   }
   {
     ...
