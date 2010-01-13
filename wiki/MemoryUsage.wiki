@@ -1,0 +1,11 @@
+#summary Details about ThreadSanitizer's memory usage
+
+= Introduction =
+
+ThreadSanitizer requires a lot of memory to operate. 
+
+Here we describe how to optimize ThreadSanitizer's memory usage. 
+
+
+
+TODO(kcc)
