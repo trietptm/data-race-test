@@ -50,3 +50,8 @@ When ThreadSanitizer is close to its memory limit it may start printing messages
 ==31071== INFO: ThreadSanitizer is running close to its memory limit. Flushing state.
 }}}
 If you see such message, you better give more memory to the tool. :)
+
+=Using Ignore files=
+As a black belt technique you can tell ThreadSanitizer to ignore certain functions in your program.
+If you ignore some hotspots you may gain some memory (and performance).
+See ThreadSanitizerIgnores.
