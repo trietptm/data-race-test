@@ -3,9 +3,15 @@
 
 =C++=
 
-The file [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/racecheck_unittest.cc racecheck_unittest.cc] 
-contains various unit tests for a data race detector. The tests are named test01, test02, and so on. For details see the source. 
+We have many tests for data race detectors. You can find the source code [http://code.google.com/p/data-race-test/source/browse/#svn/trunk/unittest in the SVN].
 
+Recently we've started moving the test suite from our hand-made test harness to [http://code.google.com/p/googletest/ GoogleTest] framework, so sorry for a little bit of mess in the source code.<br/>
+Also, if you want to run only a specific set of tests, you need to exclude "old" tests and "googletest" tests separately (_we hope to fix it soon_).
+
+*Most* of the tests are located in [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/racecheck_unittest.cc racecheck_unittest.cc] file.
+The tests are named test01, test02, and so on. For details see the source. 
+
+Also, a few tests are located in [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/demo_tests.cc demo_tests.cc], [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/posix_tests.cc posix_tests.cc], [http://code.google.com/p/data-race-test/source/browse/trunk/unittest/windows_tests.cc windows_tests.cc]. Some of them use GoogleTest.
 
 To get and compile the unittests: 
 {{{
@@ -17,8 +23,10 @@ make
 
 Run: 
 {{{
-# Run one test: 
-./racecheck_unittest  311
+# Run only one test from the old tests (test42): 
+./racecheck_unittest 42 --gtest_filter=""
+# Run only one test from googletest tests (): 
+./racecheck_unittest 0 --gtest_filter="Signals.SignalsAndMallocTest"
 # Run the regression test suite: 
 ./racecheck_unittest
 }}}
