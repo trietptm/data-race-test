@@ -3,26 +3,23 @@
 *UNDER CONSTRUCTION*
 
 Here we attempt to compare the most popular binary translation systems: 
-  * [www.valgrind.org Valgrind]
-  * [www.pintool.org PIN]
+  * [http://www.valgrind.org Valgrind]
+  * [http://www.pintool.org PIN]
   * [http://dynamorio.org/ DynamoRio]
 This comparison is by no means complete. 
 Your comments are welcome! 
 
 
-||  ||[www.valgrind.org Valgrind] ||[www.pintool.org PIN] || [http://dynamorio.org/ DynamoRio]|| 
+||  ||[http://www.valgrind.org Valgrind] ||[http://www.pintool.org PIN] || [http://dynamorio.org/ DynamoRio]|| 
 ||  license ||  GPL ||  [http://www.pintool.org/faq.html Proprietary] ||   BSD || 
 || source available ||  yes ||  no ||   yes || 
 || cost ||  free || free ||  free || 
 || Windows || no ||   x86/x86_64 ||  x86/x86_64 || 
 || Linux || x86/x86_64/ARM/PPC || x86/x86_64  ||  x86/x86_64 || 
 || Mac  ||  x86 ||  no ||  no || 
-|| support for static binaries || limited ||  yes ||  yes (?) || 
-|| attach to process ||  no ||  yes ||  ? || 
+|| support for static binaries || limited ||  yes ||  limited (?) || 
+|| attach to process ||  no ||  yes || not yet || 
 || runs threads in parallel || no || yes ||  yes || 
 || Memory error detector(s) || Memcheck ||  [http://software.intel.com/en-us/intel-parallel-inspector/ Intel Inspector] ||  [http://dynamorio.org/drmemory.html DrMemory] || 
 || Race detector(s) || Helgrind,DRD,ThreadSanitizer ||  [http://software.intel.com/en-us/intel-parallel-inspector/ Intel Inspector], ThreadSanitizerPin ||  not yet || 
 || Other heavyweight tools  ||  Callgrind, Massif, etc || ? ||  ? || 
-||  ||  x ||   x ||   x || 
-||  ||  x ||   x ||   x || 
-||  ||  x ||   x ||   x || 
