@@ -14,7 +14,8 @@ Your comments are welcome!
 ||  license ||  GPL ||  [http://www.pintool.org/faq.html Proprietary] ||   BSD || 
 || source available ||  yes ||  no ||   yes || 
 || cost ||  free || free ||  free || 
-|| Windows || no ||   x86/x86_64 ||  x86/x86_64 || 
+|| Windows (native) || no ||   x86/x86_64 ||  x86/x86_64 || 
+|| Windows (Linux+wine)|| [http://build.chromium.org/buildbot/waterfall.fyi/builders/Chromium%20Linux%20Wine%20(valgrind)/builds/532 yes] ||   ? ||  ? || 
 || Linux || x86/x86_64/ARM/PPC || x86/x86_64  ||  x86/x86_64 || 
 || Mac  ||  x86 ||  no ||  no || 
 || support for static binaries || limited ||  yes ||  limited (?) || 
