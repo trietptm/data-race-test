@@ -102,4 +102,5 @@ There is a set of unit tests for a Java race detector: RacecheckUnittest
 
 = Open questions =
   * How to handle `volatile`? 
-  * How to handle `java.util.concurrent`? 
+  * How to handle `java.util.concurrent`?
+  * How and when to instrument system classes such as collections?
