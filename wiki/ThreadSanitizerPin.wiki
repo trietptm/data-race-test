@@ -59,3 +59,12 @@ If you are lucky, you will get something like this:
 [       OK ] DemoTests.RaceReportDemoTest (678 ms)
 
 }}}
+
+= Benchmarking =
+If you want to benchmark the pin tool, you need to build the optimized variant and it on something reasonably big:
+{{{
+# From drt/tsan directory
+make l64d -j VALGRIND_ROOT= GTEST_ROOT= PIN_ROOT=$PIN_ROOT
+time ./tsan_pin.sh --opt ../unittest/bin/bigtest-linux-amd64-O0
+}}}
+
