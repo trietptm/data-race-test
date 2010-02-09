@@ -18,7 +18,7 @@ cd drt
 # Build unittests
 (cd unittest && make l -j)
 # Build ThreadSanitizerPIN
-cd tsan/pin
+cd tsan
 make l64d -j VALGRIND_ROOT= GTEST_ROOT= PIN_ROOT=$PIN_ROOT
 # Try it! 
 ./tsan_pin.sh  ../unittest/bin/demo_tests-linux-amd64-O0 --gtest_filter='*Race*'
