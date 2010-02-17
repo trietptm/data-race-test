@@ -131,7 +131,10 @@ the Hybrid detector will treat this particular mutex as in pure happens-before m
 
 
 =Benign races=
-Use `ANNOTATE_BENIGN_RACE(addr, "Description of this race")` to annotate an expected benign race.
+Use `ANNOTATE_BENIGN_RACE(addr, "Description")` to annotate an expected benign race on the address range `[addr, addr+sizeof(*addr))`. <BR>
+An alternative form is `ANNOTATE_BENIGN_RACE_SIZED(addr, size, "Description")` <BR>
+In C++ you can apply `ANNOTATE_BENIGN_RACE_STATIC(static_var, "Description")` to racy static variables.
+
 =Racey reads=
 It is often the case that we want to protect updates of some value, but can tolerate unsynchronized reads of that value.
 For this kind of benign race we have special annotations:
