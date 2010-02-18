@@ -5,6 +5,7 @@
 Reader, we need your help!
 We want to collect an exhaustive and well annotated list of links to all materials related to race detection. 
 
+== Race detectors == 
 
   * Intel Thread Checker
     * Pure happens-before race detector, available on both Windows and Linux
@@ -48,7 +49,13 @@ We want to collect an exhaustive and well annotated list of links to all materia
     * Based on Valgrind run-time instrumentation framework
     * Open sourced ([http://code.google.com/p/data-race-test/wiki/ThreadSanitizer download instructions, manual])
     * Paper presented at [http://www.dyninst.org/wbia09/ WBIA'09]: http://pintool.org/wbia09.pdf, pages 62-71.
+
+
+== General bug-finding links == 
+
+  * http://cacm.acm.org/magazines/2010/2/69354-a-few-billion-lines-of-code-later/fulltext/ -- extremely entertaining reading about the "Coverity" static analysis tool. 
   
+== TODO ==
 *TODO* add all links we already have somewhere. 
 
 *TODO* find new interesting links.
