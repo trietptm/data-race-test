@@ -76,6 +76,10 @@ valgrind: this can be caused by executables with very large text, data or bss se
 }}}
 Please make sure you don't use gold as a linker before building ThreadSanitizer.
 
+To build both 32-bit and 64-bit versions of ThreadSanitizer on Ubuntu Karmic 64-bit, you will need to install several additional packages:
+{{{
+apt-get install automake libc6-dev-i386 g++-multilib
+}}}
 =Using !ThreadSanitizer=
 Just like any other valgrind-based tool: 
 {{{
