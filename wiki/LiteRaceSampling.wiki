@@ -2,7 +2,7 @@
 
 = Sampling in a race detector =
 
-The idea to use sampling during race detection was (first?) introduced at [http://www.cs.ucla.edu/~dlmarino/pubs/pldi09.pdf PLDI'09] by Marino et al. 
+The idea to use sampling during race detection was (first?) [http://www.cs.ucla.edu/~dlmarino/pubs/pldi09.pdf introduced] at PLDI'09 by Marino et al. 
 
 This idea is very simple: instead of analyzing all memory accesses, we do sampling.
 For each memory access (or a set of accesses) we maintain a counter of
