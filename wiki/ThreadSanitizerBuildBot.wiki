@@ -1,0 +1,3 @@
+#summary ThreadSanitizer build bot
+
+We have a continuous build of ThreadSanitizer at http://build.chromium.org/buildbot/tsan/waterfall
