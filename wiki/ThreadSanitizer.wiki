@@ -40,6 +40,11 @@ ThreadSanitizer is known to work on:
   * Linux i386
   * Darwin i386 aka MacOS X 10.5. This port is slightly less mature (see ThreadSanitizerOnMacOsx)
 
+=Buildbot=
+
+We have a continuous build setup that runs unit tests and benchmarks for different os/architecture/environment/frontend combinations:
+[http://build.chromium.org/buildbot/tsan/].
+
 =Binaries=
 *Experimental*
 
@@ -55,6 +60,9 @@ wget http://data-race-test.googlecode.com/svn/trunk/tsan_binary/Linux-x86_64/tsa
 chmod +x ./tsan
 ./tsan  ls /dev/null
 }}}
+
+Newer binaries are available at [http://build.chromium.org/buildbot/tsan/binaries/].
+
 If you don't want to use this binary, you will have to build ThreadSanitizer yourself.
 
 =Building !ThreadSanitizer=
