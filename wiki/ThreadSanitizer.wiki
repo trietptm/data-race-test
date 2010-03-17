@@ -35,35 +35,14 @@ See also:
 Contacts: *data-race-test(#)googlegroups.com*
 
 =Supported platforms=
-ThreadSanitizer is known to work on: 
-  * Linux x86_64 (supports both 32- and 64-bit binaries)
-  * Linux i386
+ThreadSanitizer is supported on the following platforms: 
+  * Linux x86_64 and x86. Tested on Ubuntu 8.04 and 9.10. 
   * Darwin i386 aka MacOS X 10.5. This port is slightly less mature (see ThreadSanitizerOnMacOsx)
+  * In progress:
+     * ARM Linux
+     * x86 Windows
 
-=Buildbot=
-
-We have a continuous build setup that runs unit tests and benchmarks for different os/architecture/environment/frontend combinations:
-[http://build.chromium.org/buildbot/tsan/].
-
-=Binaries=
-*Experimental*
-
-We have pre-built ThreadSanitizer binaries for
-  * Linux/x86_64, tested only on Ubuntu 8.04.
-  * MacOS X 10.5
-The binary is a shell script that extracts itself into /tmp/valgrind.XXXXXX and executes ThreadSanitizer.
-{{{
-# Linux x86_64: 
-wget http://data-race-test.googlecode.com/svn/trunk/tsan_binary/Linux-x86_64/tsan
-# Mac OS
-# wget http://data-race-test.googlecode.com/svn/trunk/tsan_binary/Darwin-i386/tsan
-chmod +x ./tsan
-./tsan  ls /dev/null
-}}}
-
-Newer binaries are available at [http://build.chromium.org/buildbot/tsan/binaries/].
-
-If you don't want to use this binary, you will have to build ThreadSanitizer yourself.
+You may download the fresh binaries from ThreadSanitizerBuildBot
 
 =Building !ThreadSanitizer=
 !ThreadSanitizer is not a part of the official valgrind distribution, so you will 
