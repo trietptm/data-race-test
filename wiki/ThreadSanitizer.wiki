@@ -34,7 +34,7 @@ See also:
 
 Contacts: *data-race-test(#)googlegroups.com*
 
-=Supported platforms=
+=Binaries=
 ThreadSanitizer is supported on the following platforms: 
   * Linux x86_64 and x86. Tested on Ubuntu 8.04 and 9.10. 
   * Darwin i386 aka MacOS X 10.5. This port is slightly less mature (see ThreadSanitizerOnMacOsx)
