@@ -1,3 +1,16 @@
 #summary ThreadSanitizer build bot
 
 We have a continuous build of ThreadSanitizer at http://build.chromium.org/buildbot/tsan/waterfall
+
+You may download the latest ThreadSanitizer binaries at
+http://build.chromium.org/buildbot/tsan/binaries.
+For example, for x86_64 Linux you will need the binary `http://build.chromium.org/buildbot/tsan/binaries/tsan-r1856-linux-amd64.sh.bz2`.
+
+To get it do:
+{{{
+wget http://build.chromium.org/buildbot/tsan/binaries/tsan-r1856-linux-amd64.sh.bz2
+bzip2 -d tsan-r1856-linux-amd64.sh.bz2
+chmod +x tsan-r1856-linux-amd64.sh
+}}}
+
+When downloading a fresh binary make sure that the build bot is green. 
