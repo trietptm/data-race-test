@@ -1,13 +1,13 @@
 #summary ThreadSanitizer for Microsoft Windows
 
 We have a *work-in-progress* version of ThreadSanitizer for Windows. 
-This version is based on [www.pintool.org PIN].
+This version is based on [http://www.pintool.org PIN].
 
 = Installation =
 The installation is a bit tricky since the Windows variant of ThreadSanitizer depends on 
 third party software which can not be distributed here (but which you can download for free). 
 
-  * Download [www.pintool.org PIN] revision 31933 for Windows msvc8 from http://www.pintool.org/downloads.html
+  * Download [http://www.pintool.org PIN] revision 31933 for Windows msvc8 from http://www.pintool.org/downloads.html
     * Extract the file somewhere on your disk (e.g. to *c:/pin*)
     * Make sure to install fresh *dbghelp.dll* as described there. 
   * Download:
@@ -16,5 +16,3 @@ third party software which can not be distributed here (but which you can downlo
     * http://code.google.com/p/data-race-test/source/browse/trunk/tsan/tsan.bat
   * Put both files into the PIN installation directory (e.g. *c:/pin*)
   * Run ThreadSanitizer as `c:\pin\tsan.bat [tsan parameters] -- program [program parameters]`
-
-
