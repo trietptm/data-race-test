@@ -1,9 +1,0 @@
-#summary One-sentence summary of this page.
-
-= ThreadSanitizer on Mac OS X =
-
-ThreadSanitizer and racecheck_unittest.cc have been ported to Mac OS and work there with slight restrictions. For example, ThreadSanitizer is used for running Chromium unit tests on Mac OS.
-
-
-= Known issues =
-* Fixed for TSan, not in Valgrind trunk yet: http://code.google.com/p/data-race-test/issues/detail?id=11
