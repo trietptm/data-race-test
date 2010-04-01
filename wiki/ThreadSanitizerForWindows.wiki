@@ -4,18 +4,22 @@ We have a *work-in-progress* version of ThreadSanitizer for Windows.
 This version is based on [http://www.pintool.org PIN].
 
 = Installation =
-The installation is a bit tricky since the Windows variant of ThreadSanitizer depends on 
-third party software which can not be distributed here (but which you can download for free). 
 
-  * Download [http://www.pintool.org PIN] revision 31933 for Windows msvc8 from http://www.pintool.org/downloads.html
-    * Extract the file somewhere on your disk (e.g. to *c:/pin*)
-    * Make sure to install fresh *dbghelp.dll* as described there. 
-  * Download:
-    * tsan-rxxxx-x86-windows-ts_pin.dll or tsan-rxxx-x86-windows-debug-ts_pin.dll from ThreadSanitizerBuildBot 
-      * remane it to x86-windows-ts_pin.dll
-    * http://code.google.com/p/data-race-test/source/browse/trunk/tsan/tsan.bat
-  * Put both files into the PIN installation directory (e.g. *c:/pin*)
-  * Run ThreadSanitizer as `c:\pin\tsan.bat [tsan parameters] -- program [program parameters]`
+Download the fresh *tsan-rxxx-x86-windows-sfx.exe* from ThreadSanitizerBuildBot and execute it in the directory where you want to install it (e.g. *c:/*). 
+
+This binary is a self-extracting archive built with [http://www.7-zip.org/ 7z]. 
+You can extract it to a specified directory using 
+{{{
+tsan-rxxx-x86-windows-sfx.exe x -oc:/your/dir
+}}}
+
+= Usage =
+On windows, you need to run ThreadSanitizer like this (assuming you installed it in *c:/*):
+{{{
+c:\tsan-x86-windows\tsan.bat -- your-test.exe
+}}}
+
+For other details see the main ThreadSanitizer page.
 
 =License=
 ThreadSanitizer itself is published under [http://www.gnu.org/licenses/old-licenses/gpl-2.0.html GPLv2]. 
