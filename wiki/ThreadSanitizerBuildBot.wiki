@@ -1,6 +1,9 @@
 #summary ThreadSanitizer build bot
 
-We have a continuous build of ThreadSanitizer at http://build.chromium.org/buildbot/tsan/waterfall
+We have a [http://build.chromium.org/buildbot/tsan/waterfall continuous build of ThreadSanitizer] where the fresh binaries are built regularly. 
+When downloading a fresh binary make sure that the build bot is green. 
+
+=Linux, Mac=
 
 You may download the latest ThreadSanitizer binaries (Linux x86/X86_64, Mac and Windows) at
 http://build.chromium.org/buildbot/tsan/binaries.<BR>
@@ -12,7 +15,7 @@ wget http://build.chromium.org/buildbot/tsan/binaries/tsan-r1908-amd64-linux-sel
 chmod +x tsan-r1908-amd64-linux-self-contained.sh
 }}}
 
+=Windows=
 For Windows, you need the self-extracting archive called *tsan-rxxx-x86-windows-sfx.exe*. <BR>
-For example, [http://build.chromium.org/buildbot/tsan/binaries/tsan-r1938-x86-windows-sfx.exe].
-
-When downloading a fresh binary make sure that the build bot is green. 
+For example, [http://build.chromium.org/buildbot/tsan/binaries/tsan-r1938-x86-windows-sfx.exe]. <BR>
+See ThreadSanitizerForWindows
