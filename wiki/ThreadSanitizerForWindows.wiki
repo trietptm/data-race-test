@@ -16,7 +16,7 @@ tsan-rxxx-x86-windows-sfx.exe x -oc:/your/dir
 = Usage =
 On windows, you need to run ThreadSanitizer like this (assuming you installed it in *c:/*):
 {{{
-c:\tsan-x86-windows\tsan.bat -- your-test.exe
+c:\tsan-x86-windows\tsan.bat [--tsan-options] -- your-test.exe
 }}}
 
 For other details see the main ThreadSanitizer page.
