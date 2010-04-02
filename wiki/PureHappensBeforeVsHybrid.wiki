@@ -1,8 +1,8 @@
 ﻿#summary Comparison of pure happens-before and hybrid modes
 
 ThreadSanitizer has two major modes of operation: 
-  * Hybrid (--pure-happens-before=no) 
-  * Pure happens-before (--pure-happens-before=yes, default).
+  * Hybrid (--hybrid=yes) 
+  * Pure happens-before (default).
 
 The example below is the simplest way to show the difference between these modes.
 
