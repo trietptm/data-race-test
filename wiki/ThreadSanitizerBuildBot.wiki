@@ -17,5 +17,5 @@ chmod +x tsan-r1908-amd64-linux-self-contained.sh
 
 =Windows=
 For Windows, also go to http://build.chromium.org/buildbot/tsan/binaries and grab the self-extracting archive called *tsan-rxxx-x86-windows-sfx.exe*. <BR>
-For example, [http://build.chromium.org/buildbot/tsan/binaries/tsan-r1938-x86-windows-sfx.exe]. <BR>
+For example, [http://build.chromium.org/buildbot/tsan/binaries/tsan-r1951-x86-windows-sfx.exe]. <BR>
 See ThreadSanitizerForWindows
