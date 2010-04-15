@@ -24,3 +24,5 @@ The `--build=amd64-darwin` flag is for building Valgrind on a amd64 CPU. If you'
 -bash: ./valgrind: Bad CPU type in executable
 }}}
 , just omit the `--build` flag.
+
+For more information and updates see https://bugs.kde.org/show_bug.cgi?id=205241
