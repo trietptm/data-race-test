@@ -9,8 +9,10 @@ cd valgrind
 wget http://bugs.kde.org/attachment.cgi?id=40091 -O snow-leopard.patch
 wget http://bugsfiles.kde.org/attachment.cgi?id=40900 -O arc4random.patch
 wget http://bugsfiles.kde.org/attachment.cgi?id=42530 -O sidt.patch 
+wget http://bugsfiles.kde.org/attachment.cgi?id=42892 -O signal.patch
 patch -p0 < snow-leopard.patch
 patch -p0 < arc4random.patch
+patch -p1 < signal.patch
 cd VEX; patch -p0 < ../sidt.patch ; cd ..
 touch darwin10-drd.supp
 touch darwin10.supp
