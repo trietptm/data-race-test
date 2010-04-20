@@ -143,6 +143,11 @@ For this kind of benign race we have special annotations:
 
 These annotations allow us to ignore certain racey reads, while still checking all other accesses. 
 
+=Enable/disable analysis=
+Sometimes you may need to disable race detection for the entire program (e.g. to go through a slow initialization step quickly). In this case call `ANNOTATE_ENABLE_RACE_DETECTION(0)` before you enter the slow part of code and `ANNOTATE_ENABLE_RACE_DETECTION(1)` when you are done. This annotation affects all threads. 
+
+TODO(kcc): this is not yet implemented in ThreadSanitizer 
+
 =Custom locks=
 
 If you implement your own locking primitive, you have to annotate it in order to make it !ThreadSanitizer-friendly.
