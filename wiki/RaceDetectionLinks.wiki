@@ -54,6 +54,8 @@ We want to collect an exhaustive and well annotated list of links to all materia
 *TODO* (add more)
 
   * [http://pages.cs.wisc.edu/~shanlu/paper/asplos184-zhang.pdf ConMem: Detecting Severe Concurrency Bugs through an Effect-Oriented Approach]. Wei Zhang, Chong Sun, and Shan Lu. 15th International Conference on Architecture Support for Programming Languages and Operating Systems (ASPLOS'10).
+  *  [http://www.cs.washington.edu/homes/luisceze/publications/isca173-lucia.pdf  Conflict Exceptions: Simplifying Concurrent Language Semantics with Precise Hardware Exceptions for Data-Races] -- fast race detection which requires hardware support.
+
 
 
 == General bug-finding links == 
