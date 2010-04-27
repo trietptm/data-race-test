@@ -265,7 +265,7 @@ bound of the number of memory operations (NMops) is known at instrumentation tim
 So, the passport for a TRACE contains NMops passports of memory operations: `{pc, size, is_write}`.
 For each Mop we know its position in a TRACE (`mop_index`). 
 For each thread we maintain a thread-local buffer which is long enough to hold all Mops of any TRACE. 
-When we enter a trace (at run-time), we zero first NMops element of this buffer. 
+When we enter a trace (at run-time), we zero first NMops elements of this buffer. 
 The instrumentation function for a memory access does 
 `thread_local_buffer[mop_index] = actual_address`, 
 which is simply one assembly instruction on x86 (since `mop_index` is a constant). 
