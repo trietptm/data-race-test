@@ -256,6 +256,25 @@ The fast mode helps to avoid some false positives of the hybrid scheme.
 This mode is a bit similar to the initialization state in [http://www.cs.washington.edu/homes/tom/pubs/eraser.pdf Eraser].
 
 
+=Instrumentation: TRACEs= 
+With PIN we instrument the memory accesses in the following way:
+when compiling a [http://www.pintool.org/docs/33586/Pin/html/group__TRACE__BASIC__API.html TRACE] 
+(which is an *acyclic* single-entry-multiple-exit region of code)
+we create a passport for a trace. Since the TRACE is acyclic, the upper
+bound of the number of memory operations (NMops) is known at instrumentation time. 
+So, the passport for a TRACE contains NMops passports of memory operations: `{pc, size, is_write}`.
+For each Mop we know its position in a TRACE (`mop_index`). 
+For each thread we maintain a thread-local buffer which is long enough to hold all Mops of any TRACE. 
+When we enter a trace (at run-time), we zero first NMops element of this buffer. 
+The instrumentation function for a memory access does 
+`thread_local_buffer[mop_index] = actual_address`, 
+which is simply one assembly instruction on x86 (since `mop_index` is a constant). 
+When we enter the next TRACE, we flush the contents of the buffer. 
+
+
+The idea of this optimization is taken from `./MemTrace/memtrace.cpp` in PIN distribution. 
+
+
 = Events =
 The core of the algorithm handles only few types of events (memory accesses and synchronization).
 But the real implementation of the detector needs to handle more events.
