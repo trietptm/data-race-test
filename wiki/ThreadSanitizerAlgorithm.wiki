@@ -257,10 +257,10 @@ This mode is a bit similar to the initialization state in [http://www.cs.washing
 
 
 =Instrumentation: TRACEs= 
-With PIN we instrument the memory accesses in the following way:
+We instrument the memory accesses in the following way:
 when compiling a [http://www.pintool.org/docs/33586/Pin/html/group__TRACE__BASIC__API.html TRACE] 
-(which is an *acyclic* single-entry-multiple-exit region of code)
-we create a passport for a trace. Since the TRACE is acyclic, the upper
+(which is an *acyclic* single-entry-multiple-exit region of code, in Valgrind it is called *IRSB*)
+we create a passport for a TRACE. Since the TRACE is acyclic, the upper
 bound of the number of memory operations (NMops) is known at instrumentation time. 
 So, the passport for a TRACE contains NMops passports of memory operations: `{pc, size, is_write}`.
 For each Mop we know its position in a TRACE (`mop_index`). 
@@ -268,7 +268,7 @@ For each thread we maintain a thread-local buffer which is long enough to hold a
 When we enter a trace (at run-time), we zero first NMops elements of this buffer. 
 The instrumentation function for a memory access does 
 `thread_local_buffer[mop_index] = actual_address`, 
-which is simply one assembly instruction on x86 (since `mop_index` is a constant). 
+which is simply one assembly instruction on x86. 
 When we enter the next TRACE, we flush the contents of the buffer. 
 
 
