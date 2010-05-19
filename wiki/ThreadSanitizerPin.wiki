@@ -9,9 +9,9 @@ If you want to try it, follow these steps:
 
 {{{
 # Install PIN (www.pintool.org). 
-#    We tested against pin-2.7-31933-gcc.3.4.6-ia32_intel64-linux.tar.gz
+#    We tested against pin-2.8-33586-gcc.3.4.6-ia32_intel64-linux.tar.gz
 # Set `PIN_ROOT` to the PIN installation directory:
-export PIN_ROOT=$HOME/pin-2.7-31933-gcc.3.4.6-ia32_intel64-linux
+export PIN_ROOT=$HOME/pin-2.8-33586-gcc.3.4.6-ia32_intel64-linux
 # Get ThreadSanitizer sources and unittests
 svn co   http://data-race-test.googlecode.com/svn/trunk drt
 cd drt
