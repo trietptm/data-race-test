@@ -1,0 +1,25 @@
+#summary Automatic verification of races in the spirit of RaceCheckerClass.
+
+= Introduction =
+
+ThreadSanitizer supports a RaceVerifier mode in which it takes an output of normal ThreadSanitizer run and attempt to verify all the race reports in it. It uses the same approach as RaceCheckerClass, inserting short sleeps immediately after (possibly) racey instructions. If at least two such sleeps happen simultaneously for the same data address, and at least of them is a write at that address - we've got a 100% race.
+
+= Usage =
+
+At this point we only support race verification with Pin. Valgrind is not supported, sorry.
+
+Run ThreadSanitizer as usual, and redirect stderr to a file.
+
+tsan/tsan_pin.sh program_binary 2>stderr.log
+
+Run ThreadSanitizer the second time, with additional arguments:
+
+tsan/tsan_pin.sh program_binary --race-verifier=stderr.log
+
+This will print only those reports from the first run that have been verified to be a 100% race.
+
+= Command line flags = 
+|| Flag name || default || description ||
+|| --race-verifier=filename[,filename...] || "" || Run in race verification mode for the given log files. ||
+|| --race-verifier-extra=race || "" || Run in race verification mode for the given race description. This is meant mostly for debugging. Race description syntax can be checked in TSan log, "Race verifier data:" lines. ||
+|| --race-verifier-sleep-ms=delay || 100 || Sleep duration in ms. Increasing this number might verify more races. ||
