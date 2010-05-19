@@ -65,6 +65,7 @@ tsan [tsan options] your/program [program options]
 || --keep-history=0|1|2          || 1   ||  Keep the history of the previous accesses. By default, the stack traces of concurrent accesses are _almost_ precise. <BR> Setting this option to zero will make the tool run 10%-30% faster, but the concurrent accesses will not be printed. <BR> Use --keep-history=0 in continuous builds, and --keep-history=1 when analyzing reports. <BR> --keep-history=2 will print the exact positions of the concurrent access, but this may be VERY slow. In 99% of cases you don't need this anyway.||
 ||  --hybrid=yes|no || no  || Act as a hybrid detector (PureHappensBeforeVsHybrid) ||
 ||        *Interface flags:*     ||     || Flags that affect the generated output. ||
+||  --log-file=filename        ||  "" || Dump the output to `filename`; if empty dump to `stderr`||
 ||  --color                      ||  no || Add colors to the output using [http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape codes]. ||
 ||  --show-pc                    || no  || Show pc (program counter) in the stack traces. ||
 ||  --announce-threads           || no  || Show the the stack traces of thread creation . ||
