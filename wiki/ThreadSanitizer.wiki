@@ -64,6 +64,7 @@ tsan [tsan options] your/program [program options]
 || *Analysis sensitivity flags:* ||     || ThreadSanitizer can work in different modes that affect accuracy (number of detected bugs, number of false reports) and speed.||
 || --keep-history=0|1|2          || 1   ||  Keep the history of the previous accesses. By default, the stack traces of concurrent accesses are _almost_ precise. <BR> Setting this option to zero will make the tool run 10%-30% faster, but the concurrent accesses will not be printed. <BR> Use --keep-history=0 in continuous builds, and --keep-history=1 when analyzing reports. <BR> --keep-history=2 will print the exact positions of the concurrent access, but this may be VERY slow. In 99% of cases you don't need this anyway.||
 ||  --hybrid=yes|no || no  || Act as a hybrid detector (PureHappensBeforeVsHybrid) ||
+||  --free-is-write=yes|no || no  || Treat `free()/delete/...` as a memory access (write), thus reporting races between `free()` and other memory accesses. *Experimental*  ||
 ||        *Interface flags:*     ||     || Flags that affect the generated output. ||
 ||  --log-file=filename        ||  "" || Dump the output to `filename`; if empty dump to `stderr`||
 ||  --color                      ||  no || Add colors to the output using [http://en.wikipedia.org/wiki/ANSI_escape_code ANSI escape codes]. ||
