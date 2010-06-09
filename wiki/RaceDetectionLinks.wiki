@@ -55,7 +55,7 @@ We want to collect an exhaustive and well annotated list of links to all materia
 
   * [http://pages.cs.wisc.edu/~shanlu/paper/asplos184-zhang.pdf ConMem: Detecting Severe Concurrency Bugs through an Effect-Oriented Approach]. Wei Zhang, Chong Sun, and Shan Lu. 15th International Conference on Architecture Support for Programming Languages and Operating Systems (ASPLOS'10).
   *  [http://www.cs.washington.edu/homes/luisceze/publications/isca173-lucia.pdf  Conflict Exceptions: Simplifying Concurrent Language Semantics with Precise Hardware Exceptions for Data-Races] -- fast race detection which requires hardware support.
-  * [http://code.google.com/p/data-race-test/wiki/RaceVerifier http://code.google.com/p/data-race-test/wiki/RaceVerifier] -- automatically checking if a race is benign or harmful.
+  * [http://slang.soe.ucsc.edu/cormac/papers/pldi10.pdf Adversarial Memory for Detecting Destructive Races] -- automatically checking if a race is benign or harmful.
 
 
 
