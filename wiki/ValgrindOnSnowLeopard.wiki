@@ -2,7 +2,16 @@
 
 = Building Valgrind for Snow Leopard (Mac OS 10.6) =
 
-Valgrind is not officially supported on Snow Leopard yet, but a number of patches (kudos to Greg Parker and Filipe Cabecinhas) may help to build and run it:
+*Update:* Julian Seward is working on a branch that contains all the necessary patches. To build from it, run the following commands:
+{{{
+  svn co svn://svn.valgrind.org/valgrind/branches/MACOSX106 valgrind
+  cd valgrind
+  ./autogen.sh || autoreconf -fvi
+  ./configure --prefix=`pwd`/inst --build=amd64-darwin
+  make -j8 && make install
+}}}
+
+The main trunk doesn't work on Snow Leopard yet, but a number of patches (kudos to Greg Parker and Filipe Cabecinhas) may help to build and run it:
 {{{
 svn co -r 11104 svn://svn.valgrind.org/valgrind/trunk valgrind
 cd valgrind
