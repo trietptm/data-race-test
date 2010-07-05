@@ -37,3 +37,15 @@ is to annotated the code of `Unref()`:
 }}}
 
 =Implementation string<> in libstdc++=
+Reference counting in C++ string<> ([http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/a00762_source.html#l00229 libstdc++]) is implemented in the following way:
+{{{
+     _M_dispose(const _Alloc& __a)
+     {
+         //...
+         if (__gnu_cxx::__exchange_and_add_dispatch(&this->_M_refcount,
+                                -1) <= 0)
+           _M_destroy(__a);
+     }  // XXX MT
+}}}
+
+This is the correct and the most common way of implementing atomic reference counting, but the problem is that the race detectors do no understand it. 
