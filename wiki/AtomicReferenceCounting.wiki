@@ -1,0 +1,39 @@
+#summary Description of atomic reference counting and challenges for race detectors.
+
+= Introduction =
+
+Various detectors of data races (such as  [http://valgrind.org/docs/manual/hg-manual.html Helgrind], [http://valgrind.org/docs/manual/drd-manual.html DRD], [http://software.intel.com/en-us/intel-parallel-inspector/ Intel Parallel Inspector] or ThreadSanitizer) rely on their ability to intercept and interpret synchronization events of the analyzed program. For example, all these race detectors know the semantics of `pthread_mutex_lock` and similar functions. However, it is hard or impossible to interpret raw atomic instructions as synchronization (e.g. treating every compare-and-exchange instruction or every instruction with lock prefix as a synchronization event will make the analysis very slow and conservative). 
+
+One of the most frequent patterns of lock-free synchronization is *atomic reference counting*.
+{{{
+class RefCounted {
+ public:
+  Ref() {
+    AtomicIncrement(&ref);
+  }
+  Unref() {
+    if (AtomicDecrement(&ref_) == 0) {
+      delete this;
+    }
+  }
+ private:
+  AtomicInt ref_;
+}
+}}}
+
+In order to avoid false warnings, race detectors need to understand that the reference counting implements correct synchronization. 
+Namely, the tools need to understand that every event occurred before the decrement *happens-before* the events that occur after the reference counter became zero. 
+
+With the DynamicAnnotations the most straightforward way to explain this to the tool 
+is to annotated the code of `Unref()`:
+{{{
+  Unref() {
+    ANNOTATE_HAPPENS_BEFORE(&ref_);
+    if (AtomicDecrement(&ref_) == 0) {
+      ANNOTATE_HAPPENS_AFTER(&ref_);
+      delete this;
+    }
+  }
+}}}
+
+=Implementation string<> in libstdc++=
