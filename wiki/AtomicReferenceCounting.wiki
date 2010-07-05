@@ -61,10 +61,10 @@ If you develop or maintain any widely used C/C++ library which works in multi-th
 If you library does not itself use synchronization, or if it uses only standard `pthread_*` functions, you don't need to do anything else. 
 If your library does use some custom synchronization based on atomic instructions, we ask you to help the race detectors understand this code. 
 
-In many cases, the simplest way to explain custom synchronization to the race detectors is to use DynamicAnnotations (as shown above) or equivalent [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind annotations] , but we expect that for some libraries this will be unacceptable due to additional dependency. 
+In many cases, the simplest way to explain custom synchronization to the race detectors is to use DynamicAnnotations (as shown above) or equivalent [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind client requests] , but we expect that for some libraries this will be unacceptable due to additional dependency. 
 
 ==Proposal to libstdc++ developers==
-If using DynamicAnnotations or [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind annotations] is not acceptible for libstdc++, 
+If using DynamicAnnotations or [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind client requests] is not acceptible for libstdc++, 
 we ask you to implement a separate function and use it inside the destructor of `basic_string`.
 {{{
 // Decrement the reference count atomically and return the new value. 
@@ -170,4 +170,3 @@ You should get the following race report (false warning):
 ==14051==     #4  main /tmp/refc/string_test.cc:25
 ==14051== }}}
 }}}
-
