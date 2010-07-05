@@ -36,7 +36,7 @@ is to annotated the code of `Unref()`:
   }
 }}}
 
-=Implementation string<> in libstdc++=
+=Reference counting in basic_string<> (libstdc++)=
 Reference counting in C++ string<> ([http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/a00762_source.html#l00229 libstdc++]) is implemented in the following way:
 {{{
      _M_dispose(const _Alloc& __a)
@@ -48,4 +48,38 @@ Reference counting in C++ string<> ([http://gcc.gnu.org/onlinedocs/libstdc++/lat
      }  // XXX MT
 }}}
 
-This is the correct and the most common way of implementing atomic reference counting, but the problem is that the race detectors do no understand it. 
+This is the correct and the most common way of implementing atomic reference counting.
+The problem is that the race detectors do no understand it because `__gnu_cxx::__exchange_and_add_dispatch` ends up compiling into one atomic instruction. 
+Generally, race detectors can not distinguish when such atomic instructions are used for decrementing reference counters or when they are used for other purposes (e.g. maintaining a thread-safe counter which is not used to synchronize anything but itself). 
+
+=Reference counting in foo=
+TODO: please fill this section if you know about atomic reference counting in other common libraries. 
+
+=Proposal for library developers= 
+If you develop or maintain any widely used C/C++ library which works in multi-threaded context, it is in your best interest to support dynamic race detectors. 
+
+If you library does not itself use synchronization, or if it uses only standard `pthread_*` functions, you don't need to do anything else. 
+If your library does use some custom synchronization based on atomic instructions, we ask you to help the race detectors understand this code. 
+
+In many cases, the simplest way to explain custom synchronization to the race detectors is to use DynamicAnnotations (as shown above) or equivalent [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind annotations] , but we expect that for some libraries this will be unacceptable due to additional dependency. 
+
+==Proposal to libstdc++ developers==
+If using DynamicAnnotations or [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind annotations] is not acceptible for libstdc++, 
+we ask you to implement a separate function and use it inside the destructor of `basic_string`.
+{{{
+// Decrement the reference count atomically and return the new value. 
+// The name of this function is a part of the interface between the library and race detectors,
+// so the name and the semantics of this function should not change. 
+// Do not use this function for anything other than decrementing reference counter -- 
+// this will confuse race detectors and will make them more conservative and slow. 
+_Atomic_word __gnu_cxx::__decrement_refcount(_Atomic_word *refcount) {
+  return __gnu_cxx::__exchange_and_add_dispatch(refcount, -1)
+}
+}}}
+
+Currently (July 2010) valgrind-based tools ([http://valgrind.org/docs/manual/hg-manual.html Helgrind], [http://valgrind.org/docs/manual/drd-manual.html DRD], ThreadSanitizer) are able to intercept a function only if it is not inlined. So, the proposed approach will work only in debug builds where the function `__gnu_cxx::__decrement_refcount` is not inlined (or if you mark it as `never inline`).
+
+
+
+
+
