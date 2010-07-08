@@ -308,7 +308,7 @@ This data race is benign if you don't subclass the class which does synchronizat
 With older versions you have to annotate the race as benign in the constructor (e.g. `ANNOTATE_BENIGN_RACE_SIZED(this, sizeof(void*), "Benign race on vfptr")`). <BR>
 Also, consider [http://www.google.com/search?q=sealed+C%2B%2B sealing] your class to avoid problems in the future. 
 
-=data race on free=
+=Race on free=
 Sometimes one thread of a program may access a heap memory while another thread is deallocating the same memory. 
 
 {{{
