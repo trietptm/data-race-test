@@ -67,22 +67,32 @@ If your library does use some custom synchronization based on atomic instruction
 In many cases, the simplest way to explain custom synchronization to the race detectors is to use DynamicAnnotations (as shown above) or equivalent [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind client requests] , but we expect that for some libraries this will be unacceptable due to additional dependency. 
 
 ==Proposal to libstdc++ developers==
-If using DynamicAnnotations or [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind client requests] is not acceptible for libstdc++, 
-we ask you to implement a separate function and use it inside the destructor of `basic_string`.
+We ask libstdc++ developers to implement a separate function for atomic reference counting and use it inside the destructor of `basic_string`.
 {{{
+#ifndef __GNU_CXX_HAPPENS_BEFORE__
+# define __GNU_CXX_HAPPENS_BEFORE__(a)
+#endif 
+#ifndef __GNU_CXX_HAPPENS_AFTER__
+# define __GNU_CXX_HAPPENS_AFTER__(a)
+#endif 
 // Decrement the reference count atomically and return the new value. 
-// The name of this function is a part of the interface between the library and race detectors,
-// so the name and the semantics of this function should not change. 
+// The code is annotated using two macros, __GNU_CXX_HAPPENS_BEFORE__ 
+// and __GNU_CXX_HAPPENS_AFTER__.
+// These macros are empty by default. The users may replace these macros with callbacks
+// to the particular race detection tool.
+// The code of this function and all its uses has to reside in header files in order 
+// to avoid recompilation of the library.
 // Do not use this function for anything other than decrementing reference counter -- 
 // this will confuse race detectors and will make them more conservative and slow. 
 _Atomic_word __gnu_cxx::__decrement_refcount(_Atomic_word *refcount) {
-  return __gnu_cxx::__exchange_and_add_dispatch(refcount, -1)
+  __GNU_CXX_HAPPENS_BEFORE__(refcount);
+  _Atomic_word res = __gnu_cxx::__exchange_and_add_dispatch(refcount, -1);
+  if (res == 0) {
+    __GNU_CXX_HAPPENS_AFTER__(refcount);
+  }
+  return res;
 }
 }}}
-
-Currently (July 2010) valgrind-based tools ([http://valgrind.org/docs/manual/hg-manual.html Helgrind], [http://valgrind.org/docs/manual/drd-manual.html DRD], ThreadSanitizer) are able to intercept a function only if it is not inlined. So, the proposed approach will work only in debug builds where the function `__gnu_cxx::__decrement_refcount` is not inlined (or if you mark it as `never inline`).
-
-
 
 
 =How to try=
