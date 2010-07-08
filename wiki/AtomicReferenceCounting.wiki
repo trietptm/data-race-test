@@ -36,6 +36,9 @@ is to annotated the code of `Unref()`:
   }
 }}}
 
+This syntax is supported by ThreadSanitizer, [http://valgrind.org/docs/manual/hg-manual.html Helgrind], [http://valgrind.org/docs/manual/drd-manual.html DRD] (though they currently require different header files to be included). 
+The [http://software.intel.com/en-us/intel-parallel-inspector/ Intel Parallel Inspector] supports equivalent callbacks:  `itt_notify_sync_releasing(void*)` and  `itt_notify_sync_acquired(void*)`
+
 =Reference counting in basic_string<> (libstdc++)=
 Reference counting in C++ string<> ([http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/a00762_source.html#l00229 libstdc++]) is implemented in the following way:
 {{{
