@@ -293,7 +293,6 @@ Some events may contain: `id`, which is usually a memory address and `size`, whi
   * Memory allocation events: 
     * `MALLOC(tid, pc, id, size)` -- allocated memory `[id, id+size)`.
     * `FREE(tid, pc, id)` -- freeing memory at `id` (which was previsouly allocated with `MALLOC`).
-    * `STACK_INCREASE(tid, pc, id, size)` and `STACK_DECREASE(tid, pc, id, size)` -- the stack has changed. Only used if the stack memory is tracked, i.e. optional for Java.
   * Thread events: 
     * `THR_CREATE(tid, pc, child_tid)` -- the current thread `tid` has created a child thread `child_tid`.
     * `THR_START(tid, pc, parent_tid)` -- this current thread `tid` has started; its parent ir `parent_tid`.
