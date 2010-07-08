@@ -1,6 +1,6 @@
 #summary Description of atomic reference counting and challenges for race detectors.
 
-<wiki:toc max_depth="1" />
+<wiki:toc max_depth="2" />
 
 = Introduction =
 
