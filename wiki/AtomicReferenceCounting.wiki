@@ -88,8 +88,8 @@ We ask libstdc++ developers to implement a separate function for atomic referenc
 // to the particular race detection tool.
 // The code of this function and all its uses has to reside in header files in order 
 // to avoid recompilation of the library.
-// Do not use this function for anything other than decrementing reference counter -- 
-// this will confuse race detectors and will make them more conservative and slow. 
+// Do not use this function for anything except decrementing reference counters -- 
+// otherwise this will confuse race detectors and will make them more conservative and slow. 
 _Atomic_word __gnu_cxx::__decrement_refcount(_Atomic_word *refcount) {
   __GNU_CXX_HAPPENS_BEFORE__(refcount);
   _Atomic_word res = __gnu_cxx::__exchange_and_add_dispatch(refcount, -1);
