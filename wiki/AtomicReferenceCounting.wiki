@@ -46,7 +46,7 @@ The [http://developers.sun.com/sunstudio/downloads/ssx/tha/tha_getting_started.h
 
 
 =Reference counting in basic_string<> (libstdc++)=
-Reference counting in C++ string<> ([http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/a00762_source.html#l00229 libstdc++]) is implemented in the following way:
+Reference counting in C++ string<> ([http://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-4.4/a01068.html#l00224 libstdc++]) is implemented in the following way:
 {{{
      _M_dispose(const _Alloc& __a)
      {
