@@ -33,9 +33,9 @@ We want to collect an exhaustive and well annotated list of links to all materia
     * Based on Valgrind run-time instrumentation framework
     * Open sourced as a part of Valgrind ([http://valgrind.org/downloads/ download], [http://valgrind.org/docs/manual/drd-manual.html manual])
     * TODO: paper (any available?), comments
-  * MTRAT
-    * Race detector for Java
-    * TODO: download site, comments
+  * MTRAT/MSDK: http://www.alphaworks.ibm.com/tech/msdk
+    * IBM's Race detector for Java
+    * Article: http://portal.acm.org/citation.cfm?doid=1639622.1639627
   * Lamport's paper
     * [http://portal.acm.org/citation.cfm?id=359563 L. Lamport, Time, clocks, and the ordering of events in a distributed system]
     * TODO: link to a paper
