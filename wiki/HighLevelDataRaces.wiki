@@ -1,6 +1,6 @@
-#Examples of common High-Level Data Races. 
+#summary Examples of common High-Level Data Races.
 
-= Defenition? =
+= Defenitions =
 
 *TODO* High-Level Data Race - potential dangerous concurrent code without regular data races.  
 [http://code.google.com/p/data-race-test/wiki/RaceDetectionLinks#High-Level_Data_Races Links] to articles about HL data races detection.
@@ -9,7 +9,7 @@
 
 == First motivational example ==
 
-Consider following java source
+Consider following *java* source
 
 {{{
 
@@ -33,7 +33,7 @@ thread1() {
     put(i);
   }
   while (getSize()) > 0) {
-    \\ BAD BAD BAD - don't do this!!!
+    \\ BAD BAD BAD
     push();
   } 
 }
