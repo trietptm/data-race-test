@@ -1,0 +1,45 @@
+#Examples of common High-Level Data Races. 
+
+= Defenition? =
+
+*TODO* High-Level Data Race - potential dangerous concurrent code without regular data races.  
+[http://code.google.com/p/data-race-test/wiki/RaceDetectionLinks#High-Level_Data_Races Links] to articles about HL data races detection.
+
+= Examples =
+
+== First motivational example ==
+
+Consider following java source
+
+{{{
+
+private int uk;
+private int[] stack;
+
+int synchronized getSize() {
+  return uk;
+}
+
+void synchronized put(int x) {
+  stack[uk++] = x;
+}
+
+int synchronized push() {
+  return stack[uk--];
+}
+
+thread1() {
+  for (int i=0; i<10; i++) {
+    put(i);
+  }
+  while (getSize()) > 0) {
+    \\ BAD BAD BAD - don't do this!!!
+    push();
+  } 
+}
+
+thread2() {
+  thread1();
+}
+
+}}}
