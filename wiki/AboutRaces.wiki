@@ -1,0 +1,29 @@
+#summary What Every Programmer Should Know About Races
+
+= Introduction =
+
+Most programmers know that races are harmful. <br>
+For some races it could be quite easy to predict what may go wrong.
+For example, the variable `var` in the following code may not be equal to `2` at the end of the program execution (for more examples refer to PopularDataRaces)
+{{{
+int var;
+void Thread1() {  // Runs in one thread.
+  var++;
+}
+void Thread2() {  // Runs in another thread.
+  var++;
+}
+}}}
+
+However, there are other, much more subtle races who's harmfulness is not that obvious. This article is about such races. 
+
+
+TODO(kcc) This is a placeholder. Expect more content later. 
+
+
+= References = 
+  # [http://people.redhat.com/drepper/cpumemory.pdf What Every Programmer Should Know About Memory] 
+  # [http://docs.sun.com/source/806-3568/ncg_goldberg.html What Every Computer Scientist Should Know About Floating-Point Arithmetic]
+  # [http://msdn.microsoft.com/en-us/magazine/cc163744.aspx What Every Dev Must Know About Multithreaded Apps]
+  # [http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html The "Double-Checked Locking is Broken" Declaration]
+  # TODO(kcc): volatile? 
