@@ -63,7 +63,8 @@ We want to collect an exhaustive and well annotated list of links to all materia
   
 == High-Level Data Races ==
 *TODO* (Sergey Vorobyev) add about 10-20 items
-  * [http://staff.aist.go.jp/c.artho/papers/vveis03.pdf Cyrille Artho, Klaus Havelund, Armin Biere - High-Level Data Races] -- develop Eraser Lock-based approach. Another look: define view (block of memory accesses) and look to single locks and overlaps of they views, against Eraser algorithm. Unhappily, this algorithm doesn't help us in [http://code.google.com/p/data-race-test/wiki/HighLevelDataRaces?ts=1280497301&updated=HighLevelDataRaces#First_motivational_example First motivational example]. In fact it's cover only [http://code.google.com/p/data-race-test/wiki/HighLevelDataRaces?ts=1280745577&updated=HighLevelDataRaces#Inconsistent_state Inconsistent state]. By the way, article describe HL data-race occurred in NASA spacecraft controller. Algorithm described in Section 3 and occupy only one page.
+  * [http://staff.aist.go.jp/c.artho/papers/vveis03.pdf Cyrille Artho, Klaus Havelund, Armin Biere - High-Level Data Races] -- continuation Eraser approach. Defines 'view' and 'view consistency'. It covering sets of shared variables and their uses.
+Unhappily, this algorithm doesn't help us in [http://code.google.com/p/data-race-test/wiki/HighLevelDataRaces?ts=1280497301&updated=HighLevelDataRaces#First_motivational_example First motivational example]. It's cover [http://code.google.com/p/data-race-test/wiki/HighLevelDataRaces?ts=1280745577&updated=HighLevelDataRaces#Inconsistent_state Inconsistent state]. By the way, article describe high level data-race occurred in NASA spacecraft controller. Algorithm described in Section 3 and occupy only one page.
 
 == TODO ==
 *TODO* add all links we already have somewhere. 
