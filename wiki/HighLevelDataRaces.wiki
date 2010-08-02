@@ -16,16 +16,16 @@ Consider following *java* source
 private int uk;
 private int[] stack;
 
-int synchronized getSize() {
+synchronized int getSize() {
   return uk;
 }
 
-void synchronized put(int x) {
+synchronized void put(int x) {
   stack[uk++] = x;
 }
 
-int synchronized push() {
-  return stack[uk--];
+synchronized int push() {
+  return stack[--uk];
 }
 
 thread1() {
@@ -43,3 +43,56 @@ thread2() {
 }
 
 }}}
+
+We havn't tradition data race, but code is unsafe.
+
+== Inconsistent state ==
+
+Following example take from [http://staff.aist.go.jp/c.artho/papers/vveis03.pdf this paper]. Main idea: we have complicated object with several propertis. And we have several methods to prompt it to other state. Than, without explicit synchronization we can get inconsistent state of this object.
+
+Example:
+
+{{{
+
+class Point {
+  private int x, y;
+  public Point() {
+    x = 0;
+    y = 0;
+  }
+  // getter and setter for X
+  public synchronized int getX() {
+    return x;
+  }
+  public synchronized void setX(int nx) {
+    x = nx;
+  }
+  // getter and setter for Y
+  ...
+  // getter and setter for X and Y
+  public synchronized int[] getXY() {
+    return new int[] {x, y};
+  }
+  public synchronized void setXY(int nx, int ny) {
+    x = nx;
+    y = ny;
+  }
+
+}
+
+Point global_p;
+
+thread1() {
+  global_p = new Point();
+  global_p.setX(100);
+  \\ BAD BAD BAD
+  global_p.setY(100);
+}
+
+thread2() {
+  Point local_p = new Point();
+  int[] xy = gloabal_p.getXY();
+  local_p.setXY(xy[0], xy[1]);  
+}
+
+}}} 
