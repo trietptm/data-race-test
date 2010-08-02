@@ -33,7 +33,7 @@ thread1() {
     put(i);
   }
   while (getSize()) > 0) {
-    \\ BAD BAD BAD
+    // BAD BAD BAD
     push();
   } 
 }
@@ -85,7 +85,7 @@ Point global_p;
 thread1() {
   global_p = new Point();
   global_p.setX(100);
-  \\ BAD BAD BAD
+  // BAD BAD BAD
   global_p.setY(100);
 }
 
