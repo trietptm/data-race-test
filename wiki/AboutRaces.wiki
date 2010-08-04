@@ -119,7 +119,7 @@ void Thread2() {  // Consume foo.
 }}}
 
 =Double-Checked Locking= 
-Double-Checked Locking [http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html 4] is broken in C++ because of all the reasons discussed [#Racy_publication above].
+[http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html Double-Checked Locking] is broken in C++ because of all the reasons discussed [#Racy_publication above].
 
 =Volatile= 
 DON'T use `volatile` for synchronization in C/C++. 
