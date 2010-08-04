@@ -15,10 +15,119 @@ void Thread2() {  // Runs in another thread.
 }
 }}}
 
-However, there are other, much more subtle races who's harmfulness is not that obvious. This article is about such races. 
+However, there are other, much more subtle races who's harmfulness is not that obvious. This article is about such races. Most of the content is specific to C/C++.
 
 
-TODO(kcc) This is a placeholder. Expect more content later. 
+TODO(kcc) This article is not finished. Expect more content later. 
+
+= Racy publication = 
+The race which is most frequently (and mistakenly) perceived as harmless is *unsafe publication*:
+{{{
+struct Foo {
+  int a;
+  Foo() { a = 42; }
+};
+
+static Foo *foo = NULL;
+
+void Thread1() {  // Create foo.
+  foo = new Foo();
+}
+
+void Thread2() {  // Consume foo.
+  if (foo) {
+     assert(foo->a == 42);
+  }
+}
+}}}
+ThreadSanitizer and most other race detectors will report this as a race on `foo`. 
+
+== Objection 1 == 
+But hey, why this race is harmful? Follow my fingers: 
+  * Thread1 calls `new Foo()`, which allocates memory and calls `Foo::Foo()`
+  * Thread1 assigns the new value to `foo` and `foo` becomes non-NULL.
+  * Thread2 checks if `foo != NULL` and only then reads `foo->a`. 
+The code is safe! 
+
+
+== Clarification 1 == 
+On machines with weak [http://people.redhat.com/drepper/cpumemory.pdf memory model], such as IBM Power, 
+`foo != NULL` does not guarantee that the contents of `*foo` are ready for reading in Thread2.
+For example, the following code does *not* work on machines with weak memory model. 
+{{{
+int A = 0, B = 0;
+
+void Thread1() {
+  A = 1;
+  B = 1;
+}
+
+void Thread2() {
+  if (B == 1) {
+     assert(A == 1);
+  }
+}
+}}}
+
+== Objection 2 == 
+Ok, ok. But I don't care about weak memory model machines. x86 has a strong memory model! 
+
+== Clarification 2 == 
+If you are writing in assembly, yes, this is safe. 
+But with C/C++ you can not rely on the machine's strong memory model because the compiler may (and will!) rearrange the code for you. 
+For example, it may easily replace `A=1;B=1;` with `B=1;A=1;`.
+
+== Objection 3 == 
+Ok, I believe that compilers may do simple reordering, but that doesn't apply to my code! 
+For example, `Foo::Foo()` is defined in one `.cc` file and `foo = new Foo()` resides in another. 
+And even if these were in a single file, what kind of reordering could harm me? 
+
+== Clarification 3 == 
+First, it's a bad idea to rely on the compiler's inability to do some legal transformation. <br>
+Second, the modern compilers are much more sophisticated than most programmers think. 
+For example, many compilers can do cross-file inlining or even inline virtual functions (!). <br>
+So, in the example above a compiler may (and often will) change the code to 
+{{{
+  foo = (Foo*)malloc(sizeof(Foo));
+  new (foo) Foo();
+}}}
+
+== Objection 4==
+Ok. So I will do something to avoid any bad compiler effect in the thread which creates `foo`. 
+But obviously, the consumer thread's code is safe. What can possibly go wrong with this code on x86?
+{{{
+void Thread2() {  // Consume foo.
+  if (foo) {  
+     // foo is properly published by Thread1().
+     assert(foo->a == 42);
+  }
+}
+}}}
+
+== Clarification 4 == 
+Again, you are underestimating the cleverness of modern compilers. How about this (it really happens!)?
+{{{
+void Thread2() {  // Consume foo.
+  Foo *t1 = foo;  // reads NULL
+  Foo *t2 = foo;  // reads the new value
+  if (t2) {
+     assert(t1->a == 42);
+  }
+}
+}}}
+
+
+
+=TODO: volatile= 
+In short: DON'T use `volatile` for synchronization in C/C++. 
+
+=How to fix= 
+So, how do I fix these races? 
+
+If you are not a black belt in synchronization primitives, please use something crafted by those who are (e.g. `pthread_mutex_lock`, `pthread_once`, etc). 
+
+If you are indeed a black belt (are you?), you probably know about CAS and other atomics, memory barriers, compiler barriers and other magic. <BR>
+But remember -- every time you implement a custom lock-free synchronization you need to use DynamicAnnotations to keep your program race-detector-friendly. 
 
 
 = References = 
