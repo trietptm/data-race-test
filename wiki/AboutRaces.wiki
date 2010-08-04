@@ -1,5 +1,7 @@
 #summary What Every Programmer Should Know About Races
 
+<wiki:toc max_depth="2" />
+
 = Introduction =
 
 Most programmers know that races are harmful. <br>
@@ -116,13 +118,15 @@ void Thread2() {  // Consume foo.
 }
 }}}
 
+=Double-Checked Locking= 
+Double-Checked Locking [http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html 4] is broken in C++ because of all the reasons discussed [#Racy_publication above].
 
-
-=TODO: volatile= 
-In short: DON'T use `volatile` for synchronization in C/C++. 
+=Volatile= 
+DON'T use `volatile` for synchronization in C/C++. 
+The C and C++ standards don't say anything about `volatile` and threads -- so don't assume anything. 
 
 =How to fix= 
-So, how do I fix these races? 
+So, how do I make my code correct? 
 
 If you are not a black belt in synchronization primitives, please use something crafted by those who are (e.g. `pthread_mutex_lock`, `pthread_once`, etc). 
 
@@ -130,9 +134,8 @@ If you are indeed a black belt (are you?), you probably know about CAS and other
 But remember -- every time you implement a custom lock-free synchronization you need to use DynamicAnnotations to keep your program race-detector-friendly. 
 
 
-= References = 
+= More reading = 
   # [http://people.redhat.com/drepper/cpumemory.pdf What Every Programmer Should Know About Memory] 
-  # [http://docs.sun.com/source/806-3568/ncg_goldberg.html What Every Computer Scientist Should Know About Floating-Point Arithmetic]
   # [http://msdn.microsoft.com/en-us/magazine/cc163744.aspx What Every Dev Must Know About Multithreaded Apps]
   # [http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html The "Double-Checked Locking is Broken" Declaration]
-  # TODO(kcc): volatile? 
+  # http://en.wikipedia.org/wiki/Memory_barrier
