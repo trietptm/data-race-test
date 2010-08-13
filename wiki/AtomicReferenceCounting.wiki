@@ -61,6 +61,9 @@ This is the correct and the most common way of implementing atomic reference cou
 The problem is that the race detectors do no understand it because `__gnu_cxx::__exchange_and_add_dispatch` ends up compiling into one atomic instruction. 
 Generally, race detectors can not distinguish when such atomic instructions are used for decrementing reference counters or when they are used for other purposes (e.g. maintaining a thread-safe counter which is not used to synchronize anything but itself). 
 
+*NEW*: As of Aug 13, 2010, libstdc++ contains the annotations for race detectors. 
+See http://gcc.gnu.org/viewcvs?view=revision&revision=163210 and http://gcc.gnu.org/bugzilla/show_bug.cgi?id=45276
+
 =Reference counting in foo=
 TODO: please fill this section if you know about atomic reference counting in other common libraries. 
 
@@ -71,34 +74,6 @@ If you library does not itself use synchronization, or if it uses only standard 
 If your library does use some custom synchronization based on atomic instructions, we ask you to help the race detectors understand this code. 
 
 In many cases, the simplest way to explain custom synchronization to the race detectors is to use DynamicAnnotations (as shown above) or equivalent [http://valgrind.org/docs/manual/hg-manual.html#hg-manual.client-requests Helgrind client requests] , but we expect that for some libraries this will be unacceptable due to additional dependency. 
-
-==Proposal to libstdc++ developers==
-We ask libstdc++ developers to implement a separate function for atomic reference counting and use it inside the destructor of `basic_string`.
-{{{
-#ifndef __GNU_CXX_HAPPENS_BEFORE__
-# define __GNU_CXX_HAPPENS_BEFORE__(a)
-#endif 
-#ifndef __GNU_CXX_HAPPENS_AFTER__
-# define __GNU_CXX_HAPPENS_AFTER__(a)
-#endif 
-// Decrement the reference count atomically and return the new value. 
-// The code is annotated using two macros, __GNU_CXX_HAPPENS_BEFORE__ 
-// and __GNU_CXX_HAPPENS_AFTER__.
-// These macros are empty by default. The users may replace these macros with callbacks
-// to the particular race detection tool.
-// The code of this function and all its uses has to reside in header files in order 
-// to avoid recompilation of the library.
-// Do not use this function for anything except decrementing reference counters -- 
-// otherwise this will confuse race detectors and will make them more conservative and slow. 
-_Atomic_word __gnu_cxx::__decrement_refcount(_Atomic_word *refcount) {
-  __GNU_CXX_HAPPENS_BEFORE__(refcount);
-  _Atomic_word res = __gnu_cxx::__exchange_and_add_dispatch(refcount, -1);
-  if (res == 0) {
-    __GNU_CXX_HAPPENS_AFTER__(refcount);
-  }
-  return res;
-}
-}}}
 
 
 =How to try=
