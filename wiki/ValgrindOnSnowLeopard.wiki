@@ -1,39 +1,6 @@
 #summary Building Valgrind for Snow Leopard
 
-= Building Valgrind for Snow Leopard (Mac OS 10.6) =
-
-*Update:* Julian Seward is working on a branch that contains all the necessary patches. To build from it, run the following commands:
-{{{
-  svn co svn://svn.valgrind.org/valgrind/branches/MACOSX106 valgrind
-  cd valgrind
-  ./autogen.sh || autoreconf -fvi
-  ./configure --prefix=`pwd`/inst --build=amd64-darwin
-  make -j8 && make install
-}}}
-
-The main trunk doesn't work on Snow Leopard yet, but a number of patches (kudos to Greg Parker and Filipe Cabecinhas) may help to build and run it:
-{{{
-svn co -r 11104 svn://svn.valgrind.org/valgrind/trunk valgrind
-cd valgrind
-wget http://bugs.kde.org/attachment.cgi?id=40091 -O snow-leopard.patch
-wget http://bugsfiles.kde.org/attachment.cgi?id=40900 -O arc4random.patch
-wget http://bugsfiles.kde.org/attachment.cgi?id=42530 -O sidt.patch 
-wget http://bugsfiles.kde.org/attachment.cgi?id=42892 -O signal.patch
-patch -p0 < snow-leopard.patch
-patch -p0 < arc4random.patch
-patch -p1 < signal.patch
-cd VEX; patch -p0 < ../sidt.patch ; cd ..
-touch darwin10-drd.supp
-touch darwin10.supp
-./autogen.sh || autoreconf -fvi
-./configure --prefix=`pwd`/inst --build=amd64-darwin
-make -j 8 && make install
-}}}
-
-The `--build=amd64-darwin` flag is for building Valgrind on a amd64 CPU. If you've got the following error trying to run Valgrind:
-{{{
--bash: ./valgrind: Bad CPU type in executable
-}}}
-, just omit the `--build` flag.
+Mac OS X Snow Leopard support is now included into Valgrind trunk.
+Please refer to the page history for the obsolete build instructions for Snow Leopard.
 
 For more information and updates see https://bugs.kde.org/show_bug.cgi?id=205241
