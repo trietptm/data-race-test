@@ -27,8 +27,10 @@ For more options refer to `unittest/Makefile` and other source files.
 =Java= 
 So far we have a very small set of tests for a Java race detector. 
 {{{
-svn checkout http://data-race-test.googlecode.com/svn/trunk/jtsan
-cd jtsan
-make
-make run
+cd data-race-test/third_party
+svn checkout http://java-thread-sanitizer.googlecode.com/svn/trunk/
+cd java-thread-sanitizer
+ant download
+ant
+ant test
 }}}
