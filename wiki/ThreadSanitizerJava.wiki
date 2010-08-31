@@ -17,40 +17,54 @@ Race detection consists of two parts:
 svn checkout http://data-race-test.googlecode.com/svn/trunk/ data-race-test-read-only
 cd data-race-test-read-only
 TOPDIR=`pwd`
-# Build the instrumenter
+# Build ThreadSanitizerOffline
+cd $TOPDIR/tsan
+make l64d GTEST_ROOT= VALGRIND_ROOT=
+# Build the instrumenter and tests
 cd $TOPDIR/third_party/java-thread-sanitizer
 ant download
 ant
-# Build ThreadSanitizerOffline
-cd $TOPDIR/tsan
-make TS_offline OFFLINE=1  OS=linux ARCH=amd64 DEBUG=1 -j2
-# Build and run tests
-cd $TOPDIR/jtsan
-make
-./jtsan.sh ThreadSanitizerTest
-../tsan/bin/amd64-linux-debug-ts_offline < jtsan.events > jtsan.out
-head -30  jtsan.out
+# run tests
+ant test
 }}}
 If you are lucky, you will get something like this: 
 
 {{{
-==18897== INFO: T7 has been created by T0. Use --announce-threads to see the creation stack.
-==18897== INFO: T8 has been created by T0. Use --announce-threads to see the creation stack.
-==18897== WARNING: Possible data race during write of size 1 at 0x227180285: {{{
-==18897==    T8 (locks held: {}):
-==18897==     #0  ThreadSanitizerTest$1.thread2 ThreadSanitizerTest.java:180
-==18897==     #1  ThreadSanitizerTest$ThreadRunner.foo2 ThreadSanitizerTest.java:124
-==18897==     #2  ThreadSanitizerTest$ThreadRunner$3.<init> ThreadSanitizerTest.java:139
-==18897==     #3  ThreadSanitizerTest$ThreadRunner.<init> ThreadSanitizerTest.java:146
-==18897==   Concurrent write(s) happened at (OR AFTER) these points:
-==18897==    T7 (locks held: {}):
-==18897==     #0  ThreadSanitizerTest$1.thread1 ThreadSanitizerTest.java:179
-==18897==     #1  ThreadSanitizerTest$ThreadRunner.foo1 ThreadSanitizerTest.java:123
-==18897==     #2  ThreadSanitizerTest$ThreadRunner$1MyThread.<init> ThreadSanitizerTest.java:132
-==18897==     #3  ThreadSanitizerTest$ThreadRunner.<init> ThreadSanitizerTest.java:146
-==18897== }}}
+test:
+     [echo] tsan offline path = ../../tsan/bin/amd64-linux-debug-ts_offline
+     [exec] log
+     [exec] PASS noLockWWInt
+     [exec] PASS noLockWWShort
+     [exec] PASS noLockWWChar
+     [exec] PASS noLockWWLong
+     [exec] PASS noLockWWFloat
+     [exec] PASS noLockWWDouble
+     ...
+     ...
+     ...
+     [exec] PASS reentrantLockSimple
+     [exec] PASS tryLock2
+     [exec] PASS atomicInteger
+     [exec] EXCL hashSetAccessNoLocks          Reason: HashSet loads before instrumenting start
+     [exec] EXCL lockInBetween                 Reason: Tsan finds inexact happens-before arc
+     [exec] EXCL staticVolatileBoolean         Reason: We handle volatile fields in super classes incorrectly
+     [exec] EXCL superClassVolatile            Reason: We handle volatile fields in super classes incorrectly
+     [exec] EXCL syncWithStaticVolatile        Reason: We handle volatile fields in super classes incorrectly
+     [exec] EXCL joinWithoutStart              Reason: Incorrect handling of join() in Agent
+     [exec] 
+     [exec] ----
+     [exec] passed: 43, failed: 0, excluded: 6, total: 49
 }}}
 
+You can view all logs in $TOPDIR/third_party/java-thread-sanitizer/log directory.
+
+== Run Test manually ==
+In success case, after 'ant download' and 'ant' tasks you have two jars in dist/ directory: agent.jar  tests.jar
+You can run tests.jar like any other java application under jtsan. And then run tsan offline.
+{{{
+java -Xbootclasspath/p:dist/agent.jar -javaagent:dist/agent.jar=logfile=events -jar dist/tests.jar
+$TOPDIR/tsan/bin/amd64-linux-debug-ts_offline <events
+}}}   
 
 = Implementation notes =
 
