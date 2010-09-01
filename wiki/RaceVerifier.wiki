@@ -4,19 +4,25 @@
 
 ThreadSanitizer supports a RaceVerifier mode in which it takes an output of normal ThreadSanitizer run and attempt to verify all the race reports in it. It uses the same approach as RaceCheckerClass, inserting short sleeps immediately after (possibly) racey instructions. If at least two such sleeps happen simultaneously for the same data address, and at least of them is a write at that address - we've got a 100% race.
 
+Keep in mind that RaceVerifier can not tell a harmful race from a benign one. It reports any pair of unsynchronized accesses (at least one of which is a write) as a race.
 = Usage =
 
-At this point we only support race verification with Pin. Valgrind is not supported, sorry.
+RaceVerifier works with both Pin and Valgrind tools.
 
-Run ThreadSanitizer as usual, and redirect stderr to a file.
+Run ThreadSanitizer as usual, and redirect stderr to a file. Or, even better, use --log-file option. Then run ThreadSanitizer the second time in RaceVerifier mode, using the log of the first run.
 
-tsan/tsan_pin.sh program_binary 2>stderr.log
+{{{
+tsan/tsan_pin.sh --log-file=race.log program_binary
+tsan/tsan_pin.sh --race-verifier=race.log program_binary
+}}}
 
-Run ThreadSanitizer the second time, with additional arguments:
+With Valgrind:
+{{{
+valgrind --tool=tsan --log-file=race.log program_binary
+valgrind --tool=tsan --race-verifier=race.log program_binary
+}}}
 
-tsan/tsan_pin.sh program_binary --race-verifier=stderr.log
-
-This will print only those reports from the first run that have been verified to be a 100% race.
+The second run will print only those reports from the first run that have been verified to be a 100% data race.
 
 = Command line flags = 
 || Flag name || default || description ||
