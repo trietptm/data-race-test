@@ -102,24 +102,3 @@ thread2() {
 }
 
 }}} 
-
-== Apache Con-Overflow ==
-
-Example from [http://pages.cs.wisc.edu/~shanlu/paper/asplos184-zhang.pdf ConMem paper]. A concurrent bug that can lead to buffer overflow and crash (from Apache-2.0.45)
-
-{{{
-thread1:
-if ( buf−−>cnt + len > LOG_SIZE ) {
-...
-}else {
-memcpy (&buf[buf−−>cnt], str, len);
-...
-
-thread2:
-buf−>cnt += len;
-
-
-// buf−>cnt is a shared variable that
-// represents the current index of a buffer.
-
-}}}
