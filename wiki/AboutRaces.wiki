@@ -53,7 +53,7 @@ The code is safe!
 
 
 == Clarification 1 == 
-On machines with weak [http://people.redhat.com/drepper/cpumemory.pdf memory model], such as IBM Power, 
+On machines with weak [http://people.redhat.com/drepper/cpumemory.pdf memory model], such as IBM Power or ARM, 
 `foo != NULL` does not guarantee that the contents of `*foo` are ready for reading in Thread2.
 For example, the following code does *not* work on machines with weak memory model. 
 {{{
