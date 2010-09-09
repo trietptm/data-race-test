@@ -9,7 +9,7 @@
 
 The basic type of *unserializable interleavings* is composed of three memory accesses. Two of them, referred to as p(receding)-access and c(urrent)-access, consecutively access a shared location from the same thread. The third one, referred to as r(emote)-access, accesses the same memory location in the middle of the previous two from a different thread. Unserializable interleaving space gives a good coverage for all potential atomicity violation bugs. _S. Park, S. Lu, and Y. Zhou. Ctrigger: exposing atomicity violation bugs from their hiding places. In Fourteenth International Conference on Architec- ture Support for Programming Languages and Op- erating Systems (ASPLOS ’09), pages 25–36, Mar. 2009._
 
-*Multi-Variable Race*. There are correlated variables e.g. field of one object, describe same side of object. We can widen definition of data race from memory accesses to single instance to set of correlated instances.
+*Multi-Variable Race* also called *inconsistent state*. There are correlated variables e.g. field of one object, describe same side of object. Concurrent bugs could occur when there is no race on each single variable. See examples: inconsistent state.
 
 = Examples =
 
