@@ -24,6 +24,8 @@ void Thread2() {
 }}}
 Compiler can transform this code in such a way, that the resulting binary will contain a data race. But, depending on the optimization options, compiler version and other factors, it may choose not to do so. In that latter case RaceVerifier will not be able to detect the problem.
 
+The above code snippet, even if compiled in a non-racy way, still contains a race on weakly-ordered CPU architectures: some memory writes in MyType() constructor can be reordered with obj assignment. This race can not be verified by RaceVerifer, because delays that is it inserts do not affect this reordering in any way. RaceVerifier can only detect races that happen because of *variations in thread interleaving*.
+
 = Usage =
 
 RaceVerifier works with both Pin and Valgrind tools.
