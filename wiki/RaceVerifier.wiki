@@ -5,6 +5,25 @@
 ThreadSanitizer supports a RaceVerifier mode in which it takes an output of normal ThreadSanitizer run and attempt to verify all the race reports in it. It uses the same approach as RaceCheckerClass, inserting short sleeps immediately after (possibly) racey instructions. If at least two such sleeps happen simultaneously for the same data address, and at least of them is a write at that address - we've got a 100% race.
 
 Keep in mind that RaceVerifier can not tell a harmful race from a benign one. It reports any pair of unsynchronized accesses (at least one of which is a write) as a race.
+
+In practice, delays added by RaceVerifier at (or near) racy instructions often change the program behavior, if the race is harmful. Of course, this effect is not guaranteed, but, if happens, presents a proof that a race exists and it is harmful.
+
+Also keep in mind that RaceVerifier can not verify races that are not there. For example, see [http://code.google.com/p/data-race-test/wiki/PopularDataRaces#Publishing_objects_without_synchronization unsafe publishing]:
+{{{
+MyType* obj = NULL;
+
+void Thread1() {
+  obj = new MyType();
+}
+
+void Thread2() {
+  while(obj == NULL)
+    yield();
+  obj->DoSomething();
+}
+}}}
+Compiler can transform this code in such a way, that the resulting binary will contain a data race. But, depending on the optimization options, compiler version and other factors, it may choose not to do so. In that latter case RaceVerifier will not be able to detect the problem.
+
 = Usage =
 
 RaceVerifier works with both Pin and Valgrind tools.
