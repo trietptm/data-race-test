@@ -137,7 +137,7 @@ float *GetPi() {
 }}}
 
 Even experienced programmers may assume that this code is correct on a CPU with strong memory model. 
-But remember that a compiler may rearrange `have_pi = true;` and 'pi = ComputePi();' and one of the threads will return uninitialized value of `pi`. 
+But remember that a compiler may rearrange `have_pi = true;` and `pi = ComputePi();` and one of the threads will return uninitialized value of `pi`. 
 
 
 =Volatile= 
