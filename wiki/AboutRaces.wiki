@@ -121,6 +121,25 @@ void Thread2() {  // Consume foo.
 =Double-Checked Locking= 
 [http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html Double-Checked Locking] is broken in C++ because of all the reasons discussed [#Racy_publication above].
 
+=Racy lazy initialization= 
+One more frequent bug: 
+{{{
+// lazy init for Pi. 
+float *GetPi() {
+  static float pi;
+  static bool have_pi = false;
+  if (!have_pi) {
+     pi = ComputePi(); // atomic assignment, no cache coherency issues.                    
+     have_pi = true;
+  }
+  return pi;
+}
+}}}
+
+Even experienced programmers may assume that this code is correct on a CPU with strong memory model. 
+But remember that a compiler may rearrange `have_pi = true;` and 'pi = ComputePi();' and one of the threads will return uninitialized value of `pi`. 
+
+
 =Volatile= 
 DON'T use `volatile` for synchronization in C/C++. 
 The C and C++ standards don't say anything about `volatile` and threads -- so don't assume anything. 
