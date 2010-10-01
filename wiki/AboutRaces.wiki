@@ -169,11 +169,11 @@ _Z17volatile_store_64x:
         ret
 ...
 }}}
-
+You can clearly see that a 64-bit volatile variable is written in two pieces w/o any synchronization. 
 Do you still use C++ `volatile` as synchronization? 
 
-You may object that we are cheating (using 64-bit ints on a 32 arch). 
-Ok, we indeed cheated, but just a bit. How about this case: 
+You may object that we are cheating (with 64-bit ints on a 32 arch). 
+Ok, we indeed cheated, but just a bit. How about this case?
 
 {{{
 % cat volatile2.cc 
@@ -196,7 +196,10 @@ _Z18volatile_example_2v:
 ...
 }}}
 
-Are you convinced now? 
+Here you can see that the compiler reordered a non-volatile store and a volatile store. 
+
+Are you convinced now? If no, please let us know why! 
+
 
 
 =How to fix= 
