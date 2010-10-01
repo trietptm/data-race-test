@@ -201,7 +201,6 @@ Here you can see that the compiler reordered a non-volatile store and a volatile
 Are you convinced now? If no, please let us know why! 
 
 
-
 =How to fix= 
 So, how do I make my code correct? 
 
@@ -216,3 +215,4 @@ But remember -- every time you implement a custom lock-free synchronization you 
   # [http://msdn.microsoft.com/en-us/magazine/cc163744.aspx What Every Dev Must Know About Multithreaded Apps]
   # [http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html The "Double-Checked Locking is Broken" Declaration]
   # http://en.wikipedia.org/wiki/Memory_barrier
+  # http://en.wikipedia.org/wiki/Volatile_variable
