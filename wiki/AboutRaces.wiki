@@ -172,6 +172,33 @@ _Z17volatile_store_64x:
 
 Do you still use C++ `volatile` as synchronization? 
 
+You may object that we are cheating (using 64-bit ints on a 32 arch). 
+Ok, we indeed cheated, but just a bit. How about this case: 
+
+{{{
+% cat volatile2.cc 
+volatile bool volatile_bool_done;
+double regular_double;
+void volatile_example_2() {
+        regular_double = 1.23;
+        volatile_bool_done = true;
+}
+% g++ -O2 volatile2.cc -S
+% cat volatile2.s 
+...
+_Z18volatile_example_2v:
+.LFB0:
+..
+        movabsq $4608218246714312622, %rax
+        movb    $1, volatile_bool_done(%rip)
+        movq    %rax, regular_double(%rip)
+        ret
+...
+}}}
+
+Are you convinced now? 
+
+
 =How to fix= 
 So, how do I make my code correct? 
 
