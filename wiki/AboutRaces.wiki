@@ -144,6 +144,34 @@ But remember that a compiler may rearrange `have_pi = true;` and `pi = ComputePi
 DON'T use `volatile` for synchronization in C/C++. 
 The C and C++ standards don't say anything about `volatile` and threads -- so don't assume anything. 
 
+You don't believe us? Ok, here is a simplest proof that C++ compilers don't treat volatile as synchronization. 
+{{{
+% cat volatile.cc 
+typedef long long T;
+volatile T vlt64;
+void volatile_store_64(T x) {
+        vlt64 = x;
+}
+% g++ --version 
+g++ (Ubuntu 4.4.3-4ubuntu5) 4.4.3
+...
+% g++ -O2 -S volatile.cc -m32 && cat volatile.s 
+...
+_Z17volatile_store_64x:
+.LFB0:
+        pushl   %ebp
+        movl    %esp, %ebp
+        movl    8(%ebp), %eax
+        movl    12(%ebp), %edx
+        popl    %ebp
+        movl    %eax, vlt64
+        movl    %edx, vlt64+4
+        ret
+...
+}}}
+
+Do you still use C++ `volatile` as synchronization? 
+
 =How to fix= 
 So, how do I make my code correct? 
 
