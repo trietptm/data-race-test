@@ -17,7 +17,7 @@ void Thread2() {  // Runs in another thread.
 }
 }}}
 
-However, there are other, much more subtle races who's harmfulness is not that obvious. This article is about such races. Most of the content is specific to C/C++.
+However, there are other, much more subtle races which are much less obviously harmful. This article is about such races. Most of the content is specific to C/C++.
 
 
 TODO(kcc) This article is not finished. Expect more content later. 
