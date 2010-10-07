@@ -1,7 +1,8 @@
 #summary LLVM compile-time instrumentation for TSan support
 
-We've implemented an experimental compile-time instrumentation that allows us to directly link ThreadSanitizer against the client code instead of using binary instrumentation frameworks.
+We've implemented an experimental compile-time instrumentation pass for LLVM that allows us to directly link ThreadSanitizer against the client code instead of using binary instrumentation frameworks. An instrumented program 
 
+= Pros and Cons =
 Possible advantages:
   * no binary translation and instrumentation overhead at runtime
   * at compile time we know the semantic information that allows us to ignore accesses to thread-local memory (e.g. unescaped stack allocations)
