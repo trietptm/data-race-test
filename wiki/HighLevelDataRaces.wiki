@@ -18,36 +18,41 @@ The basic type of *unserializable interleavings* is composed of three memory acc
 Consider following *java* source
 
 {{{
+  public void arraySize() {
+    new ThreadRunner(2) {
+      private int uk;
+      private int[] stack;
 
-private int uk;
-private int[] stack;
+      public void setUp() {
+        stack = new int[20];
+      }
 
-synchronized int getSize() {
-  return uk;
-}
+      synchronized int getSize() {
+        return uk;
+      }
 
-synchronized void put(int x) {
-  stack[uk++] = x;
-}
+      synchronized void push(int x) {
+        stack[uk++] = x;
+      }
 
-synchronized int push() {
-  return stack[--uk];
-}
+      synchronized int pop() {
+        return stack[--uk];
+      }
 
-thread1() {
-  for (int i=0; i<10; i++) {
-    put(i);
+      public void thread1() {
+        for (int i = 0; i < 10; i++) {
+          push(i);
+        }
+      }
+
+      public void thread2() {
+        while (getSize() > 0) {
+          // BAD BAD BAD!
+          pop();
+        }
+      }
+    };
   }
-  while (getSize()) > 0) {
-    // BAD BAD BAD
-    push();
-  } 
-}
-
-thread2() {
-  thread1();
-}
-
 }}}
 
 We havn't tradition data race, but code is unsafe.
@@ -60,45 +65,59 @@ Example:
 
 {{{
 
-class Point {
-  private int x, y;
-  public Point() {
-    x = 0;
-    y = 0;
-  }
-  // getter and setter for X
-  public synchronized int getX() {
-    return x;
-  }
-  public synchronized void setX(int nx) {
-    x = nx;
-  }
-  // getter and setter for Y
-  ...
-  // getter and setter for X and Y
-  public synchronized int[] getXY() {
-    return new int[] {x, y};
-  }
-  public synchronized void setXY(int nx, int ny) {
-    x = nx;
-    y = ny;
-  }
+  public void pointInconsistentState() {
+    new ThreadRunner(2) {
+      class Point {
+        private int x, y;
 
-}
+        public Point() {
+          x = 0;
+          y = 0;
+        }
 
-Point global_p;
+        public synchronized int getX() {
+          return x;
+        }
 
-thread1() {
-  global_p = new Point();
-  global_p.setX(100);
-  // BAD BAD BAD
-  global_p.setY(100);
-}
+        public synchronized void setX(int nx) {
+          x = nx;
+        }
 
-thread2() {
-  Point local_p = new Point();
-  int[] xy = gloabal_p.getXY();
-  local_p.setXY(xy[0], xy[1]);  
-}
+        public synchronized int getY() {
+          return y;
+        }
 
+        public synchronized void setY(int ny) {
+          y = ny;
+        }
+
+        public synchronized int[] getXY() {
+          return new int[]{x, y};
+        }
+
+        public synchronized void setXY(int[] xy) {
+          x = xy[0];
+          y = xy[1];
+        }
+      }
+
+      Point point;
+
+      public void setUp() {
+        point = new Point();
+      }
+
+      public void thread1() {
+        point.setX(100);
+        // BAD BAD BAD!
+        point.setY(100);
+      }
+
+      public void thread2() {
+        Point localPoint = new Point();
+        int[] xy = point.getXY();
+        localPoint.setXY(xy);
+      }
+    };
+  }
 }}} 
