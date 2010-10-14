@@ -17,6 +17,17 @@ Possible drawbacks:
 = Usage and current status =
 See the code in http://code.google.com/p/data-race-test/source/browse/#svn/trunk/llvm
 
+Before using the tool you should build the opt plugin and the runtime library:
+{{{
+cd llvm/opt/ThreadSanitizer
+make
+cd ../../tsan_rtl
+make
+}}}
+
+The prerequisites necessary for building ThreadSanitizer.so are listed in `llvm/opt/README`
+
+
 To compile a small test containing one file:
 
 `$ llvm/scripts/instrument_and_link.sh path/to/program.c` -- produces `path/to/program` binary with builtin ThreadSanitizer
@@ -24,7 +35,7 @@ To compile a small test containing one file:
 To build a larger program with `make`, use the wrappers for `gcc`/`g++`, `ld`, `ar`.
 For example, this is how racecheck_unittest is built:
 {{{
-make OMIT_CPP0X=1
+make OMIT_CPP0X=1 \
 CXXFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK
 -DRACECHECK_UNITTEST_WANT_ATTRIBUTE_WEAK" \
 CFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK
