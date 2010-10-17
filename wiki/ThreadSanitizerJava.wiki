@@ -17,6 +17,7 @@ Race detection consists of two parts:
 # Checkout offline ThreadSanitizer _and_ the java instrumentation agent.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/ data-race-test
 cd data-race-test
+TOPDIR=`pwd`
 # Build the ThreadSanitizer offline detector.
 cd $TOPDIR/tsan
 make l64d GTEST_ROOT= VALGRIND_ROOT= 
