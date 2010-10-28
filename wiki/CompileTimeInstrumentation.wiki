@@ -36,9 +36,9 @@ To build a larger program with `make`, use the wrappers for `gcc`/`g++`, `ld`, `
 For example, this is how racecheck_unittest is built:
 {{{
 make OMIT_CPP0X=1 \
-CXXFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK
+CXXFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK \
 -DRACECHECK_UNITTEST_WANT_ATTRIBUTE_WEAK" \
-CFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK
+CFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK \
 -DRACECHECK_UNITTEST_WANT_ATTRIBUTE_WEAK" \
 CC=`pwd`/../llvm/scripts/gcc.sh \
 CXX=`pwd`/../llvm/scripts/gcc.sh LD=`pwd`/../llvm/scripts/ld.sh \
