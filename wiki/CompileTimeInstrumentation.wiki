@@ -50,12 +50,15 @@ To run the tests, just execute the resulting binary. Additional flags for Thread
 *Note*: at the moment racecheck_unittest doesn't pass when linked against ThreadSanitizer.
 
 = Future development =
-  * make racecheck_unittest pass
+  * make racecheck_unittest pass (see http://code.google.com/p/data-race-test/issues/detail?id=52 for the status)
   * support [ LiteRaceSampling literace sampling ]
+  * buffer the memory events to decrease lock contention in the RTL
+  * support 64-bit mode
   * make less calls from the instrumented program to RTL (do not flush each basic block or each basic block slice between call/invoke instructions)
   * try this on something big (Chromium?)
   * compare the performance with Valgrind- or PIN-based ThreadSanitizer
   * use escape analysis to reduce the number of instrumented operations
   * fill superblock passports while generating the native code to get rid of .dbg files
   * implement *fast* event logging in the RTL for offline mode
+  * use PIN or other lightweight instrumentation framework to handle uninstrumented libraries
   * write a gcc plugin for program instrumentation
