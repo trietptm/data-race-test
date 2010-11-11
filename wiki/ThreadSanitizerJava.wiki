@@ -13,7 +13,7 @@ Race detection consists of two parts:
 
 
 == Run tests on a 64bit Linux machine ==
-*Important*: Since r128 jtsan doesn't support 32bit tsan_offline. Please, use 64bit tsan_offline.
+*Important*: Since [http://code.google.com/p/java-thread-sanitizer/source/detail?r=128 r128] jtsan doesn't support 32bit tsan_offline. Please, use 64bit tsan_offline.
 {{{
 # Checkout offline ThreadSanitizer _and_ the java instrumentation agent.
 svn checkout http://data-race-test.googlecode.com/svn/trunk/ data-race-test
