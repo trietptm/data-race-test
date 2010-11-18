@@ -32,7 +32,7 @@ def generate(settings):
                      description='packing sfx binary',
                      descriptionDone='pack sfx binary'))
 
-  f1.addStep(ShellCommand(command='mkdir -p out; cd out; ../tsan/tsan-x86-windows-sfx.exe',
+  f1.addStep(ShellCommand(command="bash -c 'mkdir -p out; cd out; ../tsan/tsan-x86-windows-sfx.exe'",
                      description='extracting sfx',
                      descriptionDone='extract sfx'))
 
@@ -73,7 +73,7 @@ def generate(settings):
 
 
   binaries = {
-    'tsan/tsan-x86-windows-sfx.exe' : 'tsan-r%s-x86-windows-sfx.exe'}
+    'tsan\\tsan-x86-windows-sfx.exe' : 'tsan-r%s-x86-windows-sfx.exe'}
   addUploadBinariesStep(f1, binaries)
 
   b1 = {'name': 'buildbot-winxp',

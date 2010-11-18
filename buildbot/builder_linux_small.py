@@ -26,14 +26,17 @@ def generate(settings):
   os = 'linux'
   #                  test binary | tsan + run parameters
   #             bits, opt, static,   tsan-debug,   mode
-  variants = [((  64,   0, False),(        False, 'hybrid'))]
+  variants = [
+((  64,   0, False, None),(        False, 'hybrid')),
+((  32,   1, False, '-PIC'),(        False, 'hybrid'))
+]
   for (test_variant, run_variant) in variants:
     (tsan_debug, mode) = run_variant
-    if not test_binaries.has_key(test_variant):
-      (bits, opt, static) = test_variant
-      test_desc = getTestDesc(os, bits, opt, static)
-      test_binaries[test_variant] = test_desc
-    test_binary = unitTestBinary(os, bits, opt, static)
+    (bits, opt, static, build_extra) = test_variant
+    test_desc = getTestDesc(os, bits, opt, static,
+        extra_build_suffix=build_extra)
+    test_binary = unitTestBinary(os, bits, opt, static,
+        extra_build_suffix=build_extra)
     addTestStep(f1, tsan_debug, mode, test_binary, test_desc, extra_args=["--error_exitcode=1"])
 
 

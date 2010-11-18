@@ -9,33 +9,47 @@ from buildbot.process.properties import WithProperties
 import os.path
 
 
-def unitTestBinary(os, bits, opt, static, test_base_name='racecheck_unittest'):
+def unitTestBinary(osname, bits, opt, static, extra_build_suffix=None,
+    test_base_name='racecheck_unittest'):
   if bits == 64:
     arch = 'amd64'
   else:
     arch = 'x86'
-  name = 'unittest/bin/%s-%s-%s-O%d' % (test_base_name, os, arch, opt)
+  name = os.path.join('unittest', 'bin', '%s-%s-%s-O%d' % (test_base_name, osname, arch, opt))
   if static:
     name += '-static'
-  if os == 'windows':
+  if extra_build_suffix:
+    name += extra_build_suffix
+  if osname == 'windows':
     name += '.exe'
   return name
 
 
-def getTestDesc(os, bits, opt, static):
+def getTestDesc(osname, bits, opt, static, extra_build_suffix=None):
   desc = []
-  desc.append(os)
+  desc.append(osname)
   desc.append(str(bits))
   desc.append('O%d' % opt)
   if static:
     desc.append('static')
+  if extra_build_suffix:
+    desc.append(extra_build_suffix)
   return '(' + ','.join(desc) + ')'
 
 
-def addBuildTestStep(factory, os, bits, opt, static, more_args=None):
+def findExtraBuildSuffix(extra_args):
+  if not extra_args:
+    return None
+  for arg in extra_args:
+    if arg.startswith('EXTRA_BUILD_SUFFIX='):
+      return arg.split('=', 1)[1]
+  return None
+
+
+def addBuildTestStep(factory, osname, bits, opt, static, pic=False, more_args=None):
   """Adds a step for building a unit test binary."""
   command = ['make', '-C', 'unittest', 'all']
-  command.append('OS=%s' % os)
+  command.append('OS=%s' % osname)
 
   if bits == 64:
     command.append('ARCH=amd64')
@@ -46,11 +60,31 @@ def addBuildTestStep(factory, os, bits, opt, static, more_args=None):
 
   command.append('STATIC=%d' % static)
 
+  extra_cflags = []
+  extra_cxxflags = []
+  extra_build_suffix = []
+
+  if pic:
+    extra_cflags.append('-fPIC')
+    extra_cxxflags.append('-fPIC')
+    extra_build_suffix.append('-PIC')
+
+  if extra_cflags:
+    command.append('EXTRA_CFLAGS=%s' % ' '.join(extra_cflags))
+
+  if extra_cxxflags:
+    command.append('EXTRA_CXXFLAGS=%s' % ' '.join(extra_cxxflags))
+
+  if extra_build_suffix:
+    command.append('EXTRA_BUILD_SUFFIX=%s' % ''.join(extra_build_suffix))
+
+  desc_common = getTestDesc(osname, bits, opt, static,
+      extra_build_suffix=''.join(extra_build_suffix))
+  
+
   if more_args:
     command.extend(more_args)
 
-  desc_common = getTestDesc(os, bits, opt, static)
-  
   print command
   factory.addStep(Compile(command = command,
                           description = 'building unittests ' + desc_common,
@@ -72,7 +106,7 @@ def addTestStep(factory, debug, mode, test_binary, test_desc,
       frontend_binary = frontend_binary or './tsan-debug.sh'
     else:
       frontend_binary = frontend_binary or './tsan.sh'
-    # frontend_binary = frontend_binary or 'out/bin/valgrind'
+    env['VALGRIND_EXTRACT_DIR'] = '.'
   elif frontend == 'pin':
     if not frontend_binary:
       frontend_binary = 'tsan/tsan_pin.sh'
@@ -83,9 +117,9 @@ def addTestStep(factory, debug, mode, test_binary, test_desc,
   elif frontend == 'pin-win':
     if not frontend_binary:
       if debug:
-        frontend_binary = 'out/tsan-x86-windows/tsan-debug.bat'
+        frontend_binary = 'out\\tsan-x86-windows\\tsan-debug.bat'
       else:
-        frontend_binary = 'out/tsan-x86-windows/tsan.bat'
+        frontend_binary = 'out\\tsan-x86-windows\\tsan.bat'
 
 
   if debug:
@@ -107,8 +141,8 @@ def addTestStep(factory, debug, mode, test_binary, test_desc,
   elif mode == 'hybrid':
     args.extend(['--pure-happens-before=no'])
 
-  args.append('--suppressions=unittest/racecheck_unittest.supp')
-  args.append('--ignore=unittest/racecheck_unittest.ignore')
+  args.append('--suppressions=' + os.path.join('unittest', 'racecheck_unittest.supp'))
+  args.append('--ignore=' + os.path.join('unittest', 'racecheck_unittest.ignore'))
 
   desc.append(mode)
   desc_common = 'tsan-' + frontend + '(' + ','.join(desc) + ')'
@@ -166,7 +200,7 @@ class GetRevisionStep(ShellCommand):
 # Gets full build tree from another builder, unpacks it and gets its svn revision
 def addSetupTreeForTestsStep(factory):
   addClobberStep(factory)
-  factory.addStep(ShellCommand(command=['wget', 'http://codf220/full_linux_build/full_build.tar.gz'],
+  factory.addStep(ShellCommand(command=['wget', 'http://vm42-m3/b/build/slave/full_linux_build/full_build.tar.gz'],
                           description='getting build tree',
                           descriptionDone='get build tree'))
 
@@ -182,12 +216,17 @@ def addUploadBinariesStep(factory, binaries):
 
 # Run GTest-based tests from tsan/ directory.
 def addTsanTestsStep(factory, archosd_list):
+  pathsep = '/'
+  if archosd_list[0].find('windows') >= 0:
+    pathsep = '\\'
   for archosd in archosd_list:
-    factory.addStep(Test(command='tsan/bin/%s-suppressions_test' % archosd,
+    command = pathsep.join(['tsan', 'bin', '%s-suppressions_test' % archosd])
+    factory.addStep(Test(command=command,
                          description='testing suppressions (%s)' % archosd,
                          descriptionDone='test suppressions (%s)' % archosd))
   for archosd in archosd_list:
-    factory.addStep(Test(command='tsan/bin/%s-thread_sanitizer_test' % archosd,
+    command = pathsep.join(['tsan', 'bin', '%s-thread_sanitizer_test' % archosd])
+    factory.addStep(Test(command=command,
                     description='testing thread_sanitizer (%s)' % archosd,
                     descriptionDone='test thread_sanitizer (%s)' % archosd))
 

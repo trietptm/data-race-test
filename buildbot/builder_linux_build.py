@@ -15,7 +15,7 @@ def generate(settings):
   f1.addStep(SVN(svnurl=settings['svnurl'], mode='copy'))
 
   # Get valgrind build.
-  f1.addStep(ShellCommand(command=['wget', 'http://codf220/full_valgrind/valgrind_build.tar.gz'],
+  f1.addStep(ShellCommand(command=['wget', 'http://vm42-m3/b/build/slave/full_valgrind/valgrind_build.tar.gz'],
                           description='getting valgrind build',
                           descriptionDone='get valgrind build'))
 
@@ -91,6 +91,8 @@ def generate(settings):
     for opt in [0, 1]:
       for static in [False, True]:
         addBuildTestStep(f1, os, bits, opt, static)
+
+  addBuildTestStep(f1, os, 32, 1, False, pic=True)
 
 
   addArchiveStep(f1, '../full_build.tar.gz')
