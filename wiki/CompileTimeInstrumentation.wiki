@@ -35,7 +35,7 @@ To compile a small test containing one file:
 To build a larger program with `make`, use the wrappers for `gcc`/`g++`, `ld`, `ar`.
 For example, this is how racecheck_unittest is built:
 {{{
-make OMIT_CPP0X=1 \
+make  OMIT_DYNAMIC_ANNOTATIONS_IMPL=1 OMIT_CPP0X=1 \
 EXTRA_CXXFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK \
 -DRACECHECK_UNITTEST_WANT_ATTRIBUTE_WEAK" \
 EXTRA_CFLAGS="-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK \
