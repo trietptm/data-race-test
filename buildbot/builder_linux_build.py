@@ -14,6 +14,10 @@ def generate(settings):
   # Checkout sources.
   f1.addStep(SVN(svnurl=settings['svnurl'], mode='copy'))
 
+  f1.addStep(ShellCommand(command='svnversion . >REVISION',
+      description='getting revision',
+      descriptionDone='get revision'))
+
   # Get valgrind build.
   f1.addStep(ShellCommand(command=['wget', 'http://vm42-m3/b/build/slave/full_valgrind/valgrind_build.tar.gz'],
                           description='getting valgrind build',
@@ -95,7 +99,13 @@ def generate(settings):
   addBuildTestStep(f1, os, 32, 1, False, pic=True)
 
 
-  addArchiveStep(f1, '../full_build.tar.gz')
+  masks = ['tsan*.sh', 'tsan/bin*/tsan*.sh', 'tsan/bin*/*_test',
+    'unittest', 'common.mk', 'REVISION']
+
+  addArchiveStep(f1, '../full_build.tar.gz', masks)
+
+
+  addUploadBuildTreeStep(f1, '../full_build.tar.gz')
 
   b1 = {'name': 'buildbot-linux-build',
         'slavename': 'bot5name',

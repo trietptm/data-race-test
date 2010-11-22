@@ -61,5 +61,10 @@ def generate(settings):
         'builddir': 'full',
         'factory': f1,
         }
+  b2 = {'name': 'linux',
+        'slavename': 'vm44-m3',
+        'builddir': 'full-linux',
+        'factory': f1,
+        }
 
-  return [b1]
+  return [b1, b2]

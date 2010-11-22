@@ -13,12 +13,9 @@ def generate(settings):
   # Checkout sources.
   f1.addStep(SVN(svnurl=settings['svnurl'], mode='copy'))
 
-  f1.addStep(FileDownload(mastersrc='~/valgrind_source.tar.bz2',
-                          slavedest='third_party/valgrind_source.tar.bz2'))
-
-  f1.addStep(ShellCommand(command='cd third_party && ./update_valgrind.sh valgrind_source.tar.bz2',
-                          description='unpacking valgrind',
-                          descriptionDone='unpack valgrind'))
+  f1.addStep(ShellCommand(command='cd third_party && ./update_valgrind.sh',
+                          description='updating valgrind',
+                          descriptionDone='update valgrind'))
 
   # Build valgrind+tsan and install them to out/.
   f1.addStep(ShellCommand(command='cd third_party && ./build_and_install_valgrind.sh `pwd`/../out',

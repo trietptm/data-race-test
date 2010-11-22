@@ -89,7 +89,7 @@ def generate(settings):
   addSetupTreeForTestsStep(f1)
 
   # Run benchmarks.
-  platform = 'linux-experimental'
+  platform = 'perf-linux'
   benchmark_modes = {
     35:'phb',
     72:'phb',
@@ -150,9 +150,9 @@ def generate(settings):
 
 
 
-  b1 = {'name': 'buildbot-experimental',
-        'slavename': 'bot1name',
-        'builddir': 'full_experimental',
+  b1 = {'name': 'perf-linux',
+        'slavename': 'chromeperf05',
+        'builddir': 'full_perf_linux',
         'factory': f1,
         }
 

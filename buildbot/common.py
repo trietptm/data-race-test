@@ -4,6 +4,7 @@ from buildbot.steps.shell import Compile
 from buildbot.steps.shell import Test
 from buildbot.steps.shell import ShellCommand
 from buildbot.steps.transfer import FileUpload
+from buildbot.steps.transfer import FileDownload
 from buildbot.process.properties import WithProperties
 
 import os.path
@@ -176,6 +177,9 @@ def addArchiveStep(factory, archive_path, paths=['.']):
       description='packing build tree',
       descriptionDone='pack build tree'))
 
+def addUploadBuildTreeStep(factory, archive_path):
+  factory.addStep(FileUpload(slavesrc=archive_path, masterdest='build/linux_build.tgz', mode=0644))
+
 
 def addExtractStep(factory, archive_path):
   factory.addStep(ShellCommand(
@@ -187,7 +191,7 @@ def addExtractStep(factory, archive_path):
 class GetRevisionStep(ShellCommand):
 
   def __init__(self, *args, **kwargs):
-    kwargs['command'] = 'svnversion .'
+    kwargs['command'] = 'cat REVISION'
     kwargs['description'] = 'getting revision'
     kwargs['descriptionDone'] = 'get revision'
     ShellCommand.__init__(self, *args, **kwargs)
@@ -200,10 +204,7 @@ class GetRevisionStep(ShellCommand):
 # Gets full build tree from another builder, unpacks it and gets its svn revision
 def addSetupTreeForTestsStep(factory):
   addClobberStep(factory)
-  factory.addStep(ShellCommand(command=['wget', 'http://vm42-m3/b/build/slave/full_linux_build/full_build.tar.gz'],
-                          description='getting build tree',
-                          descriptionDone='get build tree'))
-
+  factory.addStep(FileDownload(slavedest='full_build.tar.gz', mastersrc='build/linux_build.tgz', mode=0644))
   addExtractStep(factory, 'full_build.tar.gz')
   factory.addStep(GetRevisionStep());
 
@@ -232,6 +233,7 @@ def addTsanTestsStep(factory, archosd_list):
 
 
 __all__ = ['unitTestBinary', 'addBuildTestStep', 'addTestStep',
-           'addClobberStep', 'addArchiveStep', 'addExtractStep',
+           'addClobberStep', 'addArchiveStep', 'addUploadBuildTreeStep',
+           'addExtractStep',
            'addSetupTreeForTestsStep', 'getTestDesc', 'addUploadBinariesStep',
            'addTsanTestsStep']

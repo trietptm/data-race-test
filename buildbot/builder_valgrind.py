@@ -61,10 +61,22 @@ def generate(settings):
 
   addUploadBinariesStep(f1, binaries)
 
+
+  out_masks = ['include/*', 'bin/valgrind', 'lib/valgrind/*memcheck*',
+    'lib/valgrind/*vex*', 'lib/valgrind/vgpreload_core*',
+    'lib/valgrind/default.supp']
+  src_masks = ['include/*', 'coregrind/*', 'VEX/pub/*', 'VEX/libvex*.a']
+
+  masks = []
+  for m in out_masks:
+    for s in ['', '32', '64']:
+      masks.append('out' + s + '/' + m)
+  for m in src_masks:
+    for s in ['', '32', '64']:
+      masks.append('third_party/valgrind' + s + '/' + m)
+
   addArchiveStep(f1, '../valgrind_build.tar.gz',
-                 ['out', 'out32', 'out64',
-                  'third_party/valgrind', 'third_party/valgrind32',
-                  'third_party/valgrind64'])
+                 masks)
 
   b1 = {'name': 'buildbot-valgrind',
         'slavename': 'bot5name',
