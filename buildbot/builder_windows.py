@@ -77,15 +77,21 @@ def generate(settings):
   addUploadBinariesStep(f1, binaries)
 
   b1 = {'name': 'buildbot-winxp',
-        'slavename': 'bot2name',
+        'slavename': 'vm10-m3',
         'builddir': 'full_winxp',
         'factory': f1,
         }
 
   b2 = {'name': 'buildbot-vista',
-        'slavename': 'bot3name',
+        'slavename': 'vm50-m3',
         'builddir': 'full_vista',
         'factory': f1,
         }
 
-  return [b1, b2]
+  b3 = {'name': 'buildbot-win7',
+        'slavename': 'vm51-m3',
+        'builddir': 'full_win7',
+        'factory': f1,
+        }
+
+  return [b1, b2, b3]
