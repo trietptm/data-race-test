@@ -21,10 +21,8 @@ def generate(settings):
   cflags = '-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK '
   cflags += '-DRACECHECK_UNITTEST_WANT_ATTRIBUTE_WEAK'
   path = '`pwd`/llvm/scripts'
-  flags = ['OMIT_CPP0X=1', 'CXXFLAGS="%s"' % cflags, 'CFLAGS="%s"' % cflags,
-           'CC=%s/gcc.sh' % path, 'CXX=%s/gcc.sh' % path,
-           'LD=%s/ld.sh' % path,  'AR=%s/ar.sh' % path]
-  flags = ['OMIT_CPP0X=1', 'EXTRA_CXXFLAGS="%s"' % cflags,
+  flags = ['OMIT_DYNAMIC_ANNOTATIONS_IMPL=1', 
+           'OMIT_CPP0X=1', 'EXTRA_CXXFLAGS="%s"' % cflags,
            'EXTRA_CFLAGS="%s"' % cflags,
            'PATH="%s:$PATH"' % path]
   f1.addStep(ShellCommand(command=['/bin/sh', '-c'] + [' '.join([ 'make'] + flags + ['-C', 'unittest', 'l32'])],
