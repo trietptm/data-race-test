@@ -57,7 +57,18 @@ Coordinates.prototype.processYValues_ = function () {
   for (var i = 0; i < merged.length; ++i) {
       sum += merged[i];
   }
-  this.yAverage = sum / merged.length;
+  var average = sum / merged.length;
+
+  sum = 0;
+  var non_marginal_count = 0;
+  for (var i = 0; i < merged.length; ++i) {
+      if (merged[i] > 1.5 * average)
+        continue;
+      sum += merged[i];
+      non_marginal_count++;
+  }
+ 
+  this.yAverage = sum / non_marginal_count;
 };
 
 /**
