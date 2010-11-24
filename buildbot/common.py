@@ -93,7 +93,7 @@ def addBuildTestStep(factory, osname, bits, opt, static, pic=False, more_args=No
   return desc_common
 
 
-def addTestStep(factory, debug, mode, test_binary, test_desc,
+def addTestStep(factory, debug, threaded, mode, test_binary, test_desc,
                 frontend_binary=None, extra_args=[], frontend='valgrind',
                 pin_root=None, timeout=1800, test_base_name='racecheck_unittest',
                 append_command=None, step_generator=Test, extra_test_args=[]):
@@ -115,12 +115,16 @@ def addTestStep(factory, debug, mode, test_binary, test_desc,
       args.extend(['--dbg'])
     else:
       args.extend(['--opt'])
+    if threaded:
+      args.extend(['--mt'])
   elif frontend == 'pin-win':
     if not frontend_binary:
       if debug:
         frontend_binary = 'out\\tsan-x86-windows\\tsan-debug.bat'
       else:
         frontend_binary = 'out\\tsan-x86-windows\\tsan.bat'
+    if threaded:
+      args.extend(['--mt'])
 
 
   if debug:
@@ -146,7 +150,10 @@ def addTestStep(factory, debug, mode, test_binary, test_desc,
   args.append('--ignore=' + os.path.join('unittest', 'racecheck_unittest.ignore'))
 
   desc.append(mode)
-  desc_common = 'tsan-' + frontend + '(' + ','.join(desc) + ')'
+  desc_common = 'tsan-' + frontend
+  if threaded:
+    desc_common += '-MT'
+  desc_common += ' (' + ','.join(desc) + ')'
 
   if frontend == 'pin-win':
     args.append('--')

@@ -164,7 +164,7 @@ def generate(settings):
   bigtest_desc = getTestDesc('linux', 64, 0, False)
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'bigtest')
-  addTestStep(f1, False, 'phb', bigtest_binary,
+  addTestStep(f1, False, False, 'phb', bigtest_binary,
               bigtest_desc,
               extra_args=["--error_exitcode=1", "--suppressions=unittest/bigtest.supp"],
               test_base_name='bigtest',
@@ -175,7 +175,7 @@ def generate(settings):
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'racecheck_unittest')
   for test_id, mode in benchmark_modes.items():
-    addTestStep(f1, False, mode, racecheck_binary,
+    addTestStep(f1, False, False, mode, racecheck_binary,
                 racecheck_desc + ', test ' + str(test_id),
                 extra_args=["--error_exitcode=1"],
                 extra_test_args=["--gtest_filter=NonGtestTests*", str(test_id)],
@@ -187,7 +187,7 @@ def generate(settings):
   bigtest32_desc = getTestDesc('linux', 32, 0, False)
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'bigtest32')
-  addTestStep(f1, False, 'phb', bigtest32_binary,
+  addTestStep(f1, False, False, 'phb', bigtest32_binary,
               bigtest32_desc,
               extra_args=["--error_exitcode=1", "--suppressions=unittest/bigtest.supp"],
               test_base_name='bigtest',
@@ -198,7 +198,7 @@ def generate(settings):
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'racecheck_unittest32')
   for test_id, mode in benchmark_modes.items():
-    addTestStep(f1, False, mode, racecheck32_binary,
+    addTestStep(f1, False, False, mode, racecheck32_binary,
                 racecheck32_desc + ', test ' + str(test_id),
                 extra_args=["--error_exitcode=1"],
                 extra_test_args=["--gtest_filter=NonGtestTests*", str(test_id)],

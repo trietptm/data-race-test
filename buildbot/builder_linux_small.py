@@ -37,7 +37,7 @@ def generate(settings):
         extra_build_suffix=build_extra)
     test_binary = unitTestBinary(os, bits, opt, static,
         extra_build_suffix=build_extra)
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc, extra_args=["--error_exitcode=1"])
+    addTestStep(f1, tsan_debug, False, mode, test_binary, test_desc, extra_args=["--error_exitcode=1"])
 
 
   b1 = {'name': 'buildbot-linux-small',

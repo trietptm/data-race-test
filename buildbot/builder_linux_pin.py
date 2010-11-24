@@ -7,9 +7,9 @@ from common import *
 
 
 def runAllTests(factory, variants, os):
-  test_variants = {} # (bits, opt, static, base_name) -> (binary, desc)
+  test_variants = {} # (bits, opt, static, base_name) -> (binary, threaded, desc)
   for (test_variant, run_variant) in variants:
-    (tsan_debug, mode, base_name) = run_variant
+    (tsan_debug, mode, threaded, base_name) = run_variant
     if test_variants.has_key(test_variant):
       test_desc = test_variants[test_variant]
     else:
@@ -21,15 +21,15 @@ def runAllTests(factory, variants, os):
       extra_args = []
     else:
       extra_args=["--error_exitcode=1"]
-    addTestStep(factory, tsan_debug, mode, test_binary, test_desc, frontend='pin',
+    addTestStep(factory, tsan_debug, threaded, mode, test_binary, test_desc, frontend='pin',
                 pin_root='../../../third_party/pin', extra_args=extra_args, test_base_name=base_name)
-    if base_name == 'racecheck_unittest':
-      addTestStep(factory, tsan_debug, mode, test_binary, test_desc + ' RV 1st pass', frontend='pin',
+    if base_name == 'racecheck_unittest' and not threaded:
+      addTestStep(factory, tsan_debug, False, mode, test_binary, test_desc + ' RV 1st pass', frontend='pin',
                   pin_root='../../../third_party/pin',
                   extra_args=extra_args + ['--show-expected-races', '--error_exitcode=1'],
                   extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
                   append_command='2>&1 | tee raceverifier.log')
-      addTestStep(factory, tsan_debug, mode, test_binary, test_desc + ' RV 2nd pass', frontend='pin',
+      addTestStep(factory, tsan_debug, False, mode, test_binary, test_desc + ' RV 2nd pass', frontend='pin',
                   pin_root='../../../third_party/pin',
                   extra_args=extra_args + ['--error_exitcode=1', '--race-verifier=raceverifier.log'],
                   extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
@@ -46,15 +46,10 @@ def generate(settings):
 
   # Run unit tests.
   #                  test binary | tsan + run parameters
-  #             bits, opt, static,   tsan-debug,   mode
-#   variants = [((  64,   1, False),(        True, 'fast', 'racecheck_unittest')),
-#               ((  64,   1, False),(        True, 'slow', 'racecheck_unittest')),
-#               ((  64,   1, False),(        True,  'phb', 'racecheck_unittest')),
-#               ((  32,   1, False),(        True, 'slow', 'racecheck_unittest')),
-#               ((  64,   0, False),(        True, 'slow', 'racecheck_unittest')),
-#               ((  64,   1, False),(        True, 'slow',         'demo_tests'))]
-  variants = [((  64,   0, False),(        True, 'phb',    'racecheck_unittest')),
-              ((  64,   1, False),(        True, 'hybrid',         'demo_tests'))]
+  #             bits, opt, static, tsan-debug, threaded, mode
+  variants = [((  64,   0, False),(        True, 'phb',    False, 'racecheck_unittest')),
+              ((  64,   1, False),(        True, 'hybrid', False, 'demo_tests')),
+              ((  64,   0, False),(        True, 'phb',    True, 'racecheck_unittest'))]
   runAllTests(f1, variants, 'linux')
 
 

@@ -43,29 +43,30 @@ def generate(settings):
   test_binaries = {} # (os, bits, opt, static, name) -> (binary, desc)
   os = 'windows'
   #                  test binary | tsan + run parameters
-  #             bits, opt, static,   tsan-debug,   mode
+  #             bits, opt, static, tsan-debug, threaded, mode
   variants = [
-    # ((  32,   1, False),(        True, 'fast')),
-    ((  32,   1, False),(        True, 'hybrid')),
-    ((  32,   1, False),(        True,  'phb')),
-    # ((  32,   0, False),(        True, 'slow')),
-    ((  32,   0, False),(       False,  'phb'))
+    ((  32,   1, False),(        True, False, 'hybrid')),
+    ((  32,   1, False),(        True, False, 'phb')),
+    ((  32,   0, False),(       False, False, 'phb')),
+    ((  32,   1, False),(        True, True,  'phb')), # Threaded!
     ]
   for (test_variant, run_variant) in variants:
-    (tsan_debug, mode) = run_variant
+    (tsan_debug, threaded, mode) = run_variant
     if not test_binaries.has_key(test_variant):
       (bits, opt, static) = test_variant
       test_desc = addBuildTestStep(f1, os, bits, opt, static)
       test_binaries[test_variant] = test_desc
     test_binary = unitTestBinary(os, bits, opt, static)
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc, frontend='pin-win',
+    addTestStep(f1, tsan_debug, threaded, mode, test_binary, test_desc, frontend='pin-win',
                 pin_root='c:/pin', timeout=None, extra_args=['--error_exitcode=1'])
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc + ' RV 1st pass', frontend='pin-win',
+    if threaded:
+      continue
+    addTestStep(f1, tsan_debug, threaded, mode, test_binary, test_desc + ' RV 1st pass', frontend='pin-win',
                 pin_root='c:/pin', timeout=None,
                 extra_args=['--show-expected-races', '--error_exitcode=1'],
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
                 append_command='2>&1 | tee raceverifier.log')
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc + ' RV 2nd pass', frontend='pin-win',
+    addTestStep(f1, tsan_debug, threaded, mode, test_binary, test_desc + ' RV 2nd pass', frontend='pin-win',
                 pin_root='c:/pin', timeout=None,
                 extra_args=['--error_exitcode=1', '--race-verifier=raceverifier.log'],
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],

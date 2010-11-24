@@ -74,13 +74,13 @@ def generate(settings):
       test_desc = addBuildTestStep(f1, os, bits, opt, static)
       test_binaries[test_variant] = test_desc
     test_binary = unitTestBinary(os, bits, opt, static)
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc,
+    addTestStep(f1, tsan_debug, False, mode, test_binary, test_desc,
                 extra_args=["--error_exitcode=1"])
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc + ' RV 1st pass',
+    addTestStep(f1, tsan_debug, False, mode, test_binary, test_desc + ' RV 1st pass',
                 extra_args=['--show-expected-races', '--error_exitcode=1'],
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
                 append_command='2>&1 | tee raceverifier.log')
-    addTestStep(f1, tsan_debug, mode, test_binary, test_desc + ' RV 2nd pass',
+    addTestStep(f1, tsan_debug, False, mode, test_binary, test_desc + ' RV 2nd pass',
                 extra_args=['--error_exitcode=1', '--race-verifier=raceverifier.log'],
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
                 append_command='2>&1')
