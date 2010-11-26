@@ -123,8 +123,8 @@ def addTestStep(factory, debug, threaded, mode, test_binary, test_desc,
         frontend_binary = 'out\\tsan-x86-windows\\tsan-debug.bat'
       else:
         frontend_binary = 'out\\tsan-x86-windows\\tsan.bat'
-    if threaded:
-      args.extend(['--mt'])
+      if threaded:
+        frontend_binary = 'out\\tsan-x86-windows\\tsan_mt.bat'
 
 
   if debug:

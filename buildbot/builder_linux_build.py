@@ -100,7 +100,7 @@ def generate(settings):
 
 
   masks = ['tsan*.sh', 'tsan/bin*/tsan*.sh', 'tsan/bin*/*_test',
-    'tsan/bin*/*ts_pin.so', 'tsan/tsan_pin.sh',
+    'tsan/bin*/*ts_pin.so', 'tsan/bin*/*ts_pinmt.so', 'tsan/tsan_pin.sh',
     'unittest', 'common.mk', 'REVISION']
 
   addArchiveStep(f1, '../full_build.tar.gz', masks)
