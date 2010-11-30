@@ -267,7 +267,7 @@ When we need to get the shadow state for a given address `A`,
  the `N` least significant bits from `A`: 
 {{{
 T=A >> N
-}}
+}}}
 Then we compute the *cache line slot index* `S` by taking `K` 
 least significant bits of the tag
 {{{
