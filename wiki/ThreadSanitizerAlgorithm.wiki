@@ -252,6 +252,20 @@ When we enter the next TRACE, we flush the contents of the buffer.
 The idea of this optimization is taken from `./MemTrace/memtrace.cpp` in PIN distribution. 
 
 
+=Fast path=
+The state machine described above handles the general case when a
+memory location has already been accessed by an arbitrary number 
+of threads. However the most frequent case is when a memory location 
+is never shared between threads (i.e. it is always accessed by a single thread).
+For this case the implementation of the state machine could be optimized:
+it first executes a very simple and fast code which attempts
+to update the shadow state as if the memory has not been shared between 
+threads. If it fails, the original full state machine is then executed.
+Our experiments show that on most programs 90%-98% of memory accesses
+are never shared between threads. The fast path optimization 
+improves the performance by 1.5x-2x. 
+
+
 = Events =
 The core of the algorithm handles only few types of events (memory accesses and synchronization).
 But the real implementation of the detector needs to handle more events.
