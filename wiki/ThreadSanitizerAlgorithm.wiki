@@ -255,10 +255,10 @@ The idea of this optimization is taken from `./MemTrace/memtrace.cpp` in PIN dis
 Every time ThreadSanitizer analyzes a memory access it needs to get 
 the shadow state (`GetPerByteState()` above).
 The shadow state for every byte of memory is encoded in 8 bytes.
-We use a simple software cache and a backing storage based 
+We use a simple software cache and a backing store based 
 on a hash table to store the shadow state.
 The shadow states are grouped into *cache lines*, each line contains 
-`2^N` shadow states for memory locations `[T, T+2^N)` 
+`2^N` shadow states for memory locations `[T*2^N, T*2^N+2^N)` 
 (`T` is called the *tag* of this cache line).
 The *cache* is an array of `2^K` pointers to cache lines.
 
@@ -272,7 +272,7 @@ least significant bits of the tag
 {{{
 S=T & ((1 << K) - 1).
 }}}
-The cache element with the index `S` contains a line with
+The cache element with the index `S` contains a line
 which has this slot index. 
 If the tag of the stored cache line is `T`, this cache line is what we need. 
 If the tag is different (or if no cache line is stored at this slot),
