@@ -232,29 +232,6 @@ A pure happens-before detector will be silent. DynamicAnnotations can be used to
 such code friendly to Hybrid detectors.
 
 
-=Fast mode=
-ThreadSanitizer (similarly to Helgrind) groups memory locations in *cache lines*. <BR>
-The primary purpose of cache lines is to implement fast `GetPerByteState()` function. <BR>
-
-Another use of cache lines is the *fast mode*.
-
-{{{
-def HandleMemoryAccessInFastMode(is_write, tid, addr): 
-  cache_line = GetCacheLine(addr)
-  if (cache_line.WasNeverUsedBefore()):
-    # We see this cache line for the first time.
-    cache_line.creator_tid = tid:
-    return
-  if (cache_line.creator_tid == tid):
-    # We are still in the same tid.
-    return
-  cache_line.creator_tid = INVALID_TID
-  HandleMemoryAccess(is_write, tid, addr)
-}}}
-
-The fast mode helps to avoid some false positives of the hybrid scheme.
-This mode is a bit similar to the initialization state in [http://www.cs.washington.edu/homes/tom/pubs/eraser.pdf Eraser].
-
 
 =Instrumentation: TRACEs= 
 We instrument the memory accesses in the following way:
