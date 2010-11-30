@@ -1,0 +1,1 @@
+#summary Making ThreadSanitizer core parallel
