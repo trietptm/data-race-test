@@ -251,6 +251,36 @@ When we enter the next TRACE, we flush the contents of the buffer.
 
 The idea of this optimization is taken from `./MemTrace/memtrace.cpp` in PIN distribution. 
 
+=Shadow state cache=
+Every time ThreadSanitizer analyzes a memory access it needs to get 
+the shadow state (`GetPerByteState()` above).
+The shadow state for every byte of memory is encoded in 8 bytes.
+We use a simple software cache and a backing storage based 
+on a hash table to store the shadow state.
+The shadow states are grouped into *cache lines*, each line contains 
+`2^N` shadow states for memory locations `[T, T+2^N)` 
+(`T` is called the *tag* of this cache line).
+The *cache* is an array of `2^K` pointers to cache lines.
+
+When we need to get the shadow state for a given address `A`,
+ we first compute the cache line tag by discarding
+ the `N` least significant bits from `A`: 
+{{{
+T=A >> N
+}}
+Then we compute the *cache line slot index* `S` by taking `K` 
+least significant bits of the tag
+{{{
+S=T & ((1 << K) - 1).
+}}}
+The cache element with the index `S` contains a line with
+which has this slot index. 
+If the tag of the stored cache line is `T`, this cache line is what we need. 
+If the tag is different (or if no cache line is stored at this slot),
+we fall back to the slow backing store based on a hash table.  
+
+
+
 
 =Fast path=
 The state machine described above handles the general case when a
