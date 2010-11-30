@@ -262,9 +262,8 @@ The shadow states are grouped into *cache lines*, each line contains
 (`T` is called the *tag* of this cache line).
 The *cache* is an array of `2^K` pointers to cache lines.
 
-When we need to get the shadow state for a given address `A`,
- we first compute the cache line tag by discarding
- the `N` least significant bits from `A`: 
+When we need to get the shadow state for a given address `A`, we first compute 
+the cache line tag by discarding the `N` least significant bits from `A`: 
 {{{
 T=A >> N
 }}}
