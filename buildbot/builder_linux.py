@@ -57,15 +57,10 @@ def generate(settings):
   addTestStep(f1, False, False, 'fast', test_binary, test_desc + '(32-bit valgrind)',
               frontend_binary='./tsan32.sh')
 
-  b1 = {'name': 'buildbot-linux',
-        'slavename': 'bot5name',
-        'builddir': 'full',
-        'factory': f1,
-        }
-  b2 = {'name': 'linux',
+  b = {'name': 'linux',
         'slavename': 'vm44-m3',
         'builddir': 'full-linux',
         'factory': f1,
         }
 
-  return [b1, b2]
+  return [b]
