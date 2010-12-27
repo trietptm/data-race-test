@@ -19,20 +19,17 @@ See the code in http://code.google.com/p/data-race-test/source/browse/#svn/trunk
 
 Before using the tool you should build the opt plugin and the runtime library:
 {{{
-cd llvm/opt/ThreadSanitizer
-make
-cd ../../tsan_rtl
+cd llvm
 make
 }}}
 
 The prerequisites necessary for building ThreadSanitizer.so are listed in `llvm/opt/README`
 
-
 To compile a small test containing one file:
 
 `$ llvm/scripts/instrument_and_link.sh [x86|x86_64] path/to/program.c` -- produces `path/to/program` binary with builtin ThreadSanitizer
 
-To build a larger program with `make`, use the wrappers for `gcc`/`g++`, `ld`, `ar`.
+To build a larger program with `make`, use the wrappers for `gcc` and `g++`.
 For example, this is how racecheck_unittest is built:
 {{{
 make OPT=1 OMIT_DYNAMIC_ANNOTATIONS_IMPL=1 OMIT_CPP0X=1 PATH="`pwd`/../llvm/scripts/:$PATH" EXTRA_BUILD_SUFFIX=-llvm l64
@@ -42,17 +39,21 @@ To run the tests, just execute the resulting binary. Additional flags for Thread
 
 *Note*: at the moment racecheck_unittest doesn't pass when linked against ThreadSanitizer.
 
+= Useful ThreadSanitizer flags =
+  * `--suppressions=<filename>`
+  * `--ignore=<filename>`
+  * `--literace_sampling`
+  * `--v`
+
 = Future development =
   * document the items marked as done
   * make racecheck_unittest pass (see http://code.google.com/p/data-race-test/issues/detail?id=52 for the status)
   * support [ LiteRaceSampling literace sampling ] *DONE*
-  * buffer the memory events to decrease lock contention in the RTL (we shouldn't need this once we have parallel ThreadSanitizer implementation)
-  * support 64-bit mode *DONE*
-  * make less calls from the instrumented program to RTL (do not flush each basic block or each basic block slice between call/invoke instructions)
   * try this on something big (Chromium?)
   * compare the performance with Valgrind- or PIN-based ThreadSanitizer
   * use escape analysis to reduce the number of instrumented operations
-  * fill superblock passports while generating the native code to get rid of .dbg files
   * implement *fast* event logging in the RTL for offline mode
   * use PIN or other lightweight instrumentation framework to handle uninstrumented libraries
   * write a gcc plugin for program instrumentation
+  * make it possible to switch between instrumented and uninstrumented versions at runtime
+  * use ignore files during compilation
