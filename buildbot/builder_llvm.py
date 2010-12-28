@@ -15,16 +15,16 @@ def generate(settings):
   f1.addStep(Compile(command=['make', '-C', 'llvm/opt/ThreadSanitizer'],
                      description='building opt module',
                      descriptionDone='build opt module'))
-  f1.addStep(Compile(command=['make', '-C', 'llvm/tsan_rtl'],
+  f1.addStep(Compile(command=['make', '-C', 'llvm/tsan_rtl', 'DEBUG=1'],
                      description='building RTL',
                      descriptionDone='build RTL'))
-  cflags = '-DDYNAMIC_ANNOTATIONS_WANT_ATTRIBUTE_WEAK '
-  cflags += '-DRACECHECK_UNITTEST_WANT_ATTRIBUTE_WEAK'
   path = '`pwd`/llvm/scripts'
   flags = ['OMIT_DYNAMIC_ANNOTATIONS_IMPL=1', 
-           'OMIT_CPP0X=1', 'EXTRA_CXXFLAGS="%s"' % cflags,
-           'EXTRA_CFLAGS="%s"' % cflags,
+           'OMIT_CPP0X=1',
            'PATH="%s:$PATH"' % path]
+  gtest_filter='-PrintfTests.*:NegativeTests.test141'
+  gtest_filter+=':PositiveTests.RepPositive*Test'
+
   f1.addStep(ShellCommand(command=['/bin/sh', '-c'] + [' '.join([ 'make'] + flags + ['-C', 'unittest', 'l32'])],
                      description='building racecheck_unittest (32-bit)',
                      descriptionDone='build racecheck_unittest (32-bit)'))
@@ -37,18 +37,16 @@ def generate(settings):
   tsan_args = ['--ignore=unittest/racecheck_unittest.ignore',
                '--suppressions=unittest/racecheck_unittest.supp',
                '--error-exitcode=1']
-  f1.addStep(ShellCommand(command=['unittest/bin/racecheck_unittest-linux-x86-O0', '--gtest_filter=-PrintfTests.*:NegativeTests.test141'],
+  f1.addStep(ShellCommand(command=['unittest/bin/racecheck_unittest-linux-x86-O0', '--gtest_filter=%s' % gtest_filter],
              description='running racecheck_unittest (32-bit)',
              descriptionDone='run racecheck_unittest (32-bit)',
              env={'TSAN_ARGS': ' '.join(tsan_args),
-                  'TSAN_DBG_INFO': 'unittest/bin/racecheck_unittest-linux-x86-O0.dbg',
                  }))
 
-  f1.addStep(ShellCommand(command=['unittest/bin/racecheck_unittest-linux-amd64-O0', '--gtest_filter=-PrintfTests.*:NegativeTests.test141'],
+  f1.addStep(ShellCommand(command=['unittest/bin/racecheck_unittest-linux-amd64-O0', '--gtest_filter=%s' % gtest_filter],
              description='running racecheck_unittest (64-bit)',
              descriptionDone='run racecheck_unittest (64-bit)',
              env={'TSAN_ARGS': ' '.join(tsan_args),
-                  'TSAN_DBG_INFO': 'unittest/bin/racecheck_unittest-linux-amd64-O0.dbg',
                  }))
 
 
