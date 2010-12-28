@@ -5,27 +5,27 @@ from buildbot.steps.shell import Test
 from buildbot.steps.shell import ShellCommand
 from buildbot.steps.transfer import FileUpload
 from common import *
-
+from common_perf import *
 
 def generate(settings):
   compile_steps = [
-      # Checkout sources.
-      SVN(svnurl=settings['svnurl'], mode='copy'),
+    # Checkout sources.
+    SVN(svnurl=settings['svnurl'], mode='copy'),
 
-      # Build tsan + pin.
-      Compile(command=['make', '-C', 'tsan', '-j4',
-                       'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
-                       'w32o', 'w32d'],
-              description='building tsan with pin',
-              descriptionDone='build tsan with pin'),
-      Compile(command=['make', '-C', 'tsan',
-                       'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
-                       'w32-sfx'],
-              description='packing sfx binary',
-              descriptionDone='pack sfx binary'),
-      ShellCommand(command="bash -c 'mkdir -p out; cd out; ../tsan/tsan-x86-windows-sfx.exe'",
-                   description='extracting sfx',
-                   descriptionDone='extract sfx')]
+    # Build tsan + pin.
+    Compile(command=['make', '-C', 'tsan', '-j4',
+                     'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
+                     'w32o', 'w32d'],
+            description='building tsan with pin',
+            descriptionDone='build tsan with pin'),
+    Compile(command=['make', '-C', 'tsan',
+                     'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
+                     'w32-sfx'],
+            description='packing sfx binary',
+            descriptionDone='pack sfx binary'),
+    ShellCommand(command="bash -c 'mkdir -p out; cd out; ../tsan/tsan-x86-windows-sfx.exe'",
+                 description='extracting sfx',
+                 descriptionDone='extract sfx')]
 
   f_tester = factory.BuildFactory()
   f_tester.addSteps(compile_steps)
@@ -93,6 +93,43 @@ def generate(settings):
   # Performance bot
   f_perf = factory.BuildFactory()
   f_perf.addSteps(compile_steps)
+
+  for opt in [0, 1]:
+    addBuildTestStep(f_perf, os, 32, opt, False)
+
+  platform = 'perf-win'  # will be in the URL of the results.
+  benchmark_modes = {
+    35:'phb',
+    151:'phb',
+    502:'phb',
+    # 503:'phb', disabled for now - too slow
+    512:'hybrid',
+  }
+
+  bigtest32_binary = unitTestBinary(os, 32, 0, False, test_base_name='bigtest')
+  bigtest32_desc = getTestDesc(os, 32, 0, False)
+  step_generator = chromium_utils.InitializePartiallyWithArguments(
+      genBenchmarkStep, factory, platform, 'bigtest32')
+  addTestStep(f_perf, False, False, 'phb', bigtest32_binary,
+              bigtest32_desc,
+              pin_root='c:/pin', frontend='pin-win', timeout=None,
+              extra_args=["--error_exitcode=1", "--suppressions=unittest/bigtest.supp"],
+              test_base_name='bigtest',
+              step_generator=step_generator)
+
+  racecheck32_binary = unitTestBinary(os, 32, 0, False, test_base_name='racecheck_unittest')
+  racecheck32_desc = getTestDesc(os, 32, 0, False)
+  step_generator = chromium_utils.InitializePartiallyWithArguments(
+      genBenchmarkStep, factory, platform, 'racecheck_unittest32')
+  for test_id, mode in benchmark_modes.items():
+    addTestStep(f_perf, False, False, mode, racecheck32_binary,
+                racecheck32_desc + ', test ' + str(test_id),
+                pin_root='c:/pin', frontend='pin-win', timeout=None,
+                extra_args=["--error_exitcode=1"],
+                extra_test_args=["--gtest_filter=NonGtestTests*", str(test_id)],
+                test_base_name='racecheck_unittest',
+                step_generator=step_generator)
+
   bperf = {'name': 'perf-win',
            'slavename': 'chromeperf01',
            'builddir': 'full_perf_win',

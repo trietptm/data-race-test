@@ -72,7 +72,7 @@ def generate(settings):
 
 
   # Run benchmarks.
-  platform = 'perf-linux'
+  platform = 'perf-linux'  # will be in the URL of the results.
   benchmark_modes = {
     35:'phb',
     72:'phb',
@@ -83,8 +83,8 @@ def generate(settings):
     512:'hybrid',
   }
 
-  bigtest_binary = unitTestBinary('linux', 64, 0, False, test_base_name='bigtest')
-  bigtest_desc = getTestDesc('linux', 64, 0, False)
+  bigtest_binary = unitTestBinary(os, 64, 0, False, test_base_name='bigtest')
+  bigtest_desc = getTestDesc(os, 64, 0, False)
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'bigtest')
   addTestStep(f1, False, False, 'phb', bigtest_binary,
@@ -93,8 +93,8 @@ def generate(settings):
               test_base_name='bigtest',
               step_generator=step_generator)
 
-  racecheck_binary = unitTestBinary('linux', 64, 0, False, test_base_name='racecheck_unittest')
-  racecheck_desc = getTestDesc('linux', 64, 0, False)
+  racecheck_binary = unitTestBinary(os, 64, 0, False, test_base_name='racecheck_unittest')
+  racecheck_desc = getTestDesc(os, 64, 0, False)
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'racecheck_unittest')
   for test_id, mode in benchmark_modes.items():
@@ -106,8 +106,8 @@ def generate(settings):
                 step_generator=step_generator)
 
   # 32-bit benchmarks
-  bigtest32_binary = unitTestBinary('linux', 32, 0, False, test_base_name='bigtest')
-  bigtest32_desc = getTestDesc('linux', 32, 0, False)
+  bigtest32_binary = unitTestBinary(os, 32, 0, False, test_base_name='bigtest')
+  bigtest32_desc = getTestDesc(os, 32, 0, False)
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'bigtest32')
   addTestStep(f1, False, False, 'phb', bigtest32_binary,
@@ -116,8 +116,8 @@ def generate(settings):
               test_base_name='bigtest',
               step_generator=step_generator)
 
-  racecheck32_binary = unitTestBinary('linux', 32, 0, False, test_base_name='racecheck_unittest')
-  racecheck32_desc = getTestDesc('linux', 32, 0, False)
+  racecheck32_binary = unitTestBinary(os, 32, 0, False, test_base_name='racecheck_unittest')
+  racecheck32_desc = getTestDesc(os, 32, 0, False)
   step_generator = chromium_utils.InitializePartiallyWithArguments(
       genBenchmarkStep, factory, platform, 'racecheck_unittest32')
   for test_id, mode in benchmark_modes.items():
