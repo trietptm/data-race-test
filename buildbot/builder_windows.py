@@ -8,36 +8,30 @@ from common import *
 
 
 def generate(settings):
-  f1 = factory.BuildFactory()
+  compile_steps = [
+      # Checkout sources.
+      SVN(svnurl=settings['svnurl'], mode='copy'),
 
-  # Checkout sources.
-  f1.addStep(SVN(svnurl=settings['svnurl'], mode='copy'))
+      # Build tsan + pin.
+      Compile(command=['make', '-C', 'tsan', '-j4',
+                       'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
+                       'w32o', 'w32d'],
+              description='building tsan with pin',
+              descriptionDone='build tsan with pin'),
+      Compile(command=['make', '-C', 'tsan',
+                       'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
+                       'w32-sfx'],
+              description='packing sfx binary',
+              descriptionDone='pack sfx binary'),
+      ShellCommand(command="bash -c 'mkdir -p out; cd out; ../tsan/tsan-x86-windows-sfx.exe'",
+                   description='extracting sfx',
+                   descriptionDone='extract sfx')]
 
-  # Build tsan + pin.
-  f1.addStep(Compile(command=['make', '-C', 'tsan', '-j4',
-                              'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
-                              'w32o'],
-                     description='building tsan with pin',
-                     descriptionDone='build tsan with pin'))
-
-  f1.addStep(Compile(command=['make', '-C', 'tsan', '-j4',
-                              'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
-                              'w32d'],
-                     description='building tsan-debug with pin',
-                     descriptionDone='build tsan-debug with pin'))
-
-  f1.addStep(Compile(command=['make', '-C', 'tsan',
-                              'VALGRIND_ROOT=', 'PIN_ROOT=c:/pin',
-                              'w32-sfx'],
-                     description='packing sfx binary',
-                     descriptionDone='pack sfx binary'))
-
-  f1.addStep(ShellCommand(command="bash -c 'mkdir -p out; cd out; ../tsan/tsan-x86-windows-sfx.exe'",
-                     description='extracting sfx',
-                     descriptionDone='extract sfx'))
+  f_tester = factory.BuildFactory()
+  f_tester.addSteps(compile_steps)
 
   # Run thread_sanitizer and suppressions tests.
-  addTsanTestsStep(f1, ['x86-windows-debug'])
+  addTsanTestsStep(f_tester, ['x86-windows-debug'])
 
   # Run tests.
   test_binaries = {} # (os, bits, opt, static, name) -> (binary, desc)
@@ -54,19 +48,19 @@ def generate(settings):
     (tsan_debug, threaded, mode) = run_variant
     if not test_binaries.has_key(test_variant):
       (bits, opt, static) = test_variant
-      test_desc = addBuildTestStep(f1, os, bits, opt, static)
+      test_desc = addBuildTestStep(f_tester, os, bits, opt, static)
       test_binaries[test_variant] = test_desc
     test_binary = unitTestBinary(os, bits, opt, static)
-    addTestStep(f1, tsan_debug, threaded, mode, test_binary, test_desc, frontend='pin-win',
+    addTestStep(f_tester, tsan_debug, threaded, mode, test_binary, test_desc, frontend='pin-win',
                 pin_root='c:/pin', timeout=None, extra_args=['--error_exitcode=1'])
     if threaded:
       continue
-    addTestStep(f1, tsan_debug, threaded, mode, test_binary, test_desc + ' RV 1st pass', frontend='pin-win',
+    addTestStep(f_tester, tsan_debug, threaded, mode, test_binary, test_desc + ' RV 1st pass', frontend='pin-win',
                 pin_root='c:/pin', timeout=None,
                 extra_args=['--show-expected-races', '--error_exitcode=1'],
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
                 append_command='2>&1 | tee raceverifier.log')
-    addTestStep(f1, tsan_debug, threaded, mode, test_binary, test_desc + ' RV 2nd pass', frontend='pin-win',
+    addTestStep(f_tester, tsan_debug, threaded, mode, test_binary, test_desc + ' RV 2nd pass', frontend='pin-win',
                 pin_root='c:/pin', timeout=None,
                 extra_args=['--error_exitcode=1', '--race-verifier=raceverifier.log'],
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
@@ -75,24 +69,34 @@ def generate(settings):
 
   binaries = {
     'tsan\\tsan-x86-windows-sfx.exe' : 'tsan-r%s-x86-windows-sfx.exe'}
-  addUploadBinariesStep(f1, binaries)
+  addUploadBinariesStep(f_tester, binaries)
 
   b1 = {'name': 'buildbot-winxp',
         'slavename': 'vm10-m3',
         'builddir': 'full_winxp',
-        'factory': f1,
+        'factory': f_tester,
         }
 
   b2 = {'name': 'buildbot-vista',
         'slavename': 'vm50-m3',
         'builddir': 'full_vista',
-        'factory': f1,
+        'factory': f_tester,
         }
 
   b3 = {'name': 'buildbot-win7',
         'slavename': 'vm51-m3',
         'builddir': 'full_win7',
-        'factory': f1,
+        'factory': f_tester,
         }
 
-  return [b1, b2, b3]
+  #######################
+  # Performance bot
+  f_perf = factory.BuildFactory()
+  f_perf.addSteps(compile_steps)
+  bperf = {'name': 'perf-win',
+           'slavename': 'chromeperf01',
+           'builddir': 'full_perf_win',
+           'factory': f_perf,
+           }
+
+  return [b1, b2, b3, bperf]
