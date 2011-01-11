@@ -49,7 +49,7 @@ Each client module is instrumented independently, no link-time instrumentation i
   * each function call/exit is instrumented
   * debug info is written into the `tsan_rtl_debug_info` section
 
-At the moment there are three external functions used by the client code. Those are: `bb_flush()` (used for flushing the thread-local event buffers, see below), `rtl_memcpy()` and `rtl_memmove()` (used to replace the [http://llvm.org/docs/LangRef.html#int_memcpy `llvm.memcpy.*`] and [http://llvm.org/docs/LangRef.html#int_memmove `llvm.memmove.*`] intrinsics.
+At the moment there are three external functions used by the client code. Those are: `bb_flush()` (used for flushing the thread-local event buffers, see below), `rtl_memcpy()` and `rtl_memmove()` (used to replace the [http://llvm.org/docs/LangRef.html#int_memcpy llvm.memcpy.*] and [http://llvm.org/docs/LangRef.html#int_memmove llvm.memmove.*] intrinsics).
 
 During the instrumentation each function is divided into traces (also known as superblocks), which are pieces of the call graph with a single entry and (possibly) multiple exits containing no cycles. For each trace the maximum possible number of memory operations is known at compile time, so it is possible to create a static record containing the following information about the trace:
 {{{
@@ -72,7 +72,63 @@ struct MopInfo {
 };
 }}}
 
-Each trace entry is instrumented with the call to `bb_flush(&current_trace_info)`, which flushes the events collected executing the previous trace and tells ThreadSanitizer where to get the information about the current trace. Each memory operation ([http://llvm.org/docs/LangRef.html#i_load load] or [http://llvm.org/docs/LangRef.html#i_store store]) is instrumented 
+Each trace entry is instrumented with the call to `bb_flush(&current_trace_info)` (typically 2 instructions on x64), which flushes the events collected executing the previous trace and tells ThreadSanitizer where to get the information about the current trace. Each memory operation ([http://llvm.org/docs/LangRef.html#i_load load] or [http://llvm.org/docs/LangRef.html#i_store store]) is instrumented with an LLVM `store` instruction that puts the memory address being accessed into a thread-local buffer (at offset known at compile time). So the following code:
+{{{
+  store %dyn_value, %dyn_address
+}}}
+
+is transformed into:
+{{{
+  getelementptr @TLEB, i32 0, i64 <static_tleb_offset>
+  store %dyn_address, %tleb_address
+  store %dyn_value, %dyn_address
+}}}
+
+If the` --workaround-vptr-race` flag is set to true, the first trace of each object's destructor is instrumented in a way that replaces the memory address with NULL if and only if the memory operation is a store and it rewrites the current memory contents with the same value. For example, for following code:
+{{{
+  store %new, %a
+}}}
+the %ptr to be put into TLEB is calculated as follows:
+{{{
+  %old      = load %a
+  %destcast = ptrtoint %a to i32
+  %neq      = icmp ne %old, %new
+  %neqcast  = zext %neq to i32
+  %intptr   = mul %destcast, %neqcast
+  %ptr      = inttoptr %intptr to i32
+}}}
+
+After all traces are instrumented each function is furnished with a prologue and an epilogue that maintain the ThreadSanitizer shadow stack. The shadow stack is provided by the RTL and is a thread-local variable of the following type:
+{{{
+const size_t kMaxCallStackSize = 1 << 12;
+struct CallStackPod {
+  uintptr_t *end_;
+  uintptr_t pcs_[kMaxCallStackSize];
+};
+}}}
+
+Upon each function entry the following instructions are executed:
+{{{
+  %end_ptr = getelementptr %1* @ShadowStack, i64 0, i32 0
+  %end = load i64** %0
+  store i64 %addr, i64* %end
+  %new_end = getelementptr i64* %end, i32 1
+  store i64* %new_end, i64** %end_ptr
+}}}
+
+, effectively pushing the function address into the stack:
+{{{
+  *ShadowStack.end_ = (uintptr_t)addr;
+  ShadowStack.end_++;
+}}}
+
+Before leaving the function the original stack top is restored:
+{{{
+  store i64* %end, i64** %end_ptr
+}}}
+
+The client code instrumentation is done on the SSA level, so the real symbol addresses are unknown at instrumentation time. To solve this problem each function and each memory operation are assigned synthetic program counter values that depend on the current memory operations and basic block counters and is unique within a module. To avoid collisions within a bunch of modules each synthetic address is salted with a hash of the module path (currently we use [http://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function#FNV-1a_hash FNV-1a hashing] for that). The synthetic addresses are stored along with their location in the source code (path, filename, line) in the `tsan_rtl_debug_info` section of the binary, which is read by ThreadSanitizer at runtime to provide the exact debug info.
+
 
 = Useful ThreadSanitizer flags =
   * `--suppressions=<filename>`
