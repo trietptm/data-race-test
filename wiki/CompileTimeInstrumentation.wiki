@@ -39,6 +39,41 @@ To run the tests, just execute the resulting binary. Additional flags for Thread
 
 *Note*: at the moment racecheck_unittest doesn't pass when linked against ThreadSanitizer.
 
+= How it is done =
+The wrappers for `gcc` and `g++` translate C/C++ code into LLVM assembly code using `llvm-gcc`. It is then instrumented using `opt`, which invokes `ThreadSanitizer.so` as a plugin. The instrumented code contains calls to the functions provided by the runtime library. If `gcc`/`g++` is used to link an executable binary, it is additionally linked with the ThreadSanitizer runtime (`tsan_rtl32.a` or `tsan_rtl64.a` depending on the word length)
+
+== Instrumenting the client code ==
+Each client module is instrumented independently, no link-time instrumentation is performed. For each module the following steps are done:
+  * external declarations are inserted for the functions and global variables provided by the RTL
+  * trace (superblock) instrumentation is done
+  * each function call/exit is instrumented
+  * debug info is written into the `tsan_rtl_debug_info` section
+
+At the moment there are three external functions used by the client code. Those are: `bb_flush()` (used for flushing the thread-local event buffers, see below), `rtl_memcpy()` and `rtl_memmove()` (used to replace the [http://llvm.org/docs/LangRef.html#int_memcpy `llvm.memcpy.*`] and [http://llvm.org/docs/LangRef.html#int_memmove `llvm.memmove.*`] intrinsics.
+
+During the instrumentation each function is divided into traces (also known as superblocks), which are pieces of the call graph with a single entry and (possibly) multiple exits containing no cycles. For each trace the maximum possible number of memory operations is known at compile time, so it is possible to create a static record containing the following information about the trace:
+{{{
+struct TraceInfoPOD {
+  enum { kLiteRaceNumTids = 8 };  // takes zero bytes
+  size_t n_mops_;
+  size_t pc_;
+  size_t counter_;
+  uint32_t literace_counters[kLiteRaceNumTids];
+  int32_t literace_num_to_skip[kLiteRaceNumTids];
+  MopInfo mops_[1];
+};
+}}}
+, where `MopInfo` is defined as follows:
+{{{
+struct MopInfo {
+  uintptr_t pc;
+  uint32_t  size;
+  bool      is_write;
+};
+}}}
+
+Each trace entry is instrumented with the call to `bb_flush(&current_trace_info)`, which flushes the events collected executing the previous trace and tells ThreadSanitizer where to get the information about the current trace. Each memory operation ([http://llvm.org/docs/LangRef.html#i_load load] or [http://llvm.org/docs/LangRef.html#i_store store]) is instrumented 
+
 = Useful ThreadSanitizer flags =
   * `--suppressions=<filename>`
   * `--ignore=<filename>`
