@@ -137,14 +137,17 @@ The client code instrumentation is done on the SSA level, so the real symbol add
   * `--v`
 
 = Future development =
-  * document the items marked as done
+== Short term ==
+  * inline the [ LiteRaceSampling literace sampling] counters
   * make racecheck_unittest pass (see http://code.google.com/p/data-race-test/issues/detail?id=52 for the status)
-  * support [ LiteRaceSampling literace sampling ] *DONE*
   * try this on something big (Chromium?)
   * compare the performance with Valgrind- or PIN-based ThreadSanitizer
-  * use escape analysis to reduce the number of instrumented operations
-  * implement *fast* event logging in the RTL for offline mode
-  * use PIN or other lightweight instrumentation framework to handle uninstrumented libraries
-  * write a gcc plugin for program instrumentation
-  * make it possible to switch between instrumented and uninstrumented versions at runtime
   * use ignore files during compilation
+
+== Long term ==
+  * make it possible to switch between instrumented and uninstrumented versions at runtime
+  * use escape analysis to reduce the number of instrumented operations
+  * use PIN or other lightweight instrumentation framework to handle uninstrumented libraries
+  * address the possible unwinding issues brought by exception handling
+  * write a gcc plugin for program instrumentation
+  * implement *fast* event logging in the RTL for offline mode
