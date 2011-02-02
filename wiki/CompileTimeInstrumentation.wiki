@@ -138,11 +138,12 @@ The client code instrumentation is done on the SSA level, so the real symbol add
 
 = Future development =
 == Short term ==
-  * inline the [ LiteRaceSampling literace sampling] counters
+  * inline the [ LiteRaceSampling literace sampling] counters -- *DONE*
   * make racecheck_unittest pass (see http://code.google.com/p/data-race-test/issues/detail?id=52 for the status)
   * try this on something big (Chromium?)
   * compare the performance with Valgrind- or PIN-based ThreadSanitizer
-  * use ignore files during compilation
+  * use ignore files during compilation -- *DONE*
+  * document the items marked as done
 
 == Long term ==
   * make it possible to switch between instrumented and uninstrumented versions at runtime
