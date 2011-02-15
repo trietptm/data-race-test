@@ -131,7 +131,32 @@ Before leaving the function the original stack top is restored:
   store i64* %end, i64** %end_ptr
 }}}
 === Sampling ===
-Basically, the idea behind sampling is the following one: if the memory acces is hot, we can omit a portion of reports on it, and still have high probability of reporting a race. So keeping the number of executions for each trace and skipping some of the reports if this number is high may speed up the 
+Basically, the idea behind sampling is the following one: if the memory acces is hot, we can omit a portion of reports on it, and still have high probability of reporting a race. So keeping the number of executions for each trace and skipping some of the flushes if this number is high may speed up the detection drastically.
+
+For each trace we store an array of 8 trace counters -- the *i*th counter is updated if the trace is executed on a thread with LTID==i, where LTID is just a cached version of TID modulo 8. We didn't want to keep only one counter per trace, because it could hide races between concurrent executions of the same trace. On the other hand, keeping a per-thread counter for each trace is unacceptably expensive. The trace counters are stored separately from the trace passports in order to keep the former ones cacheline-aligned.
+
+Each trace exit is instrumented with the code that decrements the corresponding trace counter and checks whether it is greater than 0. If yes, the TLEB is flushed, otherwise it is cleared by calling llvm.memset() for the first n records in the buffer, where n is the size of the current trace. Clearing the TLEB is vital: consider that the current trace contains a conditional branch, and the TLEB was not cleared by the previous trace execution. Then, regardless of what branch was taken, all the buffer records would be filled, as if *both* branches were executed by the same thread simultaneously. This may obviously lead to false positives.
+
+{{{
+void Increment() {
+  i++;  /* READ &i, WRITE &i */
+  j++;  /* READ &j, WRITE &j */
+  h++;  /* READ &h, WRITE &h */
+}
+
+void Branch() {
+  Increment();
+  if (i > 0) {   /* READ &i */
+    j++;    /* READ &j, WRITE &j */
+  } else {
+    h++;    /* READ &h, WRITE &h */
+  }
+}
+}}}
+
+As the trace size is usually rather small, it doesn't always require a call to memset() to do the cleanup -- often a couple of movq instructions is enough.
+
+A tradeoff between the overhead in a normal mode and using sampling is worth noticing. As shown above, it's better to make less calls to `bb_flush()` from the client code, that's why we try to organize more basic blocks together and flush the bunch of them at once. On the other hand, if the cleanup path is taken often, zeroing the TLEB requires much time, which we wouldn't have needed if none of the traces contained conditional branches. That's why one might want to compile her code with a trace size of one basic block, so that the cleanup is unnecessary.
 
 === Debug information ===
 The client code instrumentation is done on the SSA level, so the real symbol addresses are unknown at instrumentation time. To solve this problem each memory operation and each function call are assigned synthetic program counter values that depend on the current memory operations and call counters. The assumption is that the number of memory operations and function calls within a function is always less then the size of that function in bytes. Unfortunately this is not always right because of tail-call optimizations (we've found only a single collision in the Chromium binary so far, but it is enough to invalidate this approach). The synthetic addresses are stored along with their location in the source code (path, filename, line) in the `tsan_rtl_debug_info` section of the binary, which is read by ThreadSanitizer at runtime to provide the exact debug info.
