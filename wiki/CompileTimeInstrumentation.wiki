@@ -149,9 +149,9 @@ The client code instrumentation is done on the SSA level, so the real symbol add
 HOME=`pwd` gclient runhooks
 }}}
   * build `yasm` using `gcc`. Due to some problems the yasm binary doesn't work if built with `llvm-gcc`:
-{{{{
+{{{
 make BUILDTYPE=Release out/Release/yasm
-}}}}
+}}}
   * build Chromium:
 {{{
 export SCRIPT_PATH=/path/to/data-race-test/llvm/scripts/
