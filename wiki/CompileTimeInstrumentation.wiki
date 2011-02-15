@@ -127,7 +127,7 @@ Before leaving the function the original stack top is restored:
   store i64* %end, i64** %end_ptr
 }}}
 
-The client code instrumentation is done on the SSA level, so the real symbol addresses are unknown at instrumentation time. To solve this problem each function and each memory operation are assigned synthetic program counter values that depend on the current memory operations and basic block counters and is unique within a module. To avoid collisions within a bunch of modules each synthetic address is salted with a hash of the module path (currently we use [http://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function#FNV-1a_hash FNV-1a hashing] for that). The synthetic addresses are stored along with their location in the source code (path, filename, line) in the `tsan_rtl_debug_info` section of the binary, which is read by ThreadSanitizer at runtime to provide the exact debug info.
+The client code instrumentation is done on the SSA level, so the real symbol addresses are unknown at instrumentation time. To solve this problem each memory operation and each function call are assigned synthetic program counter values that depend on the current memory operations and call counters. The assumption is that the number of memory operations and function calls within a function is always less then the size of that function in bytes. Unfortunately this is not always right because of tail-call optimizations. The synthetic addresses are stored along with their location in the source code (path, filename, line) in the `tsan_rtl_debug_info` section of the binary, which is read by ThreadSanitizer at runtime to provide the exact debug info.
 
 
 = Useful ThreadSanitizer flags =
@@ -135,6 +135,28 @@ The client code instrumentation is done on the SSA level, so the real symbol add
   * `--ignore=<filename>`
   * `--literace_sampling`
   * `--v`
+
+= Building and testing Chromium =
+== Building Chromium ==
+  * set up a client and check out the source code following the instruction at http://code.google.com/p/chromium/wiki/LinuxBuildInstructions
+  * patch the client with the patch from http://codereview.chromium.org/6524008 , which contains the necessary changes:
+    * the default implementation of dynamic_annotations is not linked with Chromium, because the RTL already provides its own
+    * the OVERRIDE macro is expanded to no-op, because llvm-gcc doesn't seem to support it
+    * the overridden versions of system allocation functions are disabled (we want to use our wrappers, not those from Chromium)
+    * .gyp/include.gypi has some valuable GYP settings
+  * run `gclient runhooks`:
+{{{
+HOME=`pwd` gclient runhooks
+}}}
+  * build `yasm` using `gcc`. Due to some problems the yasm binary doesn't work if built with `llvm-gcc`:
+{{{{
+make BUILDTYPE=Release out/Release/yasm
+}}}}
+  * build Chromium:
+{{{
+export SCRIPT_PATH=/path/to/data-race-test/llvm/scripts/
+TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt make -j16 -e CXX="$SCRIPT_PATH/g++" CC="$SCRIPT_PATH/gcc" PATH="$SCRIPT_PATH:$PATH" BUILDTYPE=Release out/Release/chrome
+}}}
 
 = Future development =
 == Short term ==
@@ -144,6 +166,7 @@ The client code instrumentation is done on the SSA level, so the real symbol add
   * compare the performance with Valgrind- or PIN-based ThreadSanitizer
   * use ignore files during compilation -- *DONE*
   * document the items marked as done
+  * use LLVM debug info to get better stack traces for inlined function calls (store several nested symbols for a single pc)
 
 == Long term ==
   * make it possible to switch between instrumented and uninstrumented versions at runtime
