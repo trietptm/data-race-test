@@ -49,7 +49,11 @@ Each client module is instrumented independently, no link-time instrumentation i
   * each function call/exit is instrumented
   * debug info is written into the `tsan_rtl_debug_info` section
 
-At the moment there are three external functions used by the client code. Those are: `bb_flush()` (used for flushing the thread-local event buffers, see below), `rtl_memcpy()` and `rtl_memmove()` (used to replace the [http://llvm.org/docs/LangRef.html#int_memcpy llvm.memcpy.*] and [http://llvm.org/docs/LangRef.html#int_memmove llvm.memmove.*] intrinsics).
+At the moment there are three external functions used by the client code. Those are: `bb_flush()` (used for flushing the thread-local event buffers, see below), `rtl_memcpy()` and `rtl_memmove()` (used to replace the [http://llvm.org/docs/LangRef.html#int_memcpy llvm.memcpy.*] and [http://llvm.org/docs/LangRef.html#int_memmove llvm.memmove.*] intrinsics). The thread-local global variables used to share the state between the instrumentation code and the runtime library are:
+  * ShadowStack -- keeps the shadow stack of the current thread
+  * LTID -- contains the literace thread ID (see below)
+  * thread_local_ignore -- the integer flag used to tell that the current function is ignored
+  * TLEB, or thread-local event buffer -- contains the READ/WRITE events to be passed to ThreadSanitizer
 
 During the instrumentation each function is divided into traces (also known as superblocks), which are pieces of the call graph with a single entry and (possibly) multiple exits containing no cycles. For each trace the maximum possible number of memory operations is known at compile time, so it is possible to create a static record containing the following information about the trace:
 {{{
@@ -72,7 +76,7 @@ struct MopInfo {
 };
 }}}
 
-Each trace entry is instrumented with the call to `bb_flush(&current_trace_info)` (typically 2 instructions on x64), which flushes the events collected executing the previous trace and tells ThreadSanitizer where to get the information about the current trace. Each memory operation ([http://llvm.org/docs/LangRef.html#i_load load] or [http://llvm.org/docs/LangRef.html#i_store store]) is instrumented with an LLVM `store` instruction that puts the memory address being accessed into a thread-local buffer (at offset known at compile time). So the following code:
+Each trace exit is instrumented with the call to `bb_flush(&current_trace_info)` (typically 2 instructions on x64), which flushes the events collected executing the current trace. Each memory operation ([http://llvm.org/docs/LangRef.html#i_load load] or [http://llvm.org/docs/LangRef.html#i_store store]) is instrumented with an LLVM `store` instruction that puts the memory address being accessed into a thread-local buffer (at offset known at compile time). So the following code:
 {{{
   store %dyn_value, %dyn_address
 }}}
@@ -126,8 +130,14 @@ Before leaving the function the original stack top is restored:
 {{{
   store i64* %end, i64** %end_ptr
 }}}
+=== Sampling ===
+Basically, the idea behind sampling is the following one: if the memory acces is hot, we can omit a portion of reports on it, and still have high probability of reporting a race. So keeping the number of executions for each trace and skipping some of the reports if this number is high may speed up the 
 
-The client code instrumentation is done on the SSA level, so the real symbol addresses are unknown at instrumentation time. To solve this problem each memory operation and each function call are assigned synthetic program counter values that depend on the current memory operations and call counters. The assumption is that the number of memory operations and function calls within a function is always less then the size of that function in bytes. Unfortunately this is not always right because of tail-call optimizations. The synthetic addresses are stored along with their location in the source code (path, filename, line) in the `tsan_rtl_debug_info` section of the binary, which is read by ThreadSanitizer at runtime to provide the exact debug info.
+=== Debug information ===
+The client code instrumentation is done on the SSA level, so the real symbol addresses are unknown at instrumentation time. To solve this problem each memory operation and each function call are assigned synthetic program counter values that depend on the current memory operations and call counters. The assumption is that the number of memory operations and function calls within a function is always less then the size of that function in bytes. Unfortunately this is not always right because of tail-call optimizations (we've found only a single collision in the Chromium binary so far, but it is enough to invalidate this approach). The synthetic addresses are stored along with their location in the source code (path, filename, line) in the `tsan_rtl_debug_info` section of the binary, which is read by ThreadSanitizer at runtime to provide the exact debug info.
+
+== Code speed vs race detection precision ==
+
 
 
 = Useful ThreadSanitizer flags =
@@ -158,6 +168,10 @@ export SCRIPT_PATH=/path/to/data-race-test/llvm/scripts/
 TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt make -j16 -e CXX="$SCRIPT_PATH/g++" CC="$SCRIPT_PATH/gcc" PATH="$SCRIPT_PATH:$PATH" BUILDTYPE=Release out/Release/chrome
 }}}
 
+== Running Chromium ==
+{{{
+TSAN_ARGS="--suppressions=`pwd`/tools/valgrind/tsan/suppressions.txt --show-pc --num_callers=15 --num_callers_in_history=15 --literace-sampling=25"  out/Release/chrome --user-data-dir=./tmp --disable-popup-blocking 2>&1 | tee "llvm-log-`date +'%Y%m%d-%H%M%S'`" | grep race
+}}}
 = Future development =
 == Short term ==
   * inline the [ LiteRaceSampling literace sampling] counters -- *DONE*
@@ -166,6 +180,7 @@ TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt make -j16 -e CXX="$SCRIPT_PATH
   * compare the performance with Valgrind- or PIN-based ThreadSanitizer
   * use ignore files during compilation -- *DONE*
   * document the items marked as done
+  * remove the --workaround-vptr-race flag, consult the VPTR symbol names instead
   * use LLVM debug info to get better stack traces for inlined function calls (store several nested symbols for a single pc)
 
 == Long term ==
