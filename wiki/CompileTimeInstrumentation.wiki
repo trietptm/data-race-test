@@ -216,6 +216,7 @@ TSAN_ARGS="--suppressions=`pwd`/tools/valgrind/tsan/suppressions.txt --show-pc -
   * use LLVM debug info to get better stack traces for inlined function calls (store several nested symbols for a single pc)
   * read the debug info lazily
   * obtain original pc values (could be done after linking)
+  * print symbol names/offsets for races on globals
 
 == Long term ==
   * make it possible to switch between instrumented and uninstrumented versions at runtime
