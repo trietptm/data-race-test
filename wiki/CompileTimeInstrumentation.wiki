@@ -32,7 +32,7 @@ To compile a small test containing one file:
 To build a larger program with `make`, use the wrappers for `gcc` and `g++`.
 For example, this is how racecheck_unittest is built:
 {{{
-TSAN_IGNORE=racecheck_unittest.ignore make OPT=1 OMIT_DYNAMIC_ANNOTATIONS_IMPL=1 OMIT_CPP0X=1 PATH="`pwd`/../llvm/scripts/:$PATH" EXTRA_BUILD_SUFFIX=-llvm l64
+TSAN_IGNORE=`pwd`/racecheck_unittest.ignore make OPT=1 OMIT_DYNAMIC_ANNOTATIONS_IMPL=1 OMIT_CPP0X=1 PATH="`pwd`/../llvm/scripts/:$PATH" EXTRA_BUILD_SUFFIX=-llvm l64
 }}}
 
 To run the tests, just execute the resulting binary. Additional flags for ThreadSanitizer can be supplied via the TSAN_ARGS env variable.
