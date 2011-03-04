@@ -73,6 +73,7 @@ tsan [tsan options] your/program [program options]
 ||  --file-prefix-to-cut=file_prefix || ||   Remove `"^.*file_prefix"` from the printed file names.  You may pass this flag several times. ||
 || *Resource usage* || || ||
 || --max-sid ||8388608 (2^23) || This number of unique Segment IDs. <BR> This reflects the amount of memory allocated by !ThreadSanitizer at startup. One Segment ID requires ~100 bytes of memory, so by default approximately 800M of memory is allocated.<BR> The higher this number the better. This number can not be very small (<100000). The upper bound depends on the amount of available memory.  ||
+|| --num-callers || 12 || The size of the stack trace printed for the current access. Increasing this number does not affect performance. ||
 || --num-callers-in-history || 10 || The size of the stack trace stored for the concurrent accesses. <br> Increasing this number improves the reports and increases the memory footprint. ||
 || *Profiling* || || ||
 || --sample-events=N || 0 ||  If non zero, !ThreadSanitizer will sample one of 2^N events and at the end print the event profile. <br> This options could be used together with ThreadSanitizerIgnores. ||
