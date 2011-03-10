@@ -11,14 +11,14 @@ The main question (discussed in the paper) is when to analyze the access and whe
 
 We are experimenting with this approach in ThreadSanitizer and it shows very nice results (up to 4x speedup w/o loosing too many races). 
 
-With the current version of ThreadSanitizer you may try the *experimental* flag `--literace-sampling=<N>` where `N` is a number between 1 and 31. 
+With the current version of ThreadSanitizer you may try the *experimental* flag `--sampling=<N>` where `N` is a number between 1 and 31. 
 31 means very aggressive sampling (i.e. very fast, looses races) and
 1 means very little sampling (almost as slow as w/o sampling). 
 Reasonable values lie somewhere between 15 and 25. 
 
 Please try the flag and let us know what you think: 
 {{{
-tsan --literace-sampling=20 your-test
+tsan --sampling=20 your-test
 }}}
 
 Note: the annotation `ANNOTATE_PUBLISH_MEMORY` does not work with sampling. :(
