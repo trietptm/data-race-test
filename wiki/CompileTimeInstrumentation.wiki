@@ -23,7 +23,10 @@ cd llvm
 make
 }}}
 
-The prerequisites necessary for building ThreadSanitizer.so are listed in `llvm/opt/README`
+and install the prerequisites necessary for building ThreadSanitizer.so:
+{{{
+sudo apt-get install llvm-dev llvm-gcc binutils-dev
+}}}
 
 To compile a small test containing one file:
 
