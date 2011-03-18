@@ -1,5 +1,8 @@
 #summary LLVM compile-time instrumentation for TSan support
 
+<wiki:toc max_depth=3" />
+
+
 We've implemented an experimental compile-time instrumentation pass for LLVM that allows us to directly link ThreadSanitizer against the client code instead of using binary instrumentation frameworks.
 
 An instrumented program collects the events (memory accesses, routine calls/exits) and passes them to the runtime library that serves as a proxy between the client code and ThreadSanitizer. The RTL also provides wrappers for functions that ThreadSanitizer should know about (synchronization primitives, allocation routines, [DynamicAnnotations dynamic annotations]
