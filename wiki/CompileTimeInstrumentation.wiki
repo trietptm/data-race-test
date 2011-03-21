@@ -261,6 +261,18 @@ TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt make -j16 -e CXX="$SCRIPT_PATH
 {{{
 TSAN_ARGS="--suppressions=`pwd`/tools/valgrind/tsan/suppressions.txt --show-pc --num_callers=15 --num_callers_in_history=15 --literace-sampling=25"  out/Release/chrome --user-data-dir=./tmp --disable-popup-blocking 2>&1 | tee "llvm-log-`date +'%Y%m%d-%H%M%S'`" | grep race
 }}}
+
+=== Chromium tests used in the (upcoming) MSPC paper
+
+To build and install Valgrind, refer to either the [http://valgrind.org official site] or the forked version at http://code.google.com/p/valgrind-variant/
+
+Running net_unittests:
+{{{
+valgrind --tool=memcheck --trace-children=yes ~/net_self_cont/out/Release/net_unittests --gtest_filter=-*V8*
+valgrind --tool=helgrind --trace-children=yes ~/net_self_cont/out/Release/net_unittests --gtest_filter=-*V8*
+valgrind --tool=tsan --trace-children=yes ~/net_self_cont/out/Release/net_unittests --gtest_filter=-*V8*
+}}}
+
 = Future development =
 == Short term ==
   * inline the [ LiteRaceSampling literace sampling] counters -- *DONE*
