@@ -24,4 +24,6 @@ Example of new syntax:
 }
 }}}
 
+Specify it with --suppressions=<filename> flag.
+
 See also ThreadSanitizerIgnores
