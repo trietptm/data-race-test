@@ -2,7 +2,7 @@
 from twisted.application import service
 from buildbot.master import BuildMaster
 
-basedir = r'/m/master'
+basedir = r'/b/master'
 configfile = r'master.cfg'
 rotateLength = 1000000
 maxRotatedFiles = None
