@@ -259,7 +259,8 @@ TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt make -j16 -e CXX="$SCRIPT_PATH
 
 == Running Chromium ==
 {{{
-TSAN_ARGS="--suppressions=`pwd`/tools/valgrind/tsan/suppressions.txt --show-pc --num_callers=15 --num_callers_in_history=15 --literace-sampling=25"  out/Release/chrome --user-data-dir=./tmp --disable-popup-blocking 2>&1 | tee "llvm-log-`date +'%Y%m%d-%H%M%S'`" | grep race
+TSAN_ARGS="--suppressions=`pwd`/tools/valgrind/tsan/suppressions.txt --show-pc --num_callers=15 --num_callers_in_history=15 --literace-sampling=25"  \
+  out/Release/chrome --user-data-dir=./tmp --disable-popup-blocking 2>&1 | tee "llvm-log-`date +'%Y%m%d-%H%M%S'`" | grep race
 }}}
 
 === Chromium tests used in the (upcoming) MSPC paper
