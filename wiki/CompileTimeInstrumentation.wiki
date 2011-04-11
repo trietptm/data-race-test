@@ -254,7 +254,9 @@ make BUILDTYPE=Release out/Release/yasm
   * build Chromium:
 {{{
 export SCRIPT_PATH=/path/to/data-race-test/llvm/scripts/
-TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt make -j16 -e CXX="$SCRIPT_PATH/g++" CC="$SCRIPT_PATH/gcc" PATH="$SCRIPT_PATH:$PATH" BUILDTYPE=Release out/Release/chrome
+TSAN_IGNORE=`pwd`/tools/valgrind/tsan/ignores.txt \
+ make -j16 -e CXX="$SCRIPT_PATH/g++" CC="$SCRIPT_PATH/gcc" PATH="$SCRIPT_PATH:$PATH" \
+ BUILDTYPE=Release out/Release/chrome
 }}}
 
 == Running Chromium ==
