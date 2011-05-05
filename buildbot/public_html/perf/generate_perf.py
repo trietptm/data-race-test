@@ -111,7 +111,8 @@ class PerfTester:
 
 
 PerfTester_list = [
-    PerfTester('linux-experimental', 'Experimental Linux bot'),
+    PerfTester('perf-linux', 'Perf Linux bot'),
+    PerfTester('perf-win', 'Perf Windows bot'),
 ]
 
 

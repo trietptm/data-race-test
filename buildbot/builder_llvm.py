@@ -19,9 +19,11 @@ def generate(settings):
                      description='building RTL',
                      descriptionDone='build RTL'))
   path = '`pwd`/llvm/scripts'
+  ignore_path = '`pwd`/unittest/racecheck_unittest.ignore'
   flags = ['OMIT_DYNAMIC_ANNOTATIONS_IMPL=1', 
            'OMIT_CPP0X=1',
-           'PATH="%s:$PATH"' % path]
+           'PATH="%s:$PATH"' % path,
+           'TSAN_IGNORE="%s"' % ignore_path ]
   gtest_filter='-PrintfTests.*:NegativeTests.test141'
   gtest_filter+=':PositiveTests.RepPositive*Test'
 

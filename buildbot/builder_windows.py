@@ -80,18 +80,27 @@ def generate(settings):
         'slavename': 'vm10-m3',
         'builddir': 'full_winxp',
         'factory': f_tester,
+        'env': {
+           "CYGWIN": "nodosfilewarning",  # suppress cygwin "MSDOS" warnings
+        },
         }
 
   b2 = {'name': 'buildbot-vista',
         'slavename': 'vm50-m3',
         'builddir': 'full_vista',
         'factory': f_tester,
+        'env': {
+           "CYGWIN": "nodosfilewarning",  # suppress cygwin "MSDOS" warnings
+        },
         }
 
   b3 = {'name': 'buildbot-win7',
         'slavename': 'vm51-m3',
         'builddir': 'full_win7',
         'factory': f_tester,
+        'env': {
+           "CYGWIN": "nodosfilewarning",  # suppress cygwin "MSDOS" warnings
+        },
         }
 
   #######################
