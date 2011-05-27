@@ -225,7 +225,7 @@ void foo(int *a, int *b, int *c, int i) {
 === Code speed vs race detection precision ===
 == ThreadSanitizer runtime library==
 == gcc/g++ wrappers ==
-To build large projects, we use two handy Python scripts that interpose `gcc` and `g++` to do the instru
+To build large projects, we use two handy Python scripts that interpose `gcc` and `g++` to do the instrumentation.
 
 
 
