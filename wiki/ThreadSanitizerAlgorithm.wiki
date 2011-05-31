@@ -149,9 +149,9 @@ def ReportRace(is_write, tid, seg, addr):
     PrintSegmentLockSets(S)
   if not is_write:
     return
-  foreach S in (SSwr w/o seg): 
+  foreach S in (SSrd w/o seg): 
     if not (S <= seg):
-      Printf("Concurrent write(s):\n")
+      Printf("Concurrent read(s):\n")
       PrintSegmentContext(S) 
       PrintSegmentLockSets(S)
 }}}
