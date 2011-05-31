@@ -221,7 +221,7 @@ void Thread2() {
     c = COND;
     mu.Unlock(); // E4
     sleep(1);
-  } while(c);
+  } while(c != 1);
   if (c) {
     X = 2;
   }
