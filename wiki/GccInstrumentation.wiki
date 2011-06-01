@@ -2,31 +2,39 @@
 
 = Building and Running Chromium =
 == Building Chromium ==
-* Set up a client and check out the source code following the instruction at http://code.google.com/p/chromium/wiki/LinuxBuildInstructions
-* Specify the following rule in your .glient custom_deps section of your src client:
+  * Set up a client and check out the source code following the instruction at [http://code.google.com/p/chromium/wiki/LinuxBuildInstructions]
+  * Specify the following rule in your .glient custom_deps section of your src client:
   { "name"        : "src",
+
     "url"         : <...>,
+
     "custom_deps" : {
       <your old custom_deps here>
+
       "src/third_party/compiler-tsan": "http://src.chromium.org/svn/trunk/deps/third_party/compiler-tsan"
     },
   }
-* Execute:
-  gclient sync
-* Execute:
-  export CHROME_ROOT=chrome root dir *without* src
-  cd $CHROME_ROOT/src/third_party/compiler-tsan
-  tar xf gcc-4.5.3.tar
-* Execute:
-  cd $CHROME_ROOT/src
-  GYP_DEFINES="linux_use_tcmalloc=0 disable_nacl=1 release_valgrind_build=1 target_arch=x64" gclient runhooks
-* Build base_unittests to test the whole thing:
-  GCCTSAN_GCC_DIR=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3 GCCTSAN_GCC_VER=4.5.3 GCCTSAN_IGNORE=$CHROME_ROOT/src/tools/valgrind/tsan/ignores.txt GCCTSAN_ARGS="-DADDRESS_SANITIZER" make CC=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/gcc CXX=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ LD=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ BUILDTYPE=Release -j8 base_unittests
-* Run base_unittests:
-  LD_LIBRARY_PATH=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib32:$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib64 TSAN_ARGS="--sched_shake=1 --api_ambush=1 --full_stack_frames=1" $CHROME_ROOT/src/out/Release/base_unittests --gtest_filter=ToolsSanityTest.DataRace
+  * Execute:
+  `gclient sync`
+  * Execute:
+  `export CHROME_ROOT=chrome root dir *without* src`
+
+  `cd $CHROME_ROOT/src/third_party/compiler-tsan`
+
+  `tar xf gcc-4.5.3.tar`
+  * Execute:
+  `cd $CHROME_ROOT/src`
+
+  `GYP_DEFINES="linux_use_tcmalloc=0 disable_nacl=1 release_valgrind_build=1 target_arch=x64" gclient runhooks`
+  * Build base_unittests to test the whole thing:
+  `GCCTSAN_GCC_DIR=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3 GCCTSAN_GCC_VER=4.5.3 GCCTSAN_IGNORE=$CHROME_ROOT/src/tools/valgrind/tsan/ignores.txt GCCTSAN_ARGS="-DADDRESS_SANITIZER" make CC=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/gcc CXX=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ LD=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ BUILDTYPE=Release -j8 base_unittests`
+  * Run base_unittests:
+  `LD_LIBRARY_PATH=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib32:$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib64 TSAN_ARGS="--sched_shake=1 --api_ambush=1 --full_stack_frames=1" $CHROME_ROOT/src/out/Release/base_unittests --gtest_filter=ToolsSanityTest.DataRace`
+
   You should see a data race report in the console.
-* Build chrome itself:
-  GCCTSAN_GCC_DIR=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3 GCCTSAN_GCC_VER=4.5.3 GCCTSAN_IGNORE=$CHROME_ROOT/src/tools/valgrind/tsan/ignores.txt GCCTSAN_ARGS="-DADDRESS_SANITIZER" make CC=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/gcc CXX=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ LD=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ BUILDTYPE=Release chrome -j8
-* Run chrome:
-  LD_LIBRARY_PATH=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib32:$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib64 TSAN_ARGS="--sched_shake=1 --api_ambush=1 --full_stack_frames=1" $CHROME_ROOT/src/out/Release/chrome
+  * Build chrome itself:
+  `GCCTSAN_GCC_DIR=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3 GCCTSAN_GCC_VER=4.5.3 GCCTSAN_IGNORE=$CHROME_ROOT/src/tools/valgrind/tsan/ignores.txt GCCTSAN_ARGS="-DADDRESS_SANITIZER" make CC=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/gcc CXX=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ LD=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ BUILDTYPE=Release -j8 chrome`
+  * Run chrome:
+  `LD_LIBRARY_PATH=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib32:$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3/lib64 TSAN_ARGS="--sched_shake=1 --api_ambush=1 --full_stack_frames=1" $CHROME_ROOT/src/out/Release/chrome`
+
   If the program is a way too slow set sched_shake parameter to 0.
