@@ -28,6 +28,10 @@
   cd $CHROME_ROOT/src
   GYP_DEFINES="linux_use_tcmalloc=0 disable_nacl=1 release_valgrind_build=1 target_arch=x64" gclient runhooks
 }}}
+or:
+{{{
+  GYP_DEFINES="linux_use_tcmalloc=0 disable_nacl=1 release_valgrind_build=1 target_arch=ia32 chromeos=1" gclient runhooks
+}}}
   * Build base_unittests to test the whole thing:
 {{{
   GCCTSAN_GCC_DIR=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-4.5.3 GCCTSAN_GCC_VER=4.5.3 GCCTSAN_IGNORE=$CHROME_ROOT/src/tools/valgrind/tsan/ignores.txt GCCTSAN_ARGS="-DADDRESS_SANITIZER -DWTF_USE_DYNAMIC_ANNOTATIONS=1 -DWTF_USE_DYNAMIC_ANNOTATIONS_NOIMPL=1" make CC=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/gcc CXX=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ LD=$CHROME_ROOT/src/third_party/compiler-tsan/gcc-tsan/scripts/g++ BUILDTYPE=Release -j8 base_unittests
