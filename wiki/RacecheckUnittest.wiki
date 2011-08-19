@@ -9,7 +9,7 @@ To get and compile the unittests:
 {{{
 svn checkout http://data-race-test.googlecode.com/svn/trunk tsan_test
 cd tsan_test/unittest
-make
+make  # if you're on Windows, run this in a cygwin shell run from VS-enabled cmd
 }}}
 
 Run: 
