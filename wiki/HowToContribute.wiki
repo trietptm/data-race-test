@@ -5,3 +5,4 @@
   * Edit the code.
   * Send a code review to *data-race-test(#)googlegroups.com* using [http://codereview.appspot.com/static/upload.py Reitveld's upload.py] (see http://code.google.com/p/rietveld/wiki/UploadPyUsage).
   * Once you've got LGTM (looks good to me) from someone, `svn commit`.
+  * Please check the [http://code.google.com/p/data-race-test/wiki/ThreadSanitizerBuildBot buildbot] status in a few minutes after commiting, especially the Windows bots.
