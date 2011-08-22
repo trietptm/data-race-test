@@ -7,6 +7,17 @@ from buildbot.steps.transfer import FileUpload
 from common import *
 from common_perf import *
 
+def isInPeriodicRun(step_info):
+  return step_info.getProperty("scheduler") == "periodic"
+
+def addRebootStep(factory, doStepIf):
+  factory.addStep(ShellCommand(
+      command="shutdown -t 2 -r -f",
+      description="reboot",
+      descriptionDone="reboot",
+      alwaysRun=True,
+      doStepIf=doStepIf))
+
 def generate(settings):
   compile_steps = [
     # Checkout sources.
@@ -75,6 +86,7 @@ def generate(settings):
   binaries = {
     'tsan\\tsan-x86-windows-sfx.exe' : 'tsan-r%s-x86-windows-sfx.exe'}
   addUploadBinariesStep(f_tester, binaries)
+  addRebootStep(f_tester, isInPeriodicRun)
 
   b1 = {'name': 'buildbot-winxp',
         'slavename': 'vm10-m3',
@@ -143,6 +155,7 @@ def generate(settings):
                 extra_test_args=["--gtest_filter=NonGtestTests*", str(test_id)],
                 test_base_name='racecheck_unittest',
                 step_generator=step_generator)
+  addRebootStep(f_perf, isInPeriodicRun)
 
   bperf = {'name': 'perf-win',
            'slavename': 'chromeperf01',
