@@ -147,8 +147,9 @@ def addTestStep(factory, debug, threaded, mode, test_binary, test_desc,
   elif mode == 'hybrid':
     args.extend(['--pure-happens-before=no'])
 
-  args.append('--suppressions=' + os.path.join('unittest', 'racecheck_unittest.supp'))
-  args.append('--ignore=' + os.path.join('unittest', 'racecheck_unittest.ignore'))
+  if frontend_binary.find("tsan") != -1:
+    args.append('--suppressions=' + os.path.join('unittest', 'racecheck_unittest.supp'))
+    args.append('--ignore=' + os.path.join('unittest', 'racecheck_unittest.ignore'))
 
   desc.append(mode)
   desc_common = 'tsan-' + frontend
