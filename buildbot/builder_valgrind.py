@@ -55,7 +55,9 @@ def generate(settings):
 
   # Send memcheck binaries to the master.
   binaries = {
+    'memcheck-amd64-linux-self-contained.sh' : 'memcheck-latest-amd64-linux-self-contained.sh',
     'memcheck-amd64-linux-self-contained.sh' : 'memcheck-r%s-amd64-linux-self-contained.sh',
+    'memcheck-x86-linux-self-contained.sh' : 'memcheck-latest-x86-linux-self-contained.sh',
     'memcheck-x86-linux-self-contained.sh' : 'memcheck-r%s-x86-linux-self-contained.sh',
     'memcheck-amd64only-linux-self-contained.sh' : 'memcheck-r%s-amd64only-linux-self-contained.sh'}
 

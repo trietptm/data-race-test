@@ -96,7 +96,8 @@ def addBuildTestStep(factory, osname, bits, opt, static, pic=False, more_args=No
 def addTestStep(factory, debug, threaded, mode, test_binary, test_desc,
                 frontend_binary=None, extra_args=[], frontend='valgrind',
                 pin_root=None, timeout=1800, test_base_name='racecheck_unittest',
-                append_command=None, step_generator=Test, extra_test_args=[]):
+                append_command=None, step_generator=Test, extra_test_args=[],
+                prefix=None):
   """Adds a step for running unit tests with tsan."""
   args = []
   env = {}
@@ -159,6 +160,8 @@ def addTestStep(factory, debug, threaded, mode, test_binary, test_desc,
     args.append('--')
 
   command = []
+  if prefix:
+    command += prefix
   # if timeout:
   #   command += ['alarm', '-l', str(timeout)]
   command += [frontend_binary] + extra_args + args + [test_binary] + extra_test_args
@@ -212,6 +215,8 @@ class GetRevisionStep(ShellCommand):
 def addSetupTreeForTestsStep(factory):
   addClobberStep(factory)
   factory.addStep(FileDownload(slavedest='full_build.tar.gz', mastersrc='build/linux_build.tgz', mode=0644))
+  factory.addStep(FileDownload(slavedest='memcheck64.sh', mastersrc='public_html/binaries/memcheck-latest-amd64-linux-self-contained.sh', mode=0755))
+  factory.addStep(FileDownload(slavedest='memcheck32.sh', mastersrc='public_html/binaries/memcheck-latest-x86-linux-self-contained.sh', mode=0755))
   addExtractStep(factory, 'full_build.tar.gz')
   factory.addStep(GetRevisionStep());
 

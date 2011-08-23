@@ -50,12 +50,18 @@ def generate(settings):
                 extra_test_args=['--gtest_filter="RaceVerifierTests.*"'],
                 append_command='2>&1')
 
+  # Run unit tests under TSan under Memcheck
+  addTestStep(f1, True, False, 'phb', unitTestBinary(os, 32, 0, False),
+              getTestDesc(os, 32, 0, False) + " (under Memcheck)",
+              extra_args=['--error_exitcode=1'],
+              prefix=["./memcheck64.sh"])
+
 
   # Run unit tests with 32-bit valgrind.
   test_desc = test_binaries[(32, 1, False)]
   test_binary = unitTestBinary(os, 32, 1, False)
   addTestStep(f1, False, False, 'fast', test_binary, test_desc + '(32-bit valgrind)',
-              frontend_binary='./tsan32.sh')
+              frontend_binary='./memcheck32.sh')
 
   b = {'name': 'linux',
         'slavename': 'vm44-m3',
