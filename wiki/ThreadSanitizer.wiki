@@ -40,7 +40,7 @@ Contacts: *data-race-test(#)googlegroups.com*
 ThreadSanitizer is supported on the following platforms: 
   * Linux x86_64 and x86. Tested on Ubuntu 8.04 and 9.10. 
   * Darwin i386 (MacOS X 10.5).
-  * Windows i386 (Tested on Vista and XP)
+  * Windows i386 (Tested on 7, Vista and XP)
   * In progress:
      * ARM Linux
 
@@ -49,15 +49,20 @@ If you want to build ThreadSanitizer, refer to BuildingThreadSanitizer
 
 
 =Using !ThreadSanitizer=
+===on Linux and Mac===
 Just like any other valgrind-based tool: 
 {{{
-valgrind [valgrind options] --tool=tsan [tsan options] your/program [program options]
+valgrind [valgrind options] --tool=tsan [--tsan-options] your/program [program options]
 }}}
 or (if you are using the self-contained binary):
 {{{
-tsan [tsan options] your/program [program options]
+tsan.sh [--tsan-options] your/program [program options]
 }}}
-
+===on Windows===
+Run ThreadSanitizer like this (assuming you unpacked it in *C:\*):
+{{{
+C:\tsan-x86-windows\tsan.bat [--tsan-options] -- your\program.exe [program options]
+}}}
 
 = Command line flags = 
 || Flag name || default || description ||
