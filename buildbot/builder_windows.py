@@ -8,7 +8,7 @@ from common import *
 from common_perf import *
 
 def isInPeriodicRun(step_info):
-  return step_info.getProperty("scheduler") == "periodic"
+  return step_info.getProperty("scheduler") == "nightly"
 
 def addRebootStep(factory, doStepIf):
   factory.addStep(ShellCommand(
