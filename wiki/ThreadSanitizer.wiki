@@ -8,7 +8,7 @@
 
 = Introduction =
 
-*!ThreadSanitizer* (aka *tsan*) is a data race detector for C/C++ programs. <BR>
+*!ThreadSanitizer* (aka *tsan*, *not* "Thread Sanitizer") is a data race detector for C/C++ programs. <BR>
 The Linux and Mac versions are based on [http://www.valgrind.org Valgrind]. <BR>
 The Windows version is based on [http://www.pintool.org PIN]. <BR>
 !ThreadSanitizer is similar to [http://valgrind.org/docs/manual/hg-manual.html Helgrind] in many ways, but it also has several 
@@ -87,6 +87,3 @@ C:\tsan-x86-windows\tsan.bat [--tsan-options] -- your\program.exe [program optio
 !ThreadSanitizer's output viewed in [http://www.vim.org vim] with syntax highlightning and the [RacecheckUnittest source code] in the second window: 
 
  http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim3.png
-
-= Misc =
-!ThreadSanitizer is spelled without a space, i.e. not "Thread Sanitizer". :) 
