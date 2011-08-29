@@ -36,17 +36,17 @@ See also:
 
 Contacts: *data-race-test(#)googlegroups.com*
 
-=Binaries=
+=How to get=
+You may download the pre-built binaries from the ThreadSanitizerBuildBot
+
+If you want to build ThreadSanitizer youself, refer to BuildingThreadSanitizer.
+
 ThreadSanitizer is supported on the following platforms: 
   * Linux x86_64 and x86. Tested on Ubuntu 8.04 and 9.10. 
   * Darwin i386 (MacOS X 10.5).
   * Windows i386 (Tested on 7, Vista and XP)
   * In progress:
      * ARM Linux
-
-You may download the fresh binaries from ThreadSanitizerBuildBot <BR>
-If you want to build ThreadSanitizer, refer to BuildingThreadSanitizer  
-
 
 =Using !ThreadSanitizer=
 ===on Linux and Mac===
