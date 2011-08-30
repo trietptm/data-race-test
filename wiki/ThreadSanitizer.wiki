@@ -14,7 +14,7 @@ The Windows version is based on [http://www.pintool.org PIN]. <BR>
 !ThreadSanitizer is similar to [http://valgrind.org/docs/manual/hg-manual.html Helgrind] in many ways, but it also has several 
 [ThreadSanitizerVsOthers differences]. <BR>
 The instrumentation code is partially taken from Helgrind; 
-the [ThreadSanitizerAlgorithm race detection machinery] is new (the code is written in C++). <BR>
+but the [ThreadSanitizerAlgorithm race detection machinery] is absolutely new (the code is written in C++). <BR>
 The source code is published under BSD-like licence (except for valgrind-related modules which are GPLv2+).
 
 !ThreadSanitizer is being actively developed and used at [http://www.google.com Google].
