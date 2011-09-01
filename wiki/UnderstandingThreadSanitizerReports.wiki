@@ -34,7 +34,7 @@ valgrind --tool=tsan --log-file="demo.log" ./bin/demo_tests-linux-amd64-O0 --gte
 ===Windows===
 (assuming you unpacked ThreadSanitizer to C:\)
 {{{
-C:\tsan-x86-windows\tsan.bat --log-file="demo.log" .\bin\demo_tests-windows-x86-O0.exe --gtest_filter="DemoTests.RaceReportDemoTest"
+C:\tsan-x86-windows\tsan.bat --log-file="demo.log" bin\demo_tests-windows-x86-O0.exe --gtest_filter="DemoTests.RaceReportDemoTest"
 }}}
 
 ==The report==
