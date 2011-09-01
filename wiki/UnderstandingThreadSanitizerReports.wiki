@@ -157,10 +157,11 @@ This gives us the information about all locks involved in this report.
 For each lock !ThreadSanitizer shows the context where this lock was acquired last.
 
 =More complex example=
-For a more complex example see the test 311 from RacecheckUnittest.
+For a more complex example see the [http://www.google.com/codesearch/p?hl=en#Xcie8cMcE6E/trunk/unittest/demo_tests.cc&q=test311&type=cs&exact_package=http://data-race-test.googlecode.com/svn&l=384 test 311] from RacecheckUnittest.
 We use `--pure-happens-before=no` since a pure happens-before detector can not detect the race on this test.
 {{{
-valgrind --tool=tsan  --pure-happens-before=no ./racecheck_unittest 311
+valgrind --tool=tsan  --pure-happens-before=no \
+./bin/demo_tests-linux-amd64-O0 --gtest_filter="DemoTests.test311"
 }}}
 
  http://data-race-test.googlecode.com/svn/trunk/images/tsan-in-vim3.png
