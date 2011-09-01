@@ -26,9 +26,15 @@ void Thread2() {  // Runs in thread named 'test-thread-2'.
 
 ==Running the tool on demo test==
 First, get and build unittests (see RacecheckUnittest). Now you can run ThreadSanitizer on the example. The report is dumped to `demo.log` 
+===Linux===
 {{{
 # notice that we run test compiled for amd64 platform, with O0
 valgrind --tool=tsan --log-file="demo.log" ./bin/demo_tests-linux-amd64-O0 --gtest_filter="DemoTests.RaceReportDemoTest"
+}}}
+===Windows===
+(assuming you unpacked ThreadSanitizer to C:\)
+{{{
+C:\tsan-x86-windows\tsan.bat --log-file="demo.log" .\bin\demo_tests-windows-x86-O0.exe --gtest_filter="DemoTests.RaceReportDemoTest"
 }}}
 
 ==The report==
