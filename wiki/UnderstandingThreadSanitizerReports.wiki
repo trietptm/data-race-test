@@ -5,7 +5,7 @@
 =Simple example=
 ==Example code==
 Let's consider the simplest example, 
-[http://www.google.com/codesearch/p?hl=en#Xcie8cMcE6E/trunk/unittest/racecheck_unittest.cc&q=%22namespace%20test301%20{%22%20file:racecheck_unittest.cc%20package:http://data-race-test\.googlecode\.com test301]
+[http://www.google.com/codesearch/p?hl=en#Xcie8cMcE6E/trunk/unittest/demo_tests.cc&q=RaceReportDemoTest&type=cs&exact_package=http://data-race-test.googlecode.com/svn&l=41 RaceReportDemoTest]
 from RacecheckUnittest.
 
 {{{
@@ -25,13 +25,21 @@ void Thread2() {  // Runs in thread named 'test-thread-2'.
 }}}
 
 ==Running the tool==
-You can run !ThreadSanitizer like this: 
+First, get and build unittests: 
 {{{
-valgrind --tool=tsan ./racecheck_unittest 301
+svn checkout http://data-race-test.googlecode.com/svn/trunk tsan_test
+cd tsan_test/unittest
+make  # if you're on Windows, run this in a cygwin shell run from VS-enabled cmd
+}}}
+
+Now you can run ThreadSanitizer on this demo test. The report (printed to stderr) is redirected to `demo.log` 
+{{{
+# notice that we run test compiled for amd64 platform, with O0
+valgrind --tool=tsan ./bin/demo_tests-linux-amd64-O0 --gtest_filter="DemoTests.RaceReportDemoTest" 2>demo.log
 }}}
 
 ==The report==
-The report (printed to stderr) will look like this:
+The report in `demo.log` will look like this:
 {{{
 ==30360== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
 ==30360== INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
