@@ -24,18 +24,11 @@ void Thread2() {  // Runs in thread named 'test-thread-2'.
 }
 }}}
 
-==Running the tool==
-First, get and build unittests: 
-{{{
-svn checkout http://data-race-test.googlecode.com/svn/trunk tsan_test
-cd tsan_test/unittest
-make  # if you're on Windows, run this in a cygwin shell run from VS-enabled cmd
-}}}
-
-Now you can run ThreadSanitizer on this demo test. The report (printed to stderr) is redirected to `demo.log` 
+==Running the tool on demo test==
+First, get and build unittests (see RacecheckUnittest). Now you can run ThreadSanitizer on the example. The report is dumped to `demo.log` 
 {{{
 # notice that we run test compiled for amd64 platform, with O0
-valgrind --tool=tsan ./bin/demo_tests-linux-amd64-O0 --gtest_filter="DemoTests.RaceReportDemoTest" 2>demo.log
+valgrind --tool=tsan --log-file="demo.log" ./bin/demo_tests-linux-amd64-O0 --gtest_filter="DemoTests.RaceReportDemoTest"
 }}}
 
 ==The report==
