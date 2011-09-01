@@ -41,35 +41,31 @@ valgrind --tool=tsan ./bin/demo_tests-linux-amd64-O0 --gtest_filter="DemoTests.R
 ==The report==
 The report in `demo.log` will look like this:
 {{{
-==30360== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
-==30360== INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
-==30360== WARNING: Possible data race during write of size 4 at 0x633AA0: {{{
-==30360==    T2 (test-thread-2) (locks held: {L122}):
-==30360==     #0  test301::Thread2() racecheck_unittest.cc:5956
-==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #2  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
-==30360==   Concurrent write(s) happened at (OR AFTER) these points:
-==30360==    T1 (test-thread-1) (locks held: {L121}):
-==30360==     #0  test301::Thread1() racecheck_unittest.cc:5951
-==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #2  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
-==30360==   Address 0x633AA0 is 0 bytes inside data symbol "_ZN7test3013varE"
-==30360==   Locks involved in this report (reporting last lock sites): {L121, L122}
-==30360==    L121 (0x633A10)
-==30360==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:602
-==30360==     #1  Mutex::Lock() thread_wrappers_pthread.h:162
-==30360==     #2  MutexLock::MutexLock(Mutex*) thread_wrappers_pthread.h:225
-==30360==     #3  test301::Thread1() racecheck_unittest.cc:5950
-==30360==     #4  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
-==30360==    L122 (0x633A70)
-==30360==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:602
-==30360==     #1  Mutex::Lock() thread_wrappers_pthread.h:162
-==30360==     #2  MutexLock::MutexLock(Mutex*) thread_wrappers_pthread.h:225
-==30360==     #3  test301::Thread2() racecheck_unittest.cc:5955
-==30360==     #4  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
-==30360== }}}
+==16898== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
+==16898== INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
+==16898== WARNING: Possible data race during write of size 4 at 0x6457E0: {{{
+==16898==    T2 (test-thread-2) (L{L3}):
+==16898==     #0  RaceReportDemoTest::Thread2 demo_tests.cc:53
+==16898==     #1  MyThread::ThreadBody thread_wrappers_pthread.h:341
+==16898==   Concurrent write(s) happened at (OR AFTER) these points:
+==16898==    T1 (test-thread-1) (L{L2}):
+==16898==     #0  RaceReportDemoTest::Thread1 demo_tests.cc:48
+==16898==     #1  MyThread::ThreadBody thread_wrappers_pthread.h:341
+==16898==   Address 0x6457E0 is 0 bytes inside data symbol "_ZN18RaceReportDemoTest3varE"
+==16898==   Locks involved in this report (reporting last lock sites): {L2, L3}
+==16898==    L2 (0x645720)
+==16898==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:935
+==16898==     #1  Mutex::Lock thread_wrappers_pthread.h:147
+==16898==     #2  MutexLock::MutexLock thread_wrappers.h:286
+==16898==     #3  RaceReportDemoTest::Thread1 demo_tests.cc:47
+==16898==     #4  MyThread::ThreadBody thread_wrappers_pthread.h:341
+==16898==    L3 (0x645780)
+==16898==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:935
+==16898==     #1  Mutex::Lock thread_wrappers_pthread.h:147
+==16898==     #2  MutexLock::MutexLock thread_wrappers.h:286
+==16898==     #3  RaceReportDemoTest::Thread2 demo_tests.cc:52
+==16898==     #4  MyThread::ThreadBody thread_wrappers_pthread.h:341
+==16898== }}}
 }}}
 
 ==GUI==
