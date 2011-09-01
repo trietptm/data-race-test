@@ -80,53 +80,50 @@ display the two racey accesses.
 Let us now describe each section of the report.
 
 {{{
-==30360== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
-==30360== INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
+==16898== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
+==16898== INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
 }}}
 Each race report mentions two or more threads, e.g. `T1` and `T2`. 
 Note that the main thread of the program is called `T0`. Each thread is announced only once. 
 If you use the flag `--announce-threads` you will get the context where this thread has been created.
 
 {{{
-==30360== WARNING: Possible data race during write of size 4 at 0x633AA0: {{{
+==16898== WARNING: Possible data race during write of size 4 at 0x6457E0: {{{
 }}}
 
 This is the header of the report. 
 It mentions the address of the racey memory, the size of the racey access and whether it was a read or a write.
 
-
 {{{
-==30360==    T2 (test-thread-2) (locks held: {L122}):
+==16898==    T2 (test-thread-2) (L{L3}):
 }}}
 This is the information about the last observed access which is considered to be racey. 
   * `T2` is the thread where this access happened.
   * `test-thread-2` is the name of the thread. The threads are named using `ANNOTATE_THREAD_NAME(name)` from DynamicAnnotations.
-  * `(locks held: {L122})`: this is the list of all locks held during this access.
+  * `(L{L3})`: this is the list of all locks held during this access.
      If some locks are held in reader mode, the reader and writer locks will be shown separately. 
 
 {{{
-==30360==     #0  test301::Thread2() racecheck_unittest.cc:5956
-==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #2  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
+==16898==     #0  RaceReportDemoTest::Thread2 demo_tests.cc:53
+==16898==     #1  MyThread::ThreadBody thread_wrappers_pthread.h:341
 }}}
 And here is the exact stack trace of the last observed access.
 
 {{{
-==30360==   Concurrent write(s) happened at (OR AFTER) these points:
+==16898==   Concurrent write(s) happened at (OR AFTER) these points:
 }}}
 Following are the sections that represent the accesses that are concurrent to the access above.
 These accesses are not necessary concurrent to each other. 
 
 
 {{{
-==30360==    T1 (test-thread-1) (locks held: {L121}):
+==16898==    T1 (test-thread-1) (L{L2}):
 }}}
 Again: the information about the thread and the locks.
 
 {{{
-==30360==     #0  test301::Thread1() racecheck_unittest.cc:5951
-==30360==     #1  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #2  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
+==16898==     #0  RaceReportDemoTest::Thread1 demo_tests.cc:48
+==16898==     #1  MyThread::ThreadBody thread_wrappers_pthread.h:341
 }}}
 This stack trace points to the concurrent access.
   * With `--keep-history=0` this section will not be shown (fastest). 
@@ -135,27 +132,25 @@ This stack trace points to the concurrent access.
 
 
 {{{
-==30360==   Address 0x633AA0 is 0 bytes inside data symbol "_ZN7test3013varE"
+==16898==   Address 0x6457E0 is 0 bytes inside data symbol "_ZN18RaceReportDemoTest3varE"
 }}}
 Description of the racey memory location. 
 For heap-allocated objects we will see the allocation context.
 
 {{{
-==30360==   Locks involved in this report (reporting last lock sites): {L121, L122}
-==30360==    L121 (0x633A10)
-==30360==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:602
-==30360==     #1  Mutex::Lock() thread_wrappers_pthread.h:162
-==30360==     #2  MutexLock::MutexLock(Mutex*) thread_wrappers_pthread.h:225
-==30360==     #3  test301::Thread1() racecheck_unittest.cc:5950
-==30360==     #4  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
-==30360==    L122 (0x633A70)
-==30360==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:602
-==30360==     #1  Mutex::Lock() thread_wrappers_pthread.h:162
-==30360==     #2  MutexLock::MutexLock(Mutex*) thread_wrappers_pthread.h:225
-==30360==     #3  test301::Thread2() racecheck_unittest.cc:5955
-==30360==     #4  MyThread::ThreadBody(MyThread*) thread_wrappers_pthread.h:320
-==30360==     #5  ThreadSanitizerStartThread ts_valgrind_intercepts.c:387
+==16898==   Locks involved in this report (reporting last lock sites): {L2, L3}
+==16898==    L2 (0x645720)
+==16898==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:935
+==16898==     #1  Mutex::Lock thread_wrappers_pthread.h:147
+==16898==     #2  MutexLock::MutexLock thread_wrappers.h:286
+==16898==     #3  RaceReportDemoTest::Thread1 demo_tests.cc:47
+==16898==     #4  MyThread::ThreadBody thread_wrappers_pthread.h:341
+==16898==    L3 (0x645780)
+==16898==     #0  pthread_mutex_lock ts_valgrind_intercepts.c:935
+==16898==     #1  Mutex::Lock thread_wrappers_pthread.h:147
+==16898==     #2  MutexLock::MutexLock thread_wrappers.h:286
+==16898==     #3  RaceReportDemoTest::Thread2 demo_tests.cc:52
+==16898==     #4  MyThread::ThreadBody thread_wrappers_pthread.h:341
 }}}
 
 This gives us the information about all locks involved in this report. 
