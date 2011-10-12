@@ -1,5 +1,42 @@
 #summary GCC-based compile-time instrumentation for ThreadSanitizer.
 
+= Usage =
+First, you obtain and build gcc either version 4.5.2 or 4.5.3. Main steps required for that are outlined [http://code.google.com/p/data-race-test/source/browse/trunk/third_party/gcc_install.sh here]. If you have any problems with the build process, please, refer to http://gcc.gnu.org/.
+
+Now checkout ThreadSanitizer sources:
+{{{
+export TSAN_ROOT=<tsan_root_directory>
+svn checkout http://data-race-test.googlecode.com/svn/trunk $TSAN_ROOT
+}}}
+
+Build ThreadSanitizer run-time library:
+{{{
+cd $TSAN_ROOT/tsan_rtl
+make
+}}}
+
+Build the instrumentation plugin (assuming you are using gcc 4.5.3):
+{{{
+$ cd $TSAN_ROOT/gcc/plg
+$ GCC_VER=4.5.3 GCC_DIR=<gcc_install_path> make
+}}}
+
+Set the following environment variables:
+{{{
+$ export GCCTSAN_GCC_VER=4.5.3
+$ export GCCTSAN_GCC_DIR=<gcc_install_path>
+}}}
+
+Now you use $TSAN_ROOT/gcc/scripts/{gcc,g++} as the compiler front-end and $TSAN_ROOT/gcc/scripts/ld as the linker.
+[http://code.google.com/p/data-race-test/wiki/ThreadSanitizerIgnores An ignore file] may be specified with GCCTSAN_IGNORE environment variable. Other ThreadSanitizer [http://code.google.com/p/data-race-test/wiki/ThreadSanitizer#Command_line_flags flags] may be specified with TSAN_ARGS environment variable.
+
+For example, here is how one builds and executes ThreadSanitizer unittests:
+{{{
+$ cd $TSAN_ROOT/unittest
+$ GCCTSAN_GCC_VER=4.5.3 GCCTSAN_GCC_DIR=<gcc_install_path> GCCTSAN_IGNORE=$TSAN_ROOT/unittest/racecheck_unittest.ignore make CC=$TSAN_ROOT/gcc/scripts/gcc CXX=$TSAN_ROOT/gcc/scripts/g++ LD=$TSAN_ROOT/gcc/scripts/ld
+$TSAN_ARGS="--suppressions=racecheck_unittest.supp --show_pc" ./bin/racecheck_unittest-linux-amd64-O0
+}}}
+
 = Building and Running Chromium =
 == Building Chromium ==
   * Set up a client and check out the source code following the instruction at [http://code.google.com/p/chromium/wiki/LinuxBuildInstructions]
