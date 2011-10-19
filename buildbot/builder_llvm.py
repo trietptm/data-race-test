@@ -15,7 +15,7 @@ def generate(settings):
   f1.addStep(Compile(command=['make', '-C', 'llvm/opt/ThreadSanitizer'],
                      description='building opt module',
                      descriptionDone='build opt module'))
-  f1.addStep(Compile(command=['make', '-C', 'llvm/tsan_rtl', 'DEBUG=1'],
+  f1.addStep(Compile(command=['make', '-C', 'tsan_rtl', 'DEBUG=1', "NO_BFD=1"],
                      description='building RTL',
                      descriptionDone='build RTL'))
   path = '`pwd`/llvm/scripts'
