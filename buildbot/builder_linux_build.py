@@ -109,7 +109,7 @@ def generate(settings):
   addUploadBuildTreeStep(f1, '../full_build.tar.gz')
 
   b1 = {'name': 'buildbot-linux-build',
-        'slavename': 'bot5name',
+        'slavename': 'vm42-m3',
         'builddir': 'full_linux_build',
         'factory': f1,
         }

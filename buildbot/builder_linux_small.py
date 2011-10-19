@@ -41,7 +41,7 @@ def generate(settings):
 
 
   b1 = {'name': 'buildbot-linux-small',
-        'slavename': 'bot6name',
+        'slavename': 'vm43-m3',
         'builddir': 'full_linux_small',
         'factory': f1,
         }

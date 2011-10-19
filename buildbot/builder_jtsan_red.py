@@ -44,7 +44,7 @@ def generate(settings):
   # addUploadBinariesStep(f1, binaries)
 
   b1 = {'name': 'buildbot-jtsan-red',
-        'slavename': 'bot6name',
+        'slavename': 'vm43-m3',
         'builddir': 'full_jtsan_red',
         'factory': f1,
         }

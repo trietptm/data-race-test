@@ -54,7 +54,7 @@ def generate(settings):
 
 
   b1 = {'name': 'buildbot-linux-pin',
-        'slavename': 'bot6name',
+        'slavename': 'vm43-m3',
         'builddir': 'full_linux_pin',
         'factory': f1,
         }

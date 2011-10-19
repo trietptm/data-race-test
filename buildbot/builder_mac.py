@@ -87,7 +87,7 @@ def generate(settings):
 
 
   b1 = {'name': 'buildbot-mac',
-        'slavename': 'bot7name',
+        'slavename': 'mini13-m3',
         'builddir': 'full_mac',
         'factory': f1,
         }

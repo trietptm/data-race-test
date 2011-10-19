@@ -82,7 +82,7 @@ def generate(settings):
 
 
   b1 = {'name': 'buildbot-valgrind',
-        'slavename': 'bot5name',
+        'slavename': 'vm42-m3',
         'builddir': 'full_valgrind',
         'factory': f1,
         }
