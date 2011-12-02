@@ -1,7 +1,7 @@
 #summary LLVM compile-time instrumentation for TSan support
 
 <wiki:toc max_depth=3" />
-
+See also: GccInstrumentation
 
 We've implemented an experimental compile-time instrumentation pass for LLVM that allows us to directly link ThreadSanitizer against the client code instead of using binary instrumentation frameworks.
 
@@ -278,12 +278,11 @@ valgrind --tool=tsan --trace-children=yes ~/net_self_cont/out/Release/net_unitte
 
 = Future development =
 == Short term ==
-  * inline the [ LiteRaceSampling literace sampling] counters -- *DONE*
   * make racecheck_unittest pass (see http://code.google.com/p/data-race-test/issues/detail?id=52 for the status)
   * try this on something big (Chromium?)
-  * compare the performance with Valgrind- or PIN-based ThreadSanitizer
-  * use ignore files during compilation -- *DONE*
-  * document the items marked as done
+  * finish integration with Clang, fix the hacks
+  * update the documentation
+  * run CPU2006 and add the results
   * remove the --workaround-vptr-race flag, consult the VPTR symbol names instead
   * use LLVM debug info to get better stack traces for inlined function calls (store several nested symbols for a single pc)
   * read the debug info lazily
@@ -295,5 +294,4 @@ valgrind --tool=tsan --trace-children=yes ~/net_self_cont/out/Release/net_unitte
   * use escape analysis to reduce the number of instrumented operations
   * use PIN or other lightweight instrumentation framework to handle uninstrumented libraries
   * address the possible unwinding issues brought by exception handling
-  * write a gcc plugin for program instrumentation
   * implement *fast* event logging in the RTL for offline mode
