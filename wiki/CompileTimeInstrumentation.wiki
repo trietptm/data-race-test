@@ -28,7 +28,7 @@ make install
 
 To compile a small test containing one file:
 
-`$ clang_build_Linux/Release+Asserts/bin/clang path/to/program.c -o program` -- produces a binary with builtin ThreadSanitizer
+`$ clang_build_Linux/Release+Asserts/bin/clang -fthread-sanitizer  path/to/program.c -o program` -- produces a binary with builtin ThreadSanitizer
 
 To build a larger program with `make` you'll need to override CC and CXX (and maybe LD) for it.
 
