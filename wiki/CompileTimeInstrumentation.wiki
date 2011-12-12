@@ -23,7 +23,7 @@ Now build the runtime library:
 {{{
 cd tsan_rtl
 make # This will build both 32-bit and 64-bit runtime libraries
-make install
+make install_llvm
 }}}
 
 To compile a small test containing one file:
