@@ -67,7 +67,8 @@ def generate(settings):
   out_masks = ['include/*', 'bin/valgrind', 'lib/valgrind/*memcheck*',
     'lib/valgrind/*vex*', 'lib/valgrind/vgpreload_core*',
     'lib/valgrind/default.supp']
-  src_masks = ['include/*', 'coregrind/*', 'VEX/pub/*', 'VEX/libvex*.a']
+  src_masks = ['include/*', 'coregrind/*', 'VEX/pub/*', 'VEX/libvex*.a',
+               'config.h']
 
   masks = []
   for m in out_masks:
