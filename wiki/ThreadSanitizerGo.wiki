@@ -1,105 +1,165 @@
-#summary ThreadSanitize for Go
+= Go Race Detector User Manual =
 
+The tool works for linux amd64. No portability guarantees at the moment.
 
-= Introduction =
+Everything is currently in one CL. We will refactor it and rearrange into smaller CLs
+for reviewing later. We will also clean unused code, variable names etc. Currently our aim is to show you how the tool is designed to work and that it actually works.
 
-We want to make ThreadSanitizer work for the [http://golang.org/ Go language]
-
-
-= Tests =
-
-We have few unit tests for Go. 
-
-  * Install [http://golang.org/doc/gccgo_install.html gccgo] (if not yet)
-  * Install ThreadSanitizer (if not yet)
-  * Get and build the unittests: 
-{{{
-svn checkout http://data-race-test.googlecode.com/svn/trunk/go_tests
-cd go_tests
-make
-}}}
-  * Run individual tests under ThreadSanitizer: 
-{{{
-tsan --fast-mode=no --ignore=./go.ignore --file-prefix-to-cut=go_tests/ ./test_name
-}}}
-
-== go_race_1 ==
-http://code.google.com/p/data-race-test/source/browse/trunk/go_tests/go_race_1.go
+1. You need to download ThreadSanitizer first: 
 
 {{{
-tsan --fast-mode=no --ignore=./go.ignore --file-prefix-to-cut=go_tests/ ./go_race_1
+export TSAN_PATH=/home/$USER/tsan
+svn checkout http://data-race-test.googlecode.com/svn/trunk/ $TSAN_PATH
+cd $TSAN_PATH/go
+DEBUG=1 make
+sudo make install
 }}}
+
+2. Download a fresh version of Go tip:
 
 {{{
-==27892== WARNING: Possible data race during read of size 4 at 0x668E50: {{{
-==27892==    T2 (locks held: {}):
-==27892==     #0  main.inc go_race_1.go:24
-==27892==     #1  main.Thread2 go_race_1.go:37
-==27892==     #2  start_go_thread /home/kcc/objdir/x86_64-unknown-linux-gnu/libgo/../../../gccgo/libgo/runtime/go-go.c:39
-==27892==     #3  ThreadSanitizerStartThread ts_valgrind_intercepts.c:525
-==27892==   Concurrent write(s) happened at (OR AFTER) these points:
-==27892==    T1 (locks held: {}):
-==27892==     #0  main.inc go_race_1.go:22
-==27892==     #1  main.Thread1 go_race_1.go:30
-==27892==     #2  start_go_thread /home/kcc/objdir/x86_64-unknown-linux-gnu/libgo/../../../gccgo/libgo/runtime/go-go.c:39
-==27892==     #3  ThreadSanitizerStartThread ts_valgrind_intercepts.c:525
-==27892==   Address 0x668E50 is 0 bytes inside data symbol "main.racey"
-==27892== }}}
+export GOROOT=/home/$USER/go_race
+export GOBIN=$GOROOT/bin
+export PATH=$GOBIN:$PATH
+
+hg clone https://code.google.com/p/go $GOROOT
 }}}
 
-There is a race in this test indeed, but the locks are not recognized and not printed.
-
-
-== go_race_2 ==
-http://code.google.com/p/data-race-test/source/browse/trunk/go_tests/go_race_2.go
-
-Same as go_race_1, but with `RWMutex`
-
-== go_norace_1 ==
-http://code.google.com/p/data-race-test/source/browse/trunk/go_tests/go_norace_1.go
+3. Build the tree. We keep working with makefiles until Go tool is stable:
 
 {{{
-tsan --fast-mode=no --ignore=./go.ignore --file-prefix-to-cut=go_tests/ ./go_norace_1
+export USE_GO_TOOL=false
+cd $GOROOT/src
+./make.bash
 }}}
+
+4. Set the email that you use for codereview.appspot.com and
+apply the CL:
 
 {{{
-==28234== WARNING: Possible data race during read of size 4 at 0x668E48: {{{
-==28234==    T2 (locks held: {}):
-==28234==     #0  main.inc go_norace_1.go:23
-==28234==     #1  main.Thread2 go_norace_1.go:35
-==28234==     #2  start_go_thread /home/kcc/objdir/x86_64-unknown-linux-gnu/libgo/../../../gccgo/libgo/runtime/go-go.c:39
-==28234==     #3  ThreadSanitizerStartThread ts_valgrind_intercepts.c:525
-==28234==   Concurrent write(s) happened at (OR AFTER) these points:
-==28234==    T1 (locks held: {}):
-==28234==     #0  main.inc go_norace_1.go:21
-==28234==     #1  main.Thread1 go_norace_1.go:28
-==28234==     #2  start_go_thread /home/kcc/objdir/x86_64-unknown-linux-gnu/libgo/../../../gccgo/libgo/runtime/go-go.c:39
-==28234==     #3  ThreadSanitizerStartThread ts_valgrind_intercepts.c:525
-==28234==   Address 0x668E48 is 0 bytes inside data symbol "main.obj"
-==28234== }}}
+
+YOUR_EMAIL=name@domain.com
+
+cat > $GOROOT/.hg/hgrc <<EOF
+[paths]
+default = https://go.googlecode.com/hg/
+
+[extensions]
+codereview = $GOROOT/lib/codereview/codereview.py
+
+[codereview]
+server = codereview.appspot.com
+
+[ui]
+username = $YOUR_EMAIL
+
+
+EOF
+
+cd $GOROOT
+hg clpatch 5251057
 }}}
 
-The code is synchronized via a channel, but ThreadSanitizer does not know about channels. 
-== go_norace_2 ==
-http://code.google.com/p/data-race-test/source/browse/trunk/go_tests/go_norace_2.go
+In case you can’t apply the patch these versions are known to fit each other:
+weekly: 6g version weekly.2011-12-14 10946+
+CL: Patch Set 46 : diff -r 113217f9853a https://go.googlecode.com/hg/
+
+
+
+5. We will now build our package and rebuild the tree with instrumentation enabled:
+
 {{{
-tsan --fast-mode=no --ignore=./go.ignore --file-prefix-to-cut=go_tests/ ./go_norace_2
+cd $GOROOT/misc/racecheck/gotsan
+./build.bash
 }}}
+
+6. A simple Go program containing a data race may be found at $GOROOT/misc/racecheck/gotsan/race.go. To run it and see the report use the following series of commands:
 
 {{{
-==28602==    T2 (locks held: {}):
-==28602==     #0  main.inc go_norace_2.go:23
-==28602==     #1  main.Thread2 go_norace_2.go:36
-==28602==     #2  start_go_thread /home/kcc/objdir/x86_64-unknown-linux-gnu/libgo/../../../gccgo/libgo/runtime/go-go.c:39
-==28602==     #3  ThreadSanitizerStartThread ts_valgrind_intercepts.c:525
-==28602==   Concurrent write(s) happened at (OR AFTER) these points:
-==28602==    T1 (locks held: {}):
-==28602==     #0  main.inc go_norace_2.go:21
-==28602==     #1  main.Thread1 go_norace_2.go:29
-==28602==     #2  start_go_thread /home/kcc/objdir/x86_64-unknown-linux-gnu/libgo/../../../gccgo/libgo/runtime/go-go.c:39
-==28602==     #3  ThreadSanitizerStartThread ts_valgrind_intercepts.c:525
-==28602==   Address 0x668E48 is 0 bytes inside data symbol "main.obj"
-==28602== }}}
+cd $GOROOT/misc/racecheck/gotsan
+6g -b race.go && 6l -o race race.6 && ./race
 }}}
 
-The code is synchronized via a Mutex, but ThreadSanitizer does not understand the go Mutex. 
+The output you should see looks like this:
+
+{{{
+==22257== INFO: Allocating 256Mb (32 * 8M) for Segments.
+==22257== INFO: Will allocate up to 640Mb for 'previous' stack traces.
+ sizeof(CacheLine) = 568
+==22257== INFO: T0 is program's main thread
+==22257== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
+==22257== WARNING: Possible data race during write of size 1 at 0xf840000000: {{{
+==22257==    T1 (L{}):
+==22257==     #0  main._func_001 ~/go/misc/racecheck/gotsan/race.go:10
+==22257==     #1  runtime.goexit ~/go/src/pkg/runtime/proc.c:266
+==22257==   Concurrent write(s) happened at (OR AFTER) these points:
+==22257==    T0 (L{}):
+==22257==     #0  main.main ~/go/misc/racecheck/gotsan/race.go:13
+==22257==     #1  runtime.main ~/go/src/pkg/runtime/proc.c:238
+==22257==    Race verifier data: 0x400da1,0x400caf
+==22257== }}}
+
+ThreadSanitizer has received 24 events
+1 READs
+6 WRITEs
+1 SIGNALs
+1 WAITs
+3 RTN_CALLs
+3 RTN_EXITs
+
+}}}
+
+7. Your package’s tests can be run with race detection enabled too. We will test
+src/pkg/archive/zip as an example:
+
+{{{
+cd $GOROOT/src/pkg/archive/zip
+GCFLAGS=-b gotest
+
+The output should contain lines like these (if it doesn’t, run the test several times):
+
+==22413== WARNING: Possible data race during read of size 1 at 0xf8400563d0: {{{
+==22413==    T2 (L{}):
+==22413==     #0  archive/zip._func_002 ~/go/src/pkg/archive/zip/reader_test.go:167
+==22413==     #1  runtime.goexit ~/go/src/pkg/runtime/proc.c:266
+==22413==   Concurrent write(s) happened at (OR AFTER) these points:
+==22413==    T1 (L{}):
+==22413==     #0  archive/zip.readTestZip ~/go/src/pkg/archive/zip/reader_test.go:165
+==22413==     #1  archive/zip.TestReader ~/go/src/pkg/archive/zip/reader_test.go:122
+==22413==     #2  testing.tRunner ~/go/src/pkg/testing/testing.go:189
+==22413==     #3  runtime.goexit ~/go/src/pkg/runtime/proc.c:266
+==22413==    Race verifier data: 0x42083d,0x41d073
+==22413== }}}
+
+}}}
+
+The log suggests that there is a data race between lines 165 and 167 in reader_test.go. Here is the relevant code snippet:
+
+{{{
+161	// test simultaneous reads
+162	n := 0
+163	done := make(chan bool)
+164	for i := 0; i < 5; i++ {
+165		for j, ft := range zt.File {
+166			go func() {
+167				readTestFile(t, ft, z.File[j])
+168				done <- true
+169			}()
+170			n++
+172		}
+173	}
+174	for ; n > 0; n-- {
+175		<-done
+176	}
+}}}
+
+What we observe here is wrong usage of both j and ft, see http://golang.org/doc/go_faq.html#closures_and_goroutines
+
+8. Other races can be observed in e.g. src/pkg/net/http:
+
+{{{
+cd $GOROOT/src/pkg/net/http
+GCFLAGS=-b gotest
+}}}
+
+9. The slowdown imposed by the tool may be 20x and higher, so please be patient when running your programs. Also, please remember that this version is not final and the tool may unexpectedly crash.
