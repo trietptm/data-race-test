@@ -61,10 +61,11 @@ hg clpatch 5251057
 }}}
 
 In case you can’t apply the patch these versions are known to fit each other:
-weekly: 6g version weekly.2011-12-14 10946+
-CL: Patch Set 46 : diff -r 113217f9853a https://go.googlecode.com/hg/
 
-
+{{{
+weekly: 6g weekly.2012-01-15 11260+
+CL: Patch Set 56 : diff -r 70e914beb409 https://go.googlecode.com/hg/
+}}}
 
 5. We will now build our package and rebuild the tree with instrumentation enabled:
 
@@ -110,7 +111,7 @@ ThreadSanitizer has received 24 events
 }}}
 
 7. Your package’s tests can be run with race detection enabled too. We will test
-src/pkg/archive/zip as an example:
+src/pkg/archive/zip as an example. This particular race is already fixed in Go latest weekly so it is here for the purposes of showing you a sample log:
 
 {{{
 cd $GOROOT/src/pkg/archive/zip
@@ -155,11 +156,6 @@ The log suggests that there is a data race between lines 165 and 167 in reader_t
 
 What we observe here is wrong usage of both j and ft, see http://golang.org/doc/go_faq.html#closures_and_goroutines
 
-8. Other races can be observed in e.g. src/pkg/net/http:
-
-{{{
-cd $GOROOT/src/pkg/net/http
-GCFLAGS=-b gotest
-}}}
+8. Other races found by ThreadSanitizer can be observed in Go issue list: http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer
 
 9. The slowdown imposed by the tool may be 20x and higher, so please be patient when running your programs. Also, please remember that this version is not final and the tool may unexpectedly crash.
