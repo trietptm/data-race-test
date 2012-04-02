@@ -43,3 +43,7 @@ To build with stat collection (prints internal stats at exit):
 {{{
 make CFLAGS=-DTSAN_COLLECT_STATS=1
 }}}
+To build something real with v2:
+{{{
+clang test.c -fthread-sanitizer -fPIE -O1 -g -pie -lpthread -ldl -Lpath/to/libtsan -ltsan
+}}}
