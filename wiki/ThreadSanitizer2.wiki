@@ -1,0 +1,45 @@
+#summary Brand new ThreadSanitizer v2
+
+ThreadSanitizer v2 is a complete redesign that aims to be considerably faster than the original implementation. It's in alpha stage, currently works only on Linux/amd64 with llvm compiler instrumentation.
+
+= Developing v2 =
+First of all, check out the repo and install dependencies:
+{{{
+svn checkout http://data-race-test.googlecode.com/svn/trunk/ tsan
+cd tsan/v2
+make install_deps
+}}}
+Then, you need a fresh clang compiler in your PATH. Refer to [http://llvm.org/ llvm.org].
+
+To build the library and tests:
+{{{
+make
+}}}
+To run unit tests:
+{{{
+tests/tsan_test
+}}}
+To run output tests:
+{{{
+output_tests/test_output.sh
+}}}
+To run presubmit checks (lint, debug and release build, unit- and output tests):
+{{{
+make presubmit
+}}}
+To build release version of the library:
+{{{
+make DEBUG=0
+}}}
+To build with debug output:
+{{{
+make CFLAGS=-DTSAN_DEBUG_OUTPUT=1
+}}}
+To build with extended debug output (including memory accesses and function entry/exit events, be careful it can be enormous):
+{{{
+make CFLAGS=-DTSAN_DEBUG_OUTPUT=2
+}}}
+To build with stat collection (prints internal stats at exit):
+{{{
+make CFLAGS=-DTSAN_COLLECT_STATS=1
+}}}
