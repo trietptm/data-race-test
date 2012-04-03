@@ -5,6 +5,8 @@ ThreadSanitizer v2 is a complete redesign that aims to be considerably faster th
 =New detected types of bugs=
   * Use after free races: [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/free_race.c output_tests/free_race.c]
   * Races on mutexes: [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/race_on_mutex.c output_tests/race_on_mutex.c]
+  * Races on pthread_barrier_t: [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/race_on_barrier.c output_tests/race_on_barrier.c] [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/race_on_barrier2.c output_tests/race_on_barrier2.c]
+  * Leaked threads: [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/thread_leak3.c output_tests/thread_leak3.c]
 
 =Developing v2=
 First of all, check out the repo and install dependencies:
