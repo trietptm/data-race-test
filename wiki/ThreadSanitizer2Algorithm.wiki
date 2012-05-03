@@ -36,10 +36,11 @@ using direct address mapping (no memory accesses required to compute the shadow 
 *Shadow Word* is a 64-bit object that contains the following fields:
 ||TID (Thread Id)             || 16 bits (configurable) ||
 ||Scalar Clock                || 42 bits (configurable) ||
-||IsWrite                     || 1 bit  ||
+||!IsWrite                    || 1 bit  ||
 ||Access Size (1, 2, 4 or 8)  || 2 bits ||
 ||Address Offset (0..7)       || 3 bits ||
-It represents a single memory access to a subset of bytes within
+
+One Shadow Word represents a single memory access to a subset of bytes within
 the 8-byte word of application memory.
 Therefore the Shadow State describes *N* different accesses
 to the corresponding application memory region.
