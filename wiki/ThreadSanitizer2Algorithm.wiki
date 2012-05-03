@@ -46,8 +46,25 @@ Therefore the Shadow State describes *N* different accesses
 to the corresponding application memory region.
 
 ==State Machine==
-The core of the algorithm is the *State Machine*: 
+The core of the algorithm is the *State Machine*,
 a function that updates the Shadow State on every memory access.
+
+First, 
+the thread's clock is incremented and
+a new Shadow Word that corresponds to the current memory access is created.
+Then the State Machine iterates over all Shadow Words stored in the Shadow State.
+If one of the old Shadow Words constitutes a race with the new Shadow Word, a warning 
+message is printed.
+The new Shadow Word is inserted in place of an empty Shadow Word or in place of a Shadow Word
+that happened-before the new one.
+If no place for insertion is found, a random Shadow Word is evicted.
+
+All accesses to Shadow Words are 64-bit atomic loads/stores,
+but otherwise no locking is involved.
+Even if two threads are modifying the same Shadow State at the same time,
+the Shadow State will remain consistent.
+There is tiny probability to miss a data race though.
+
 Approximate pseudo code follows (for an exact algorithm see the code).
 
 {{{
@@ -60,6 +77,7 @@ def HandleMemoryAccess(addr, tid, is_write, size, pc):
   for i in 1..N:
     UpdateOneShadowState(shadow_address, i, new_shadow_word, store_word)
   if store_word:
+    # Evict a random Shadow Word
     shadow_address[Random(N)] = store_word  # Atomic
 }}}
 {{{
