@@ -51,38 +51,39 @@ a function that updates the Shadow State on every memory access.
 Approximate pseudo code follows (for an exact algorithm see the code).
 
 {{{
-def HandleMemoryAccess(Addr, TID, IsWrite, Size, PC):
-  ShadowAddress = MapApplicationToShadow(Addr)
-  IncrementThreadClock(TID)
-  LogEvent(TID, PC);
-  NewShadowWord = {TID, CurrentClock(TID), IsWrite, Size, Addr & 7}
-  StoreWord = NewShadowWord
+def HandleMemoryAccess(addr, tid, is_write, size, pc):
+  shadow_address = MapApplicationToShadow(addr)
+  IncrementThreadClock(tid)
+  LogEvent(tid, pc);
+  new_shadow_word = {tid, CurrentClock(tid), is_write, size, addr & 7}
+  store_word = new_shadow_word
   for i in 1..N:
-    UpdateOneShadowState(ShadowAddress, i, NewShadowWord, StoreWord)
-  if StoreWord:
-    ShadowAddress[Random(N)] = StoreWord  # Atomic
+    UpdateOneShadowState(shadow_address, i, new_shadow_word, store_word)
+  if store_word:
+    shadow_address[Random(N)] = store_word  # Atomic
 }}}
 {{{
-def UpdateOneShadowState(ShadowAddress, IDX, NewShadowWord, StoreWord):
-  OldShadowWord = ShadowAddress[IDX]  # Atomic
-  if OldShadowWord == 0: # The old state is empty
-    if StoreWord:
-      StoreIfNotYetStored(ShadowAddress[IDX], StoreWord)
+def UpdateOneShadowState(shadow_address, i, new_shadow_word, store_word):
+  idx = (i + new_shadow_word.offset) % N
+  old_shadow_word = shadow_address[idx]  # Atomic
+  if old_shadow_word == 0: # The old state is empty
+    if store_word:
+      StoreIfNotYetStored(shadow_address[idx], store_word)
     return
-  if AccessedSameRegion(NewShadowWord, OldShadowWord)
+  if AccessedSameRegion(new_shadow_word, old_shadow_word)
     TODO
-  elif AccessedIntersectingRegions(NewShadowWord, OldShadowWord)
+  elif AccessedIntersectingRegions(new_shadow_word, old_shadow_word)
     TODO
   else # regions did not intersect
     pass # do nothing
 
-def StoreIfNotYetStored(ShadowAddress, StoreWord):
-  *ShadowAddress = StoreWord
-  StoreWord = 0
+def StoreIfNotYetStored(shadow_address, store_word):
+  *shadow_address = store_word  # Atomic
+  store_word = 0
 }}}
 
 ==Event Trace==
 ThreadSanitizer2 needs to report stack traces and other information for *previous* accesses
 involved in a data race.
-`LogEvent(TID, PC)` (see above) stores the access event in a large thread-local
+`LogEvent(tid, pc)` (see above) stores the access event in a large thread-local
 circular buffer for later recovery. *TODO*: add more detail.
