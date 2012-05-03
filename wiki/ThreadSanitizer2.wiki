@@ -23,7 +23,7 @@ make
 }}}
 To run unit tests:
 {{{
-tests/tsan_test
+rtl_tests/tsan_test
 }}}
 To run output tests:
 {{{
