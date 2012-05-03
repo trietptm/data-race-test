@@ -65,7 +65,10 @@ Even if two threads are modifying the same Shadow State at the same time,
 the Shadow State will remain consistent.
 There is tiny probability to miss a data race though.
 
-Approximate pseudo code follows (for an exact algorithm see the code).
+Approximate pseudo code follows 
+(for an exact algorithm see the code in `tsan_rtl.cc`;
+we will update the pseudo code once
+the actual code is frozen).
 
 {{{
 def HandleMemoryAccess(addr, tid, is_write, size, pc):
@@ -88,11 +91,17 @@ def UpdateOneShadowState(shadow_address, i, new_shadow_word, store_word):
     if store_word:
       StoreIfNotYetStored(shadow_address[idx], store_word)
     return
-  if AccessedSameRegion(new_shadow_word, old_shadow_word)
-    TODO
-  elif AccessedIntersectingRegions(new_shadow_word, old_shadow_word)
-    TODO
-  else # regions did not intersect
+  if AccessedSameRegion(old_shadow_word, new_shadow_word):
+    if SameThreads(old_shadow_word, new_shadow_word):
+      TODO
+    else:  # Different threads
+      if not HappensBefore(old_shadow_word, new_shadow_word):
+        ReportRace(old_shadow_word, new_shadow_word)
+  elif AccessedIntersectingRegions(old_shadow_word, new_shadow_word):
+    if not SameThreads(old_shadow_word, new_shadow_word)
+      if not HappensBefore(old_shadow_word, new_shadow_word)
+        ReportRace(old_shadow_word, new_shadow_word)
+  else: # regions did not intersect
     pass # do nothing
 
 def StoreIfNotYetStored(shadow_address, store_word):
