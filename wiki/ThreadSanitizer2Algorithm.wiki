@@ -1,0 +1,79 @@
+#summary ThreadSanitizer2 Algorithm
+
+=Summary=
+Here we provide a high-level description of ThreadSanitizer2 algorithm.
+The tool is work-in-progress, so some details may change in future.
+
+ThreadSanitizer2 consists of two parts:
+instrumentation module and a run-time library.
+
+=Instrumentation=
+We instrument every memory access in the program unless it can be proven
+to be race-free or redundant.
+Memory accesses are simply prepended with a function call like `__tsan_read4(addr)`.
+
+Examples of race-free access:
+  * Reads from constant globals (including vtables).
+  * Accesses to memory that does not escape the current function (and therefore the current thread).
+
+Examples of redundant accesses:
+  * Read that happens before a write to the same location.
+
+Atomic memory accesses are instrumented using specialized `__tsan_atomic_` callbacks.
+Reads from vtable pointer are instrumented using `__tsan_vptr_update` to
+deal with [PopularDataRaces#Data_race_on_vptr benign vptr races].
+Function entry and exit are instrumented with `__tsan_func_entry(caller_pc)`
+and `__tsan_func_exit`.
+A call to `__tsan_init` is inserted before all initializers.
+
+=Run-time Library=
+==Shadow State==
+
+*Shadow State* is *N* Shadow Words (described below); *N* is one of 2, 4, 8 (configurable).
+Every aligned 8-byte word of application memory is mapped into *N* Shadow Words
+using direct address mapping (no memory accesses required to compute the shadow address).
+
+*Shadow Word* is a 64-bit object that contains the following fields:
+||TID (Thread Id)             || 16 bits (configurable) ||
+||Scalar Clock                || 42 bits (configurable) ||
+||IsWrite                     || 1 bit  ||
+||Access Size (1, 2, 4 or 8)  || 2 bits ||
+||Address Offset (0..7)       || 3 bits ||
+It represents a single memory access to a subset of bytes within
+the 8-byte word of application memory.
+Therefore the Shadow State describes *N* different accesses
+to the corresponding application memory region.
+
+==State Machine==
+The core of the algorithm is the *State Machine*: 
+a function that updates the Shadow State on every memory access.
+Approximate pseudo code follows (for an exact algorithm see the code).
+
+{{{
+def HandleMemoryAccess(Addr, TID, IsWrite, Size, PC):
+  ShadowAddress = MapApplicationToShadow(Addr)
+  IncrementThreadClock(TID)
+  LogEvent(TID, IsWrite, PC);
+  NewShadowWord = {TID, CurrentClock(TID), IsWrite, Size, Addr & 7}
+  UpdatedShadow = False
+  for i in 1..N:
+    UpdateOneShadowState(ShadowAddress, i, NewShadowWord, UpdatedShadow)
+  if not UpdatedShadow:
+    ShadowAddress[Random(N)] = NewShadowWord  # Atomic
+}}}
+{{{
+def UpdateOneShadowState(ShadowAddress, IDX, NewShadowWord, UpdatedShadow):
+  OldShadowWord = ShadowAddress[IDX]  # Atomic
+  if AccessedSameRegion(NewShadowWord, OldShadowWord)
+    TODO
+  elif AccessedIntersectingRegions(NewShadowWord, OldShadowWord)
+    TODO
+  else # regions did not intersect
+    pass # do nothing
+}}}
+
+==Event Trace==
+ThreadSanitizer2 needs to report stack traces and other information for *previous* accesses
+involved in a data race.
+`LogEvent(TID, IsWrite, PC)` (see above) stores the access event in a large thread-local 
+circular buffer for later recovery. *TODO*: add more detail.

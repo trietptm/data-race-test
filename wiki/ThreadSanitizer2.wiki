@@ -2,6 +2,8 @@
 
 ThreadSanitizer v2 is a complete redesign that aims to be considerably faster than the original implementation. It's in alpha stage, currently works only on Linux/amd64 with llvm compiler instrumentation.
 
+See also: ThreadSanitizer2Algorithm.
+
 =New detected types of bugs=
   * Use after free races: [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/free_race.c output_tests/free_race.c]
   * Races on mutexes: [http://code.google.com/p/data-race-test/source/browse/trunk/v2/output_tests/race_on_mutex.c output_tests/race_on_mutex.c]
