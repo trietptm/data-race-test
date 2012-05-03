@@ -15,7 +15,11 @@ svn checkout http://data-race-test.googlecode.com/svn/trunk/ tsan
 cd tsan/v2
 make install_deps
 }}}
-Then, you need a fresh clang compiler in your PATH. Refer to [http://llvm.org/ llvm.org].
+Install fresh (trunk) Clang compiler. Refer to [http://llvm.org/ llvm.org]. Install gcc 4.6.3. Don't forget to modify your PATH. Also,
+you may need to run:
+{{{
+sudo apt-get install flex bison libc6-dev libc6-dev-i386 libgmp3-dev libmpfr-dev libmpc-dev
+}}}
 
 To build the library and tests:
 {{{
