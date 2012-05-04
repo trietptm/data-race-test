@@ -1,5 +1,7 @@
 #summary ThreadSanitizer2 Algorithm
 
+*Don't edit this page. It has moved to http://code.google.com/p/thread-sanitizer/wiki/ThreadSanitizerAlgorithm*
+
 =Summary=
 Here we provide a high-level description of ThreadSanitizer2 algorithm.
 The tool is work-in-progress, so some details may change in future.
