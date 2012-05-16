@@ -9,15 +9,15 @@ You may download the latest ThreadSanitizer binaries at
 [http://build.chromium.org/p/client.tsan/binaries].<br>
 
 ===for Linux and Mac===
-For example, to get the r3602 build for x86_64 Linux you will need to do:
+For example, to get the r4356 build for x86_64 Linux you will need to do:
 {{{
-wget http://build.chromium.org/p/client.tsan/binaries/tsan-r3602-amd64-linux-self-contained.sh
-chmod +x tsan-r3602-amd64-linux-self-contained.sh
+wget http://build.chromium.org/p/client.tsan/binaries/tsan-r4356-amd64-linux-self-contained.sh
+chmod +x tsan-r4356-amd64-linux-self-contained.sh
 }}}
 
 ===for Windows==
 For Windows, we store the binaries as self-extracting [http://www.7-zip.org/ 7z] archives<br>
-For example, to get the r3602 package, please download and run<br> [http://build.chromium.org/p/client.tsan/binaries/tsan-r3602-x86-windows-sfx.exe]<br>
+For example, to get the r4356 package, please download and run<br> [http://build.chromium.org/p/client.tsan/binaries/tsan-r4356-x86-windows-sfx.exe]<br>
 This will extract the binaries into a `tsan-x86-windows` subdirectory, `tsan.bat` is what you want.
 
 *Regarding Licensing on Windows*<br>
