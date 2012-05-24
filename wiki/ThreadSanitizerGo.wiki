@@ -28,7 +28,7 @@ hg clone -r 998b7e5d75c0 https://mpimenov%40google.com@code.google.com/r/mpimeno
 
 Copy the tsan shared library to the package dir:
 {{{
-cp $TSAN_PATH/go/libtsan_64.so $GOROOT/src/pkg/gotsan
+cp $TSAN_PATH/go/libtsan_go64.so $GOROOT/src/pkg/gotsan
 }}}
 
 3. Build the tree.
