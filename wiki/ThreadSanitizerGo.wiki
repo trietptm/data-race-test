@@ -26,6 +26,11 @@ export PATH=$GOBIN:$PATH
 hg clone -r 998b7e5d75c0 https://mpimenov%40google.com@code.google.com/r/mpimenov-go1-tsan/ $GOROOT
 }}}
 
+Copy the tsan shared library to the package dir:
+{{{
+cp $TSAN_PATH/go/libtsan_64.so $GOROOT/src/pkg/gotsan
+}}}
+
 3. Build the tree.
 
 {{{
@@ -42,7 +47,7 @@ go run -race testtsan.go
 
 Around 80% of tests should pass.
 
-5. A simple Go program containing a data race may be found at $GOROOT/misc/racecheck/gotsan/race.go. To run it and see the report use the following command:
+5. A simple Go program containing a data race may be found at $GOROOT/src/pkg/gotsan/race.go. To run it and see the report use the following command:
 
 {{{
 go run -race race.go
@@ -58,11 +63,11 @@ The output you should see looks like this:
 ==22257== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
 ==22257== WARNING: Possible data race during write of size 1 at 0xf840000000: {{{
 ==22257==    T1 (L{}):
-==22257==     #0  main._func_001 ~/go/misc/racecheck/gotsan/race.go:10
+==22257==     #0  main._func_001 ~/go/src/pkg/gotsan/race.go:10
 ==22257==     #1  runtime.goexit ~/go/src/pkg/runtime/proc.c:266
 ==22257==   Concurrent write(s) happened at (OR AFTER) these points:
 ==22257==    T0 (L{}):
-==22257==     #0  main.main ~/go/misc/racecheck/gotsan/race.go:13
+==22257==     #0  main.main ~/go/src/pkg/gotsan/race.go:13
 ==22257==     #1  runtime.main ~/go/src/pkg/runtime/proc.c:238
 ==22257==    Race verifier data: 0x400da1,0x400caf
 ==22257== }}}
@@ -84,8 +89,10 @@ src/pkg/image as an example.
 cd $GOROOT/src/pkg/image
 go install -a -race
 go test -race
+}}}
 
 The output should contain lines like these:
+{{{
 INFO: Allocating 256Mb (32 * 8M) for Segments.
 INFO: Will allocate up to 640Mb for 'previous' stack traces.
 sizeof(CacheLine) = 568
