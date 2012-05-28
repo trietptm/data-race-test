@@ -26,11 +26,6 @@ export PATH=$GOBIN:$PATH
 hg clone -r 998b7e5d75c0 https://mpimenov%40google.com@code.google.com/r/mpimenov-go1-tsan/ $GOROOT
 }}}
 
-Copy the tsan shared library to the package dir:
-{{{
-cp $TSAN_PATH/go/libtsan_go64.so $GOROOT/src/pkg/gotsan
-}}}
-
 3. Build the tree.
 
 {{{
@@ -118,4 +113,5 @@ Looks like there are no races in this package and its tests!
 
 7. Some races found by ThreadSanitizer can be observed in Go issue list: http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer
 
-8. The slowdown imposed by the tool may be 20x and higher, so please be patient when running your programs. Also, please file an issue if you program crashes because of the tool.
+8. The slowdown imposed by the tool may be 20x and higher, so please be patient when running your programs. The memory overhead is high
+too. Also, please file an issue if you program crashes because of the tool.
