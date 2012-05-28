@@ -12,7 +12,7 @@ The version of the original repo is 12771:fbc982f5aff1 (Mar 20, 2012) which is v
 export TSAN_PATH=/home/$USER/tsan
 svn checkout http://data-race-test.googlecode.com/svn/trunk/ $TSAN_PATH
 cd $TSAN_PATH/go
-DEBUG=1 make
+make
 sudo make install
 }}}
 
@@ -34,8 +34,7 @@ cp $TSAN_PATH/go/libtsan_go64.so $GOROOT/src/pkg/gotsan
 3. Build the tree.
 
 {{{
-cd $GOROOT/src
-./make.bash
+cd $GOROOT/src && ./make.bash
 }}}
 
 4. Test that the package is installed correctly:
