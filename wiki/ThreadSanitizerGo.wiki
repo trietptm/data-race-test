@@ -4,7 +4,7 @@ The tool works for linux amd64. No portability guarantees at the moment.
 
 Everything is currently in a the fork of the original Go repository:
 http://code.google.com/r/mpimenov-go1-tsan/.
-The version of the original repo is 12771:fbc982f5aff1 (Mar 20, 2012) which is very close to Go 1. Any program compatible with Go 1 should be compatible with our toolchain. If it is not, please file an issue.
+The version of the original repo is go1.0.1. Any program compatible with Go 1 should be compatible with our toolchain. If it is not, please file an issue.
 
 1. You need to download ThreadSanitizer first: 
 
