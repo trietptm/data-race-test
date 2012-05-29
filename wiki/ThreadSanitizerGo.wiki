@@ -23,7 +23,7 @@ export GOROOT=/home/$USER/go_race
 export GOBIN=$GOROOT/bin
 export PATH=$GOBIN:$PATH
 
-hg clone -r 998b7e5d75c0 https://mpimenov%40google.com@code.google.com/r/mpimenov-go1-tsan/ $GOROOT
+hg clone -r 85ae661f7a02 https://maxim.pimenov%40phystech.edu@code.google.com/r/maximpimenov-go1-tsan/ $GOROOT
 }}}
 
 3. Build the tree.
@@ -65,15 +65,6 @@ The output you should see looks like this:
 ==22257==     #1  runtime.main ~/go/src/pkg/runtime/proc.c:238
 ==22257==    Race verifier data: 0x400da1,0x400caf
 ==22257== }}}
-
-ThreadSanitizer has received 24 events
-1 READs
-6 WRITEs
-1 SIGNALs
-1 WAITs
-3 RTN_CALLs
-3 RTN_EXITs
-
 }}}
 
 6. Your package’s tests can be run with race detection enabled too. We will test
