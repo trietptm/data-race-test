@@ -83,18 +83,6 @@ INFO: Will allocate up to 640Mb for 'previous' stack traces.
 sizeof(CacheLine) = 568
 PASS
 
-ThreadSanitizer has received 17302207 events
-7 THR_STARTs
-6958 READs
-125096 WRITEs
-248 SIGNALs
-254 WAITs
-8470034 RTN_CALLs
-8470034 RTN_EXITs
-97471 MALLOCs
-56 FREEs
-
-
 ThreadSanitizer summary: reported 0 warning(s) (0 race(s))
 ok  	image	10.257s
 
