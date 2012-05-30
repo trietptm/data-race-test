@@ -50,21 +50,23 @@ go run -race race.go
 The output you should see looks like this:
 
 {{{
-==22257== INFO: Allocating 256Mb (32 * 8M) for Segments.
-==22257== INFO: Will allocate up to 640Mb for 'previous' stack traces.
- sizeof(CacheLine) = 568
-==22257== INFO: T0 is program's main thread
-==22257== INFO: T1 has been created by T0. Use --announce-threads to see the creation stack.
-==22257== WARNING: Possible data race during write of size 1 at 0xf840000000: {{{
-==22257==    T1 (L{}):
-==22257==     #0  main._func_001 ~/go/src/pkg/gotsan/race.go:10
-==22257==     #1  runtime.goexit ~/go/src/pkg/runtime/proc.c:266
-==22257==   Concurrent write(s) happened at (OR AFTER) these points:
-==22257==    T0 (L{}):
-==22257==     #0  main.main ~/go/src/pkg/gotsan/race.go:13
-==22257==     #1  runtime.main ~/go/src/pkg/runtime/proc.c:238
-==22257==    Race verifier data: 0x400da1,0x400caf
-==22257== }}}
+INFO: Allocating 256Mb (32 * 8M) for Segments.
+INFO: Will allocate up to 640Mb for 'previous' stack traces.
+INFO: T0 is program's main thread
+INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
+WARNING: Possible data race during write of size 1 at 0xf840000100: {{{
+   T2 (L{}):
+    #0  main._func_001 ~/go/src/pkg/gotsan/race.go:12
+    #1  runtime.goexit ~/go/src/pkg/runtime/proc.c:279
+  Concurrent write(s) happened at (OR AFTER) these points:
+   T0 (L{}):
+    #0  main.main ~/go/src/pkg/gotsan/race.go:15
+    #1  runtime.main ~/go/src/pkg/runtime/proc.c:251
+  Location 0xf840000100 is 0 bytes inside a block starting at 0xf840000100 of size 8 allocated by T0 from heap:
+    #0  main.main ~/go/src/pkg/gotsan/race.go:9
+    #1  runtime.main ~/go/src/pkg/runtime/proc.c:251
+}}} }}}
+ThreadSanitizer summary: reported 1 warning(s) (1 race(s))
 }}}
 
 6. Your package’s tests can be run with race detection enabled too. We will test
@@ -83,7 +85,6 @@ INFO: Allocating 256Mb (32 * 8M) for Segments.
 INFO: Will allocate up to 640Mb for 'previous' stack traces.
 sizeof(CacheLine) = 568
 PASS
-
 ThreadSanitizer summary: reported 0 warning(s) (0 race(s))
 ok  	image	10.257s
 
