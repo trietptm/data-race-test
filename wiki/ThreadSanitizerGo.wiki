@@ -10,7 +10,7 @@ The version of the original repo is go1.0.1. Any program compatible with Go 1 sh
 
 {{{
 export TSAN_PATH=/home/$USER/tsan
-svn checkout http://data-race-test.googlecode.com/svn/trunk/ $TSAN_PATH
+svn checkout -r 4375 http://data-race-test.googlecode.com/svn/trunk/ $TSAN_PATH
 cd $TSAN_PATH/go
 make
 sudo make install
