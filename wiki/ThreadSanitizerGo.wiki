@@ -2,7 +2,7 @@
 
 The tool works for linux amd64. No portability guarantees at the moment.
 
-Everything is currently in a the fork of the original Go repository:
+Everything is currently in a fork of the original Go repository:
 http://code.google.com/r/maximpimenov-go1-tsan/.
 The version of the original repo is go1.0.1. Any program compatible with Go 1 should be compatible with our toolchain. If it is not, please file an issue.
 
