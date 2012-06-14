@@ -23,7 +23,7 @@ export GOROOT=/home/$USER/go_race
 export GOBIN=$GOROOT/bin
 export PATH=$GOBIN:$PATH
 
-hg clone -r 85ae661f7a02 https://maxim.pimenov%40phystech.edu@code.google.com/r/maximpimenov-go1-tsan/ $GOROOT
+hg clone -u 85ae661f7a02 https://maxim.pimenov%40phystech.edu@code.google.com/r/maximpimenov-go1-tsan/ $GOROOT
 }}}
 
 3. Build the tree.
