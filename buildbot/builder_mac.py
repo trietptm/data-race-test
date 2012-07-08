@@ -23,7 +23,7 @@ def generate(settings):
                           descriptionDone='build valgrind'))
 
   path_flags = ['OFFLINE=',
-                'VALGRIND_INST_ROOT=../out',
+                'VALGRIND_INST_ROOT=`pwd`/../out',
                 'PIN_ROOT=']
   f1.addStep(Compile(command=['make', '-C', 'tsan', '-j4'] + path_flags + ['m32o'],
                      description='building tsan (m32o)',
@@ -87,7 +87,7 @@ def generate(settings):
 
 
   b1 = {'name': 'buildbot-mac',
-        'slavename': 'mini13-m3',
+        'slavename': 'vm630-m3',
         'builddir': 'full_mac',
         'factory': f1,
         }
