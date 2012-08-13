@@ -1,98 +1,60 @@
-= Go Race Detector User Manual =
+= Data Race Detector for Go language =
 
-The tool works for linux amd64. No portability guarantees at the moment.
+The tool works for linux/amd64 and darwin/amd64. Everything is currently in a fork of the original Go repository, which is synched to r14014 (post Go1.0.2, so any Go1 compatible programs should work).
 
-Everything is currently in a fork of the original Go repository:
-http://code.google.com/r/maximpimenov-go1-tsan/.
-The version of the original repo is go1.0.1. Any program compatible with Go 1 should be compatible with our toolchain. If it is not, please file an issue.
-
-1. You need to download ThreadSanitizer first: 
+1. Download the modified Go tree:
 
 {{{
-export TSAN_PATH=/home/$USER/tsan
-svn checkout -r 4375 http://data-race-test.googlecode.com/svn/trunk/ $TSAN_PATH
-cd $TSAN_PATH/go
-make
-sudo make install
+hg clone http:code.google.com/r/dvyukov-tsan/ gotsan
+cd gotsan
+export GOROOT=$PWD
+export PATH=$PWD/bin:$PATH
 }}}
 
-2. Download the modified compiler from the forked repository:
+2. Build the tree.
 
 {{{
-export GOROOT=/home/$USER/go_race
-export GOBIN=$GOROOT/bin
-export PATH=$GOBIN:$PATH
-
-hg clone -u 85ae661f7a02 https://maxim.pimenov%40phystech.edu@code.google.com/r/maximpimenov-go1-tsan/ $GOROOT
+cd src
+./make.bash
 }}}
 
-3. Build the tree.
-
+3. Now you are ready to go. Just add -race to go test/run/install:
 {{{
-cd $GOROOT/src && ./make.bash
+go test -race net/http
 }}}
 
-4. Test that the package is installed correctly:
+If the tool finds a data race it prints the report like this:
 {{{
-cd $GOROOT/src/pkg/gotsan
-go install -a -race
-go run -race testtsan.go
+WARNING: DATA RACE at 0x00004021f2b8
+Read by goroutine 98:
+  net/http.(*bodyEOFSignal).Close()
+      src/pkg/net/http/transport.go:813 +0x41
+  net/http.(*persistConn).readLoop()
+      src/pkg/net/http/transport.go:558 +0x450
+Previous write by goroutine 147:
+  net/http.(*bodyEOFSignal).Close()
+      src/pkg/net/http/transport.go:816 +0x78
+  net/http_test.func·098()
+      src/pkg/net/http/transport_test.go:894 +0x4d1
+Goroutine 98 (running) created at:
+  net/http.(*Transport).getConn()
+      src/pkg/net/http/transport.go:390 +0x920
+  net/http.(*Transport).RoundTrip()
+      src/pkg/net/http/transport.go:156 +0x35e
+  net/http.send()
+      src/pkg/net/http/client.go:141 +0x4e1
+  net/http.(*Client).doFollowingRedirects()
+      src/pkg/net/http/client.go:254 +0x93d
+  net/http.(*Client).Get()
+      src/pkg/net/http/client.go:201 +0xc1
+  net/http_test.func·098()
+      src/pkg/net/http/transport_test.go:878 +0xec
+Goroutine 147 (running) created at:
+  net/http_test.TestTransportConcurrency()
+      src/pkg/net/http/transport_test.go:896 +0x463
+  testing.tRunner()
+      src/pkg/testing/testing.go:297 +0xc9
 }}}
 
-Around 80% of tests should pass.
-
-5. A simple Go program containing a data race may be found at $GOROOT/src/pkg/gotsan/race.go. To run it and see the report use the following command:
-
-{{{
-go run -race race.go
-}}}
-
-The output you should see looks like this:
-
-{{{
-INFO: Allocating 256Mb (32 * 8M) for Segments.
-INFO: Will allocate up to 640Mb for 'previous' stack traces.
-INFO: T0 is program's main thread
-INFO: T2 has been created by T0. Use --announce-threads to see the creation stack.
-WARNING: Possible data race during write of size 1 at 0xf840000100: {{{
-   T2 (L{}):
-    #0  main._func_001 ~/go/src/pkg/gotsan/race.go:12
-    #1  runtime.goexit ~/go/src/pkg/runtime/proc.c:279
-  Concurrent write(s) happened at (OR AFTER) these points:
-   T0 (L{}):
-    #0  main.main ~/go/src/pkg/gotsan/race.go:15
-    #1  runtime.main ~/go/src/pkg/runtime/proc.c:251
-  Location 0xf840000100 is 0 bytes inside a block starting at 0xf840000100 of size 8 allocated by T0 from heap:
-    #0  main.main ~/go/src/pkg/gotsan/race.go:9
-    #1  runtime.main ~/go/src/pkg/runtime/proc.c:251
-}}} }}}
-ThreadSanitizer summary: reported 1 warning(s) (1 race(s))
-}}}
-
-6. Your package’s tests can be run with race detection enabled too. We will test
-src/pkg/image as an example.
-
-{{{
-cd $GOROOT/src/pkg/image
-go install -a -race
-go test -race
-}}}
-*NOTE: Providing the '-a' flag to 'go install' is important.*
-
-The output should contain lines like these:
-{{{
-INFO: Allocating 256Mb (32 * 8M) for Segments.
-INFO: Will allocate up to 640Mb for 'previous' stack traces.
-sizeof(CacheLine) = 568
-PASS
-ThreadSanitizer summary: reported 0 warning(s) (0 race(s))
-ok  	image	10.257s
-
-}}}
-
-Looks like there are no races in this package and its tests!
-
-7. Some races found by ThreadSanitizer can be observed in Go issue list: http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer
-
-8. The slowdown imposed by the tool may be 20x and higher, so please be patient when running your programs. The memory overhead is high
-too. Also, please file an issue if you program crashes because of the tool.
+Currently the tool has found [http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer 18 data races] in the standard library and 40+ elsewhere.
+The tool significantly slowdowns programs (~2-10x) and has high memory overhead (5-10x).
