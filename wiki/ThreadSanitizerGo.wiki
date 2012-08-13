@@ -18,7 +18,7 @@ cd src
 ./make.bash
 }}}
 
-3. Now you are ready to go. Just add -race to go test/run/install:
+3. Now you are ready to go. Just add -race flag to go test/run/install:
 {{{
 go test -race net/http
 }}}
@@ -56,5 +56,4 @@ Goroutine 147 (running) created at:
       src/pkg/testing/testing.go:297 +0xc9
 }}}
 
-Currently the tool has found [http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer 18 data races] in the standard library and 40+ elsewhere.
-The tool significantly slowdowns programs (~2-10x) and has high memory overhead (5-10x).
+Currently the tool has found [http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer 18 data races] in the standard library and 40+ data races elsewhere. The tool significantly slowdowns programs (~2-10x) and has high memory overhead (~5-10x).
