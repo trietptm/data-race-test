@@ -1,41 +1,27 @@
 = Data Race Detector for Go language =
 
-The tool works for linux/amd64 and darwin/amd64. Everything is currently in a fork of the original Go repository, which is synched to r14014 (post Go1.0.2, so any Go1 compatible programs should work).
+The race detector is currently integrated into the Go trunk. It works for linux/amd64 and darwin/amd64.
 
-1. Download the modified Go tree:
-
-{{{
-hg clone http:code.google.com/r/dvyukov-tsan/ gotsan
-cd gotsan
-export GOROOT=$PWD
-export PATH=$PWD/bin:$PATH
-}}}
-
-2. Build the tree.
-
-{{{
-cd src
-./make.bash
-}}}
-
-3. Now you are ready to go. Just add -race flag to go test/run/install:
+Just add -race flag to go test/run/install:
 {{{
 go test -race net/http
 }}}
 
 If the tool finds a data race it prints the report like this:
 {{{
-WARNING: DATA RACE at 0x00004021f2b8
+WARNING: DATA RACE
 Read by goroutine 98:
   net/http.(*bodyEOFSignal).Close()
       src/pkg/net/http/transport.go:813 +0x41
   net/http.(*persistConn).readLoop()
       src/pkg/net/http/transport.go:558 +0x450
+
 Previous write by goroutine 147:
   net/http.(*bodyEOFSignal).Close()
       src/pkg/net/http/transport.go:816 +0x78
   net/http_test.func·098()
       src/pkg/net/http/transport_test.go:894 +0x4d1
+
 Goroutine 98 (running) created at:
   net/http.(*Transport).getConn()
       src/pkg/net/http/transport.go:390 +0x920
@@ -49,6 +35,7 @@ Goroutine 98 (running) created at:
       src/pkg/net/http/client.go:201 +0xc1
   net/http_test.func·098()
       src/pkg/net/http/transport_test.go:878 +0xec
+
 Goroutine 147 (running) created at:
   net/http_test.TestTransportConcurrency()
       src/pkg/net/http/transport_test.go:896 +0x463
@@ -56,4 +43,4 @@ Goroutine 147 (running) created at:
       src/pkg/testing/testing.go:297 +0xc9
 }}}
 
-Currently the tool has found [http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer 18 data races] in the standard library and 40+ data races elsewhere. The tool significantly slowdowns programs (~2-10x) and has high memory overhead (~5-10x).
+Currently the tool has found [http://code.google.com/p/go/issues/list?can=1&q=label%3AThreadSanitizer 27 data races] in the standard library and 60+ data races elsewhere. The tool significantly slowdowns programs (~2-10x) and has high memory overhead (~5-10x).
