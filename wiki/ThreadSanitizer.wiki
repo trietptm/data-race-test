@@ -6,7 +6,7 @@ For the new (and better supported) version go to
 http://code.google.com/p/thread-sanitizer
 
 
-ThreadSanitizer paper was presented at [http://www.dyninst.org/wbia09/ WBIA'09]: http://pintool.org/wbia09.pdf, pages 62-71.
+ThreadSanitizer paper was presented at [http://dl.acm.org/citation.cfm?id=1791203 WBIA'09]: [http://webcluster.cs.columbia.edu/~junfeng/reliable-software/papers/thread-sanitizer.pdf PDF]
 
 <wiki:toc max_depth="1" />
 
