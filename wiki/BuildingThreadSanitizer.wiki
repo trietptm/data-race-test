@@ -8,7 +8,7 @@ apply a small patch to valgrind.
 
 To build both 32-bit and 64-bit versions of ThreadSanitizer on Ubuntu Lucid 64-bit, you will need to first install several additional packages:
 {{{
-apt-get install subversion automake libc6-dev-i386 libc6-dbg g++-multilib
+apt-get install subversion automake libc6-dbg libc6-dev-i386 g++-multilib
 }}}
 
 Then, just run the [http://data-race-test.googlecode.com/svn/trunk/tsan/get_and_build_tsan.sh  ./get_and_build_tsan.sh script] in your terminal window.
