@@ -1,0 +1,1 @@
+This page has moved here: http://code.google.com/p/thread-sanitizer/wiki/ThreadSanitizerDevelopment

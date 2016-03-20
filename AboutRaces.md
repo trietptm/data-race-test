@@ -1,0 +1,1 @@
+This page has moved to https://code.google.com/p/thread-sanitizer/wiki/AboutRaces
